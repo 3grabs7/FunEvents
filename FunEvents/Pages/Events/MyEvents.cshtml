@@ -1,4 +1,47 @@
 ﻿@page
 @model FunEvents.Pages.Events.MyEventsModel
 @{
+    ViewData["Title"] = "Index";
 }
+
+<h1>@Model.ActiveUser.UserName</h1>
+<p>The events you've joined are displayed here!</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Title
+            </th>
+            <th>
+                Location
+            </th>
+            <th>
+                Date
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.ActiveUser.MyEvents)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Place)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Date)
+                </td>
+                <td>
+                    <form method="post">
+                        <input type="submit" class="btn-outline-danger" value="Remove" asp-route-id="@item.Id" />
+                    </form>
+                </td>
+            </tr>
+        }
+
+    </tbody>
+</table>

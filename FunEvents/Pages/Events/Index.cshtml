@@ -4,8 +4,18 @@
 }
 
 <div>
-
-</div>
+    @foreach (var item in Model.Events)
+    {
+    <div class="accordion"><h3>@Html.DisplayFor(modelItem => item.Title)</h3>
+    <div class="panel">
+        <p>@Html.DisplayFor(modelItem => item.Description)</p>
+        <p>@Html.DisplayFor(modelItem => item.Place)</p>
+        <p>@Html.DisplayFor(modelItem => item.Date)</p>
+        <a class="btn btn-primary" asp-page="./Details" asp-route-id="@item.Id">JOIN</a>
+    </div>
+    </div>
+    }
+    </div>
 <div>
     <ul class="pagination">
         @for (int i = 1; i <= Model.TotalPages; i++)

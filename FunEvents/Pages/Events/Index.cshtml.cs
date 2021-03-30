@@ -30,17 +30,17 @@ namespace FunEvents.Pages.Events
 
         public int TotalPages => (int)Math.Ceiling(decimal.Divide(Count, PageSize));
 
-        public IList<Event> Event { get; set; }
+        public IList<Event> Events { get; set; }
 
         public async Task OnGetAsync()
         {
             if (String.IsNullOrWhiteSpace(SortBy))
             {
-                Event = await GetPaginatedResult(CurrentPage, PageSize);
+                Events = await GetPaginatedResult(CurrentPage, PageSize);
             }
             else
             {
-                Event = await GetPaginatedResult(CurrentPage, PageSize, SortBy);
+                Events = await GetPaginatedResult(CurrentPage, PageSize, SortBy);
             }
             Count = await GetCount();
         }
