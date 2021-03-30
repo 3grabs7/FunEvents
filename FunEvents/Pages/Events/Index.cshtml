@@ -1,8 +1,11 @@
-﻿@page "{currentpage=1}/{sortby=EventID}"
+﻿@page "{currentpage=1}/{sortby=Id}"
 @model FunEvents.Pages.Events.IndexModel
 @{
 }
 
+<div>
+
+</div>
 <div>
     <ul class="pagination">
         @for (int i = 1; i <= Model.TotalPages; i++)

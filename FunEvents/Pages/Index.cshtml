@@ -5,12 +5,21 @@
 }
 
 <div class="text-center">
-    @if (User.Identity.IsAuthenticated)
-    {
-        <div>
-            sjuka greher
-        </div>
-    }
     <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h4>This is the place where you can find crazy events happening near you!</h4>
+    <div>
+        @if (User.Identity.IsAuthenticated)
+        {
+            <div>
+                <a class="btn btn-primary" asp-page="Events/Index">Find A New Event</a>
+            </div>
+        }
+        else
+        {
+            <div>
+                <a class="btn btn-primary" asp-area="Identity" asp-page="Account/Register">Register</a>
+                <a class="btn btn-primary" asp-area="Identity" asp-page="Account/Login">Log In</a>
+            </div>
+        }
+    </div>
 </div>
