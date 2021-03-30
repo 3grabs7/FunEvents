@@ -3,19 +3,40 @@
 @{
 }
 
+<h1>Events Osv</h1>
+<div class="row">
+    <p class="col-2 p-0 text-right">
+        <b>Order By:</b>
+    </p>
+    <div class="col-3 p-0">
+        <a asp-page="Index" class="sort-link col p-0" asp-route-sortby="Title">
+            @Html.DisplayNameFor(model => model.Events[0].Title)
+        </a>
+        <a asp-page="Index" class="sort-link col p-0" asp-route-sortby="Date">
+            @Html.DisplayNameFor(model => model.Events[0].Date)
+        </a>
+        <a asp-page="Index" class="sort-link col p-0" asp-route-sortby="Organizer">
+            @Html.DisplayNameFor(model => model.Events[0].Place)
+        </a>
+        <a asp-page="Index" class="sort-link col p-0" asp-route-sortby="SpotsAvailable">
+            @Html.DisplayNameFor(model => model.Events[0].SpotsAvailable)
+        </a>
+    </div>
+</div>
 <div>
     @foreach (var item in Model.Events)
     {
-    <div class="accordion"><h3>@Html.DisplayFor(modelItem => item.Title)</h3>
-    <div class="panel">
-        <p>@Html.DisplayFor(modelItem => item.Description)</p>
-        <p>@Html.DisplayFor(modelItem => item.Place)</p>
-        <p>@Html.DisplayFor(modelItem => item.Date)</p>
-        <a class="btn btn-primary" asp-page="./Details" asp-route-id="@item.Id">JOIN</a>
-    </div>
-    </div>
+        <div class="accordion">
+            <h3>@Html.DisplayFor(modelItem => item.Title)</h3>
+            <div class="panel">
+                <p>@Html.DisplayFor(modelItem => item.Description)</p>
+                <p>@Html.DisplayFor(modelItem => item.Place)</p>
+                <p>@Html.DisplayFor(modelItem => item.Date)</p>
+                <a class="btn btn-primary" asp-page="./Details" asp-route-id="@item.Id">JOIN</a>
+            </div>
+        </div>
     }
-    </div>
+</div>
 <div>
     <ul class="pagination">
         @for (int i = 1; i <= Model.TotalPages; i++)
