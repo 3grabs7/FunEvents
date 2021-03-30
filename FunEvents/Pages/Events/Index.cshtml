@@ -38,7 +38,28 @@
                 }
                 else
                 {
-                    <a class="btn btn-primary" asp-page="./Details" asp-route-id="@item.Id">JOIN 🐱‍🐉</a>
+                    <div class="row">
+                        <div class="col-3">
+                            <a class="btn btn-primary" asp-page="./Details" asp-route-id="@item.Id">JOIN 🐱‍🐉</a>
+                        </div>
+                        @if (item.SpotsAvailable == 0)
+                        {
+                            <div class="col-9">
+                                <div class="alert alert-danger">
+                                    All spots booked!
+                                </div>
+                            </div>
+                        }
+                        else if (item.SpotsAvailable <= 10)
+                        {
+                            <div class="col-9">
+                                <div class="alert alert-warning">
+                                    Only a few spots left!
+                                </div>
+                            </div>
+                        }
+
+                    </div>
                 }
             </div>
         </div>
