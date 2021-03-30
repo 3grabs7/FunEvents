@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace FunEvents.Pages.Events
 {
@@ -15,10 +16,13 @@ namespace FunEvents.Pages.Events
     {
 
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ActiveUser> _userManager;
 
-        public IndexModel(ApplicationDbContext context)
+        public IndexModel(ApplicationDbContext context,
+            UserManager<ActiveUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         [BindProperty(SupportsGet = true)]
@@ -32,6 +36,8 @@ namespace FunEvents.Pages.Events
 
         public IList<Event> Events { get; set; }
 
+        public ActiveUser ActiveUser { get; set; }
+
         public async Task OnGetAsync()
         {
             if (String.IsNullOrWhiteSpace(SortBy))
@@ -43,6 +49,10 @@ namespace FunEvents.Pages.Events
                 Events = await GetPaginatedResult(CurrentPage, PageSize, SortBy);
             }
             Count = await GetCount();
+
+            string userId = _userManager.GetUserId(User);
+
+            ActiveUser = await _context.Users.Where(u => u.Id == userId).Include(u => u.MyEvents).FirstOrDefaultAsync();
         }
 
         public async Task<List<Event>> GetPaginatedResult(int currentPage, int pageSize)

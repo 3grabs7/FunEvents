@@ -38,8 +38,6 @@ namespace FunEvents.Pages.Events
             ActiveUser = await _context.Users.Where(u => u.Id == userId).Include(u => u.MyEvents).FirstOrDefaultAsync();
 
             Events = await _context.Events.Where(e => e.Attendees.Contains(ActiveUser)).ToListAsync();
-
-            Console.WriteLine(ActiveUser);
         }
     }
 }

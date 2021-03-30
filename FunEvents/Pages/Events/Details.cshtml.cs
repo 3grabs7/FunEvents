@@ -28,13 +28,15 @@ namespace FunEvents.Pages.Events
 
         public ActiveUser ActiveUser { get; set; }
         public Event EventToJoin { get; set; }
-        public async Task OnGetAsync(int? id)
+        public async Task<IActionResult> OnGetAsync(int? id)
         {
             string userId = _userManager.GetUserId(User);
             ActiveUser = await _context.Users.Where(u => u.Id == userId).Include(u => u.MyEvents).FirstOrDefaultAsync();
             EventToJoin = await _context.Events.Where(e => e.Id == id).FirstOrDefaultAsync();
             ActiveUser.MyEvents.Add(EventToJoin);
             await _context.SaveChangesAsync();
+
+            return RedirectToPage("./MyEvents");
         }
     }
 }
