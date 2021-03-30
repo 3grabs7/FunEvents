@@ -1,4 +1,18 @@
-﻿@page
+﻿@page "{currentpage=1}/{sortby=EventID}"
 @model FunEvents.Pages.Events.IndexModel
 @{
 }
+
+<div>
+    <ul class="pagination">
+        @for (int i = 1; i <= Model.TotalPages; i++)
+        {
+            <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                <a asp-page="./Index" asp-all-route-data="@(new Dictionary<string, string>
+               {{ "currentpage", i.ToString() }, { "sortby", Model.SortBy }})"
+                   class="page-link">@i</a>
+            </li>
+        }
+    </ul>
+</div>
+
