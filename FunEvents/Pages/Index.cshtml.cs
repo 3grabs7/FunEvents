@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FunEvents.Data;
+using FunEvents.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using System;
@@ -11,15 +14,27 @@ namespace FunEvents.Pages
     public class IndexModel : PageModel
     {
         private readonly ILogger<IndexModel> _logger;
+        private readonly ApplicationDbContext _context;
+        private readonly UserManager<ActiveUser> _userManager;
+        private readonly SignInManager<ActiveUser> _signInManager;
 
-        public IndexModel(ILogger<IndexModel> logger)
+        public IndexModel(ILogger<IndexModel> logger,
+            ApplicationDbContext context,
+            UserManager<ActiveUser> userManager,
+            SignInManager<ActiveUser> signInManager)
         {
             _logger = logger;
+            _context = context;
+            _userManager = userManager;
+            _signInManager = signInManager;
         }
 
-        public void OnGet()
+        public async Task OnGetAsync(bool? seedDb)
         {
-
+            if (seedDb ?? false)
+            {
+                await _context.SeedDatabase(_userManager);
+            }
         }
     }
 }

@@ -22,8 +22,14 @@
                             <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
+                            <a class="nav-link text-dark" asp-area="" asp-page="/Events/Index">Events</a>
                         </li>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-page="/Events/MyEvents">My Events</a>
+                            </li>
+                        }
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>
@@ -38,7 +44,9 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2021 - FunEvents - <a asp-area="" asp-page="/Privacy">Privacy</a>
+            &copy; 2021 - FunEvents -
+            <a asp-area="" asp-page="/Privacy">Privacy</a>
+            <a asp-route-seedDb="true">Reset Db</a>
         </div>
     </footer>
 
