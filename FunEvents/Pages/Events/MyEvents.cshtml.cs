@@ -39,5 +39,22 @@ namespace FunEvents.Pages.Events
 
             Events = await _context.Events.Where(e => e.Attendees.Contains(ActiveUser)).ToListAsync();
         }
+
+        public async Task<IActionResult> OnPostAsync(int? id)
+        {
+            if (id == null)
+            {
+                // Something went wrong here with routing correct event to remove
+            }
+
+            string userId = _userManager.GetUserId(User);
+            ActiveUser = await _context.Users.Where(u => u.Id == userId).Include(u => u.MyEvents).FirstOrDefaultAsync();
+            Event eventToRemove = await _context.Events.Where(e => e.Id == id).FirstOrDefaultAsync();
+            ActiveUser.MyEvents.Remove(eventToRemove);
+            eventToRemove.SpotsAvailable++;
+            await _context.SaveChangesAsync();
+
+            return Page();
+        }
     }
 }

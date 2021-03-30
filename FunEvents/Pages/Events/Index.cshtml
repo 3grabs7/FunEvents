@@ -15,7 +15,7 @@
         <a asp-page="Index" class="sort-link col p-0" asp-route-sortby="Date">
             @Html.DisplayNameFor(model => model.Events[0].Date)
         </a>
-        <a asp-page="Index" class="sort-link col p-0" asp-route-sortby="Organizer">
+        <a asp-page="Index" class="sort-link col p-0" asp-route-sortby="Place">
             @Html.DisplayNameFor(model => model.Events[0].Place)
         </a>
         <a asp-page="Index" class="sort-link col p-0" asp-route-sortby="SpotsAvailable">
@@ -58,7 +58,6 @@
                                 </div>
                             </div>
                         }
-
                     </div>
                 }
             </div>

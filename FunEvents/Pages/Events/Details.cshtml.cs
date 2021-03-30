@@ -34,6 +34,7 @@ namespace FunEvents.Pages.Events
             ActiveUser = await _context.Users.Where(u => u.Id == userId).Include(u => u.MyEvents).FirstOrDefaultAsync();
             EventToJoin = await _context.Events.Where(e => e.Id == id).FirstOrDefaultAsync();
             ActiveUser.MyEvents.Add(EventToJoin);
+            EventToJoin.SpotsAvailable--;
             await _context.SaveChangesAsync();
 
             return RedirectToPage("./MyEvents");
