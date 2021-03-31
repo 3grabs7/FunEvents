@@ -30,7 +30,7 @@ namespace FunEvents.Pages.Events
         public ActiveUser ActiveUser { get; set; }
         public List<Event> Events { get; set; }
         [BindProperty(SupportsGet = true)]
-        public bool RemovingEventFailed { get; set; } = false;
+        public bool RemovingEventFailed { get; set; }
 
         public async Task OnGetAsync()
         {

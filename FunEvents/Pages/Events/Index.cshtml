@@ -34,31 +34,37 @@
                 <p>@Html.DisplayFor(modelItem => item.Date)</p>
                 @if (item.Attendees?.Contains(Model.ActiveUser) ?? false)
                 {
-                    <a class="btn btn-primary disabled" asp-page="">Already Joined 👺</a>
+                    <a class="btn btn-primary disabled">Already Joined 👺</a>
                 }
                 else
                 {
-                    <div class="row">
-                        <div class="col-3">
-                            <a class="btn btn-primary" asp-page="./Details" asp-route-id="@item.Id">JOIN 🐱‍🐉</a>
-                        </div>
-                        @if (item.SpotsAvailable == 0)
-                        {
-                            <div class="col-9">
-                                <div class="alert alert-danger">
-                                    All spots booked!
-                                </div>
-                            </div>
-                        }
-                        else if (item.SpotsAvailable <= 10)
-                        {
-                            <div class="col-9">
-                                <div class="alert alert-warning">
-                                    Only a few spots left!
-                                </div>
-                            </div>
-                        }
+            <div class="row">
+                @if (item.SpotsAvailable == 0)
+                {
+                    <div class="col-3">
+                        <a class="btn btn-primary disabled">Fully booked 😢</a>
                     </div>
+                    <div class="col-9">
+                        <div class="alert alert-danger">
+                            All spots booked!
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="col-3">
+                        <a class="btn btn-primary" asp-page="./Details" asp-route-id="@item.Id">JOIN 🐱‍🐉</a>
+                    </div>
+                    @if (item.SpotsAvailable < 10)
+                    {
+                        <div class="col-9">
+                            <div class="alert alert-warning">
+                                Only a few spots left!
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
                 }
             </div>
         </div>
