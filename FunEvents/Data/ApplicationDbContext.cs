@@ -29,6 +29,27 @@ namespace FunEvents.Data
             await Database.EnsureDeletedAsync();
             await Database.EnsureCreatedAsync();
 
+            ActiveUser adminUser = new ActiveUser()
+            {
+                Email = "admin@admin.com",
+                NormalizedEmail = "ADMIN@ADMIN.COM",
+                UserName = "Admin",
+                NormalizedUserName = "ADMIN",
+                PhoneNumber = "+111111111111",
+                EmailConfirmed = true,
+                PhoneNumberConfirmed = true,
+                SecurityStamp = Guid.NewGuid().ToString("D")
+            };
+
+            var password = new PasswordHasher<ActiveUser>();
+            var hashed = password.HashPassword(adminUser, "password");
+            adminUser.PasswordHash = hashed;
+
+            var userStore = new UserStore<ActiveUser>(this);
+            var result = userStore.CreateAsync(adminUser);
+
+            var rolesResult = await userManager.AddToRoleAsync(adminUser, "Organizer");
+
             await Events.AddRangeAsync(new List<Event>() {
                 new Event{Title="Food Festival", Description="All you can eat - food from all around the world - all you need is a ticket!", Place="On the street", Address="Gourmet Lane 63", Date= new DateTime(2021,7,21), SpotsAvailable=1000},
                 new Event{Title="Free Karaoke night",  Description="Join this event to be a part of a fantastic karaoke night!", Place="Sing Along", Address="Vocals street 2", Date= new DateTime(2021,5,13), SpotsAvailable=35 },
