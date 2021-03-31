@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FunEvents.Pages.Events
 {
-    //[Authorize(Roles = "Admin, Organizer")]
+    [Authorize(Roles = "Admin, Organizer")]
     public class CreateEventModel : PageModel
     {
         private readonly ApplicationDbContext _context;
@@ -30,10 +30,6 @@ namespace FunEvents.Pages.Events
 
         [BindProperty]
         public Event NewEvent { get; set; }
-
-        public async void OnGetAsync()
-        {
-        }
 
         public async Task<IActionResult> OnPostAsync()
         {

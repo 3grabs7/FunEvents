@@ -19,6 +19,11 @@ namespace FunEvents.Data
         public DbSet<Event> Events { get; set; }
         public DbSet<Organizer> Organizers { get; set; }
 
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+        }
+
         public async Task SeedDatabase(UserManager<ActiveUser> userManager)
         {
             await Database.EnsureDeletedAsync();

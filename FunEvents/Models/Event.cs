@@ -20,7 +20,7 @@ namespace FunEvents.Models
 
     }
 
-    // Tillfällig klass
+    // Tillfällig klass -> Byt ut mot roles senare.
     public class Organizer
     {
         public int Id { get; set; }

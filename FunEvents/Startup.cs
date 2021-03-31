@@ -33,25 +33,17 @@ namespace FunEvents
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddDatabaseDeveloperPageExceptionFilter();
-
             services.AddDefaultIdentity<ActiveUser>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
-            services.AddRazorPages();
+            services.AddDatabaseDeveloperPageExceptionFilter();
 
-            // Inväntar bjaaaaaarne
-            //services.AddAuthorization(options =>
-            //{
-            //    options.AddPolicy("EventCreationRights", policy =>
-            //        policy.RequireRole("Administrator", "Organizer"));
-            //});
+            services.AddRazorPages()
+                .AddRazorPagesOptions(options =>
+                {
 
-            //services.AddAuthorization(options =>
-            //{
-            //    options.AddPolicy("AdministratorRights", policy =>
-            //    policy.RequireRole("Administrator"));
-            //});
+                });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
