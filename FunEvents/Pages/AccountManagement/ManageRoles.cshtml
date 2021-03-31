@@ -2,3 +2,39 @@
 @model FunEvents.Pages.AccountManagement.ManageRolesModel
 @{
 }
+
+<h1>@Model.ActiveUser.UserName</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                User Name
+            </th>
+            <th>
+                Email
+            </th>
+            <th>
+                Is Organizer
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Users)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
