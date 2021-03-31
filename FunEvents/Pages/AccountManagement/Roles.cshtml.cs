@@ -34,6 +34,7 @@ namespace FunEvents.Pages.AccountManagement
 
         public async Task<IActionResult> OnPostCreateAsync()
         {
+            NewRole.NormalizedName = NewRole.Name.ToUpper();
             await _context.Roles.AddAsync(NewRole);
             await _context.SaveChangesAsync();
             return RedirectToPage("/AccountManagement/Roles");

@@ -7,6 +7,7 @@ using FunEvents.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 
 namespace FunEvents.Pages.AccountManagement
 {
@@ -21,9 +22,33 @@ namespace FunEvents.Pages.AccountManagement
             _context = context;
             _userManager = userManager;
         }
-        public void OnGet(string userId, string roleName)
+        public async Task OnGetAsync()
         {
+            Users = await _context.Users.ToListAsync();
+        }
 
+        public IList<ActiveUser> Users { get; set; }
+        public ActiveUser ActiveUser { get; set; }
+        // Only need this if want several roles to choose from
+        //public IdentityRole Role { get; set; }
+        public async Task<IActionResult> OnPostAsync(string id)
+        {
+            // Get user from list
+            ActiveUser = await _context.Users.Where(u => u.Id == id).FirstOrDefaultAsync();
+            // Get role we would like to assign 
+            // await _userManager.AddToRoleAsync(ActiveUser, Role.Name);
+            // for now we only need organizer so if user is selected, orginizer role is assigned
+            var result = await _userManager.AddToRoleAsync(ActiveUser, "Organizer");
+            await _context.SaveChangesAsync();
+            return RedirectToPage("/AccountManagement/Users");
+
+        }
+
+        public async Task<bool> IsOrganizer(string id)
+        {
+            IdentityRole role = await _context.Roles.Where(r => r.Name == "Organizer").FirstOrDefaultAsync();
+
+            return await _context.UserRoles.Where(ur => ur.UserId == id && ur.RoleId == role.Id).FirstOrDefaultAsync() != default;
         }
     }
 }

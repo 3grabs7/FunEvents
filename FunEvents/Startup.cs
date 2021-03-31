@@ -34,6 +34,7 @@ namespace FunEvents
                     Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddDefaultIdentity<ActiveUser>(options => options.SignIn.RequireConfirmedAccount = false)
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddDatabaseDeveloperPageExceptionFilter();

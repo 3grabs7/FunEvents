@@ -8,6 +8,7 @@ namespace FunEvents.Models
 {
     public class ActiveUser : IdentityUser
     {
+        // public string Name { get; set; }
         public ICollection<Event> MyEvents { get; set; }
 
     }
