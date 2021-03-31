@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -24,31 +25,51 @@ namespace FunEvents.Data
             base.OnModelCreating(builder);
         }
 
+
         public async Task SeedDatabase(UserManager<ActiveUser> userManager)
         {
             await Database.EnsureDeletedAsync();
             await Database.EnsureCreatedAsync();
 
+            var hasher = new PasswordHasher<ActiveUser>();
+            var user = new ActiveUser();
             ActiveUser adminUser = new ActiveUser()
             {
                 Email = "admin@admin.com",
                 NormalizedEmail = "ADMIN@ADMIN.COM",
-                UserName = "Admin",
+                UserName = "admin@admin.com",
                 NormalizedUserName = "ADMIN",
+                PasswordHash = hasher.HashPassword(user, "Password5%"),
                 PhoneNumber = "+111111111111",
                 EmailConfirmed = true,
+                LockoutEnabled = false,
                 PhoneNumberConfirmed = true,
-                SecurityStamp = Guid.NewGuid().ToString("D")
+                SecurityStamp = Guid.NewGuid().ToString()
             };
 
             var password = new PasswordHasher<ActiveUser>();
-            var hashed = password.HashPassword(adminUser, "password");
+            var hashed = password.HashPassword(adminUser, "Password5%");
+
             adminUser.PasswordHash = hashed;
 
             var userStore = new UserStore<ActiveUser>(this);
             var result = userStore.CreateAsync(adminUser);
 
-            var rolesResult = await userManager.AddToRoleAsync(adminUser, "Organizer");
+            string[] roles = new string[] { "Admin", "Organizer" };
+
+            foreach (string role in roles)
+            {
+                var roleStore = new RoleStore<IdentityRole>(this);
+
+                if (!this.Roles.Any(r => r.Name == role))
+                {
+                    IdentityRole newRole = new IdentityRole(role);
+                    newRole.NormalizedName = role.ToUpper();
+                    await roleStore.CreateAsync(newRole);
+                }
+            }
+
+            var rolesResult = await userManager.AddToRoleAsync(adminUser, "Admin");
 
             await Events.AddRangeAsync(new List<Event>() {
                 new Event{Title="Food Festival", Description="All you can eat - food from all around the world - all you need is a ticket!", Place="On the street", Address="Gourmet Lane 63", Date= new DateTime(2021,7,21), SpotsAvailable=1000},
