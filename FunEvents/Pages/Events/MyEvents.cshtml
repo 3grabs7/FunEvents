@@ -4,6 +4,13 @@
     ViewData["Title"] = "Index";
 }
 
+@if (Model.RemovingEventFailed)
+{
+    <div class="alert alert-warning" role="alert">
+        Something went wrong trying to remove the event. Please try again later.
+    </div>
+}
+
 <h1>@Model.ActiveUser.UserName</h1>
 <p>The events you've joined are displayed here!</p>
 

@@ -28,8 +28,9 @@ namespace FunEvents.Pages.Events
 
         [BindProperty]
         public ActiveUser ActiveUser { get; set; }
-
         public List<Event> Events { get; set; }
+        [BindProperty(SupportsGet = true)]
+        public bool RemovingEventFailed { get; set; } = false;
 
         public async Task OnGetAsync()
         {
@@ -42,17 +43,19 @@ namespace FunEvents.Pages.Events
 
         public async Task<IActionResult> OnPostAsync(int? id)
         {
-            if (id == null)
+            try
             {
-                // Something went wrong here with routing correct event to remove
+                string userId = _userManager.GetUserId(User);
+                ActiveUser = await _context.Users.Where(u => u.Id == userId).Include(u => u.MyEvents).FirstOrDefaultAsync();
+                Event eventToRemove = await _context.Events.Where(e => e.Id == id).FirstOrDefaultAsync();
+                ActiveUser.MyEvents.Remove(eventToRemove);
+                eventToRemove.SpotsAvailable++;
+                await _context.SaveChangesAsync();
             }
-
-            string userId = _userManager.GetUserId(User);
-            ActiveUser = await _context.Users.Where(u => u.Id == userId).Include(u => u.MyEvents).FirstOrDefaultAsync();
-            Event eventToRemove = await _context.Events.Where(e => e.Id == id).FirstOrDefaultAsync();
-            ActiveUser.MyEvents.Remove(eventToRemove);
-            eventToRemove.SpotsAvailable++;
-            await _context.SaveChangesAsync();
+            catch
+            {
+                return RedirectToPage("./MyEvents", new { RemovingEventFailed = true });
+            }
 
             return Page();
         }
