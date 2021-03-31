@@ -17,6 +17,7 @@ namespace FunEvents.Data
         }
 
         public DbSet<Event> Events { get; set; }
+        public DbSet<Organizer> Organizers { get; set; }
 
         public async Task SeedDatabase(UserManager<ActiveUser> userManager)
         {

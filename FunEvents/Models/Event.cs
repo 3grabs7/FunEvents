@@ -16,7 +16,16 @@ namespace FunEvents.Models
         public int SpotsAvailable { get; set; }
 
         public List<ActiveUser> Attendees { get; set; }
-        //public Organizer Organizer { get; set; }
+        public Organizer Organizer { get; set; }
 
+    }
+
+    // Tillfällig klass
+    public class Organizer
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public ActiveUser ActiveUser { get; set; }
+        public List<Event> Events { get; set; }
     }
 }

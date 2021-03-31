@@ -2,3 +2,50 @@
 @model FunEvents.Pages.Events.CreateEventModel
 @{
 }
+
+<h1>Create New Event</h1>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="NewEvent.Title" class="control-label"></label>
+                <input asp-for="NewEvent.Title" class="form-control" />
+                <span asp-validation-for="NewEvent.Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NewEvent.Description" class="control-label"></label>
+                <input asp-for="NewEvent.Description" class="form-control" />
+                <span asp-validation-for="NewEvent.Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NewEvent.Place" class="control-label"></label>
+                <input asp-for="NewEvent.Place" class="form-control" />
+                <span asp-validation-for="NewEvent.Place" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NewEvent.Address" class="control-label"></label>
+                <input asp-for="NewEvent.Address" class="form-control" />
+                <span asp-validation-for="NewEvent.Address" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NewEvent.Date" class="control-label"></label>
+                <input asp-for="NewEvent.Date" class="form-control" />
+                <span asp-validation-for="NewEvent.Date" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NewEvent.SpotsAvailable" class="control-label"></label>
+                <input asp-for="NewEvent.SpotsAvailable" class="form-control" />
+                <span asp-validation-for="NewEvent.SpotsAvailable" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
