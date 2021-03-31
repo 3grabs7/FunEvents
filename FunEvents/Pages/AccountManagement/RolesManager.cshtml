@@ -1,0 +1,30 @@
+﻿@page
+@model FunEvents.Pages.AccountManagement.RolesManagerModel
+@{
+}
+
+<h1>Assign Roles Osv</h1>
+
+<ul>
+    @foreach (var user in Model.Users)
+    {
+        <li>
+            @user.UserName
+            <div>
+                @if (Model.IsOrganizer(user.Id).Result)
+                {
+                    <p>
+                        User is organizer
+                    </p>
+                }
+                else
+                {
+                    <form method="post" asp-route-id="@user.Id">
+                        <button type="submit">Make Organizer</button>
+                    </form>
+                }
+            </div>
+        </li>
+
+    }
+</ul>

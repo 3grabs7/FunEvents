@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FunEvents.Pages.Events
 {
+    [Authorize(Roles = "Admin, Organizer")]
     public class EditEventModel : PageModel
     {
         private readonly ApplicationDbContext _context;
