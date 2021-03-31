@@ -25,7 +25,7 @@ namespace FunEvents.Data
             base.OnModelCreating(builder);
         }
 
-
+        // Mock Users Password = "Password!123"
         public async Task SeedDatabase(UserManager<ActiveUser> userManager)
         {
             await Database.EnsureDeletedAsync();

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FunEvents.Data;
 using FunEvents.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -11,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FunEvents.Pages.AccountManagement
 {
+    [Authorize(Roles = "Admin")]
     public class RolesModel : PageModel
     {
         private readonly ApplicationDbContext _context;

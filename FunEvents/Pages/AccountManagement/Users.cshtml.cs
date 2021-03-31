@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FunEvents.Pages.AccountManagement
 {
-    [Authorize(Roles = "Administrator")]
+    [Authorize(Roles = "Admin")]
     public class ManageRolesModel : PageModel
     {
         private readonly ApplicationDbContext _context;
