@@ -10,4 +10,5 @@ namespace FunEvents.Models
     {
         public ICollection<Event> MyEvents { get; set; }
     }
+
 }

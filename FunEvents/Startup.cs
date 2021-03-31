@@ -1,4 +1,5 @@
 using FunEvents.Data;
+using FunEvents.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -11,6 +12,7 @@ using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace FunEvents
@@ -33,9 +35,23 @@ namespace FunEvents
 
             services.AddDatabaseDeveloperPageExceptionFilter();
 
-            services.AddDefaultIdentity<Models.ActiveUser>(options => options.SignIn.RequireConfirmedAccount = false)
+            services.AddDefaultIdentity<ActiveUser>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
             services.AddRazorPages();
+
+            // Inväntar bjaaaaaarne
+            //services.AddAuthorization(options =>
+            //{
+            //    options.AddPolicy("EventCreationRights", policy =>
+            //        policy.RequireRole("Administrator", "Organizer"));
+            //});
+
+            //services.AddAuthorization(options =>
+            //{
+            //    options.AddPolicy("AdministratorRights", policy =>
+            //    policy.RequireRole("Administrator"));
+            //});
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
