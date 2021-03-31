@@ -22,15 +22,58 @@ namespace FunEvents.Pages.Events
             _context = context;
             _userManager = userManager;
         }
+
+        [BindProperty]
         public ActiveUser ActiveUser { get; set; }
+        [BindProperty]
         public IList<Event> Events { get; set; }
-        public async Task<IActionResult> OnGet()
+        [BindProperty]
+        public Event Event { get; set; }
+
+        public async Task<IActionResult> OnGetAsync()
         {
             string userId = _userManager.GetUserId(User);
 
             Events = await _context.Events.Where(e => e.Organizer.ActiveUser.Id == userId).ToListAsync();
 
             return Page();
+        }
+
+
+        // Funkar inte som det ska ännu
+        public async Task<IActionResult> OnPostAsync(int? id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
+
+            Event = _context.Events.FirstOrDefault(m => m.Id == id);
+
+            _context.Attach(Event).State = EntityState.Modified;
+            
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                    if (!EventExists(Event.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }                
+            }
+
+            return RedirectToPage("./Index");
+        }
+
+        private bool EventExists(int id)
+        {
+            return _context.Events.Any(e => e.Id == id);
         }
     }
 }
