@@ -8,9 +8,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using FunEvents.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FunEvents.Pages.Events
 {
+    [Authorize]
     public class MyEventsModel : PageModel
     {
         private readonly ApplicationDbContext _context;

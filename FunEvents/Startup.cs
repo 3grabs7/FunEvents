@@ -33,7 +33,7 @@ namespace FunEvents
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddDefaultIdentity<ActiveUser>(options => options.SignIn.RequireConfirmedAccount = false)
+            services.AddDefaultIdentity<ActiveUser>()
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
