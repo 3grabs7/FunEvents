@@ -37,6 +37,8 @@ namespace FunEvents.Pages.Events
 
             Events = await _context.Events.Where(e => e.Organizer.ActiveUser.Id == userId).ToListAsync();
 
+            Event = await _context.Events.Where(e => e.Title == "Pajkastning").SingleOrDefaultAsync();
+
             return Page();
         }
 
@@ -44,32 +46,23 @@ namespace FunEvents.Pages.Events
         // Funkar inte som det ska ännu
         public async Task<IActionResult> OnPostAsync(int? id)
         {
-            if (!ModelState.IsValid)
+            var eventToUpdate = await _context.Events.FindAsync(id);
+
+            if (eventToUpdate == null)
             {
-                return Page();
+                return NotFound();
             }
 
-            Event = _context.Events.FirstOrDefault(m => m.Id == id);
-
-            _context.Attach(Event).State = EntityState.Modified;
-            
-            try
+            if (await TryUpdateModelAsync<Event>(
+                eventToUpdate,
+                "student",
+                s => s.Title, s => s.Description, s => s.Date, s => s.Place, s => s.Address, s => s.SpotsAvailable))
             {
                 await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                    if (!EventExists(Event.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }                
+                return RedirectToPage("./Index");
             }
 
-            return RedirectToPage("./Index");
+            return Page();
         }
 
         private bool EventExists(int id)

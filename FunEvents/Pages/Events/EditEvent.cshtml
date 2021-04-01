@@ -3,35 +3,89 @@
 @{
 }
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    Title
-                </th>
-                <th>
-                    Description
-                </th>
-                <th>
-                    Date
-                </th>
-                <th>
-                    Place
-                </th>
-                <th>
-                    Adress
-                </th>
-                <th>
-                    Spots Available
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
+<h1>Edit</h1>
 
-            @foreach (var item in Model.Events)
-            {
-                
+<h4>Event</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Event.Id" />
+            <div class="form-group">
+                <label asp-for="Event.Title" class="control-label"></label>
+                <input asp-for="Event.Title" class="form-control" />
+                <span asp-validation-for="Event.Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Event.Description" class="control-label"></label>
+                <input asp-for="Event.Description" class="form-control" />
+                <span asp-validation-for="Event.Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Event.Place" class="control-label"></label>
+                <input asp-for="Event.Place" class="form-control" />
+                <span asp-validation-for="Event.Place" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Event.Address" class="control-label"></label>
+                <input asp-for="Event.Address" class="form-control" />
+                <span asp-validation-for="Event.Address" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Event.Date" class="control-label"></label>
+                <input asp-for="Event.Date" class="form-control" />
+                <span asp-validation-for="Event.Date" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Event.SpotsAvailable" class="control-label"></label>
+                <input asp-for="Event.SpotsAvailable" class="form-control" />
+                <span asp-validation-for="Event.SpotsAvailable" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+
+@*<form method="post">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Title
+                    </th>
+                    <th>
+                        Description
+                    </th>
+                    <th>
+                        Date
+                    </th>
+                    <th>
+                        Place
+                    </th>
+                    <th>
+                        Adress
+                    </th>
+                    <th>
+                        Spots Available
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Events)
+                {
                     <tr>
                         <td>
                             <input asp-for="@item.Title" class="form-control" />
@@ -58,16 +112,15 @@
                             <span asp-validation-for="@item.SpotsAvailable" class="text-danger"></span>
                         </td>
                         <td>
-                            <form method="post">
-                                <input type="submit" value="Save" class="btn btn-success" asp-route-id="@item.Id" />
-                            </form>
+
+                            <input type="submit" value="Save" class="btn btn-success" asp-route-id="@item.Id" />
+
                         </td>
                         <td>
-                        <div class="btn btn-danger">Cancel Event</div>
+                            <div class="btn btn-danger">Cancel Event</div>
                         </td>
                     </tr>
-            
-                    }
-
+                }
             </tbody>
-    </table>
+        </table>
+    </form>*@
