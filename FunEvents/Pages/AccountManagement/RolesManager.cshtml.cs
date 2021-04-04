@@ -30,30 +30,45 @@ namespace FunEvents.Pages.AccountManagement
         }
 
         public IList<ActiveUser> Users { get; set; }
-        public ActiveUser ActiveUser { get; set; }
-        // Only need this if want several roles to choose from
+        public ActiveUser SelectedUser { get; set; }
+        // Only need this if we want several roles to choose from
         //public IdentityRole Role { get; set; }
-        // create OnPostADDASORGANIZERAsync method
-        // create OnPostREMOVEASORGANIZERAsync method
-        // shift between buttons with different form actions
-        public async Task<IActionResult> OnPostAsync(string id)
+        public async Task<IActionResult> OnPostAddAsync(string id)
         {
-            // Get user from list
-            ActiveUser = await _context.Users.Where(u => u.Id == id).FirstOrDefaultAsync();
-            // Get role we would like to assign 
+            SelectedUser = await _context.Users
+                .Where(u => u.Id == id)
+                .FirstOrDefaultAsync();
             // await _userManager.AddToRoleAsync(ActiveUser, Role.Name);
-            // for now we only need organizer so if user is selected, orginizer role is assigned
-            var result = await _userManager.AddToRoleAsync(ActiveUser, "Organizer");
+            await _userManager.AddToRoleAsync(SelectedUser, "Organizer");
             await _context.SaveChangesAsync();
-            return RedirectToPage("/AccountManagement/Users");
 
+            if (_userManager.GetUserId(User) == SelectedUser.Id)
+            {
+                await _userManager.UpdateSecurityStampAsync(SelectedUser);
+            }
+
+            return RedirectToPage("/AccountManagement/RolesManager");
+        }
+
+        public async Task<IActionResult> OnPostRemoveAsync(string id)
+        {
+            SelectedUser = await _context.Users
+                .Where(u => u.Id == id)
+                .FirstOrDefaultAsync();
+            var result = await _userManager.RemoveFromRoleAsync(SelectedUser, "Organizer");
+            await _context.SaveChangesAsync();
+
+            return RedirectToPage("/AccountManagement/RolesManager");
         }
 
         public async Task<bool> IsOrganizer(string id)
         {
-            IdentityRole role = await _context.Roles.Where(r => r.Name == "Organizer").FirstOrDefaultAsync();
+            IdentityRole role = await _context.Roles
+                .Where(r => r.Name == "Organizer")
+                .FirstOrDefaultAsync();
 
-            return await _context.UserRoles.Where(ur => ur.UserId == id && ur.RoleId == role.Id).FirstOrDefaultAsync() != default;
+            return await _context.UserRoles
+                .AnyAsync(ur => ur.UserId == id && ur.RoleId == role.Id);
         }
     }
 }

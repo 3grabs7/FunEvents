@@ -37,7 +37,8 @@ namespace FunEvents.Pages.Events
             EventToJoin.SpotsAvailable--;
             await _context.SaveChangesAsync();
 
-            return RedirectToPage("./MyEvents");
+            return Page();
+            //return RedirectToPage("./MyEvents");
         }
     }
 }
