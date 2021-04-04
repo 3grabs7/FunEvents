@@ -33,6 +33,9 @@ namespace FunEvents.Pages.AccountManagement
         public ActiveUser ActiveUser { get; set; }
         // Only need this if want several roles to choose from
         //public IdentityRole Role { get; set; }
+        // create OnPostADDASORGANIZERAsync method
+        // create OnPostREMOVEASORGANIZERAsync method
+        // shift between buttons with different form actions
         public async Task<IActionResult> OnPostAsync(string id)
         {
             // Get user from list

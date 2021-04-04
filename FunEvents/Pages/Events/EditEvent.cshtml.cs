@@ -42,31 +42,29 @@ namespace FunEvents.Pages.Events
 
 
         // Funkar inte som det ska ännu
-        public async Task<IActionResult> OnPostAsync(int? id)
+        public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            Event = _context.Events.FirstOrDefault(m => m.Id == id);
+            _context.AttachRange(Events);
 
-            _context.Attach(Event).State = EntityState.Modified;
-            
             try
             {
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                    if (!EventExists(Event.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }                
+                if (!EventExists(Event.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
             }
 
             return RedirectToPage("./Index");
