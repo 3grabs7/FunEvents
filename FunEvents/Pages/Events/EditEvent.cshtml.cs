@@ -37,8 +37,6 @@ namespace FunEvents.Pages.Events
 
             Events = await _context.Events.Where(e => e.Organizer.ActiveUser.Id == userId).ToListAsync();
 
-            Event = await _context.Events.Where(e => e.Title == "Pajkastning").SingleOrDefaultAsync();
-
             return Page();
         }
 
@@ -46,11 +44,9 @@ namespace FunEvents.Pages.Events
         // Funkar inte som det ska ännu
         public async Task<IActionResult> OnPostAsync()
         {
-            var eventToUpdate = await _context.Events.FindAsync(id);
-
-            if (eventToUpdate == null)
+            if (!ModelState.IsValid)
             {
-                return NotFound();
+                return Page();
             }
 
             _context.AttachRange(Events);
@@ -61,14 +57,14 @@ namespace FunEvents.Pages.Events
             }
             catch (DbUpdateConcurrencyException)
             {
-                    if (!EventExists(Event.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }                
+                //if (!EventExists(Events.Id))
+                //{
+                //    return NotFound();
+                //}
+                //else
+                //{
+                //    throw;
+                //}
             }
 
             return Page();
