@@ -42,14 +42,19 @@ namespace FunEvents.Pages.Events
 
 
         // Funkar inte som det ska ännu
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(int? id)
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            _context.AttachRange(Events);
+            Event eventToUpdate = await _context.Events.Where(e => e.Id == id).FirstOrDefaultAsync();
+
+            bool hasUpdateSucceeded = await TryUpdateModelAsync<Event>(eventToUpdate, "student",
+                s => s.Title, s => s.Description, s => s.Date, s => s.Place, s => s.Address, s => s.SpotsAvailable);
+
+            //_context.AttachRange(Events);
 
             try
             {
@@ -66,7 +71,6 @@ namespace FunEvents.Pages.Events
                 //    throw;
                 //}
             }
-
             return Page();
         }
 
