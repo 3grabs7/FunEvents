@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using System.Text.RegularExpressions;
 
 namespace FunEvents.Pages.Events
 {
@@ -31,7 +32,7 @@ namespace FunEvents.Pages.Events
         [BindProperty(SupportsGet = true)]
         public string SortBy { get; set; }
         public int Count { get; set; }
-        public int PageSize { get; set; } = 5;
+        public int PageSize { get; set; } = 9;
 
         public int TotalPages => (int)Math.Ceiling(decimal.Divide(Count, PageSize));
 
@@ -86,5 +87,14 @@ namespace FunEvents.Pages.Events
             List<Event> data = await _context.Events.ToListAsync();
             return data.Count;
         }
+
+        public string CondenseDescription(string input)
+        {
+            string[] splitInput = Regex.Split(input, @"[!?.]");
+            return splitInput.Length == 1 ? 
+                $"{splitInput[0]}." : 
+                $"{splitInput[0]}...";
+        }
+
     }
 }

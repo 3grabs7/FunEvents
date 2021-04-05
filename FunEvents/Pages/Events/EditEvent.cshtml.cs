@@ -44,7 +44,7 @@ namespace FunEvents.Pages.Events
 
 
         // Funkar inte som det ska ännu
-        public async Task<IActionResult> OnPostAsync(int? id)
+        public async Task<IActionResult> OnPostAsync()
         {
             var eventToUpdate = await _context.Events.FindAsync(id);
 
@@ -53,13 +53,22 @@ namespace FunEvents.Pages.Events
                 return NotFound();
             }
 
-            if (await TryUpdateModelAsync<Event>(
-                eventToUpdate,
-                "student",
-                s => s.Title, s => s.Description, s => s.Date, s => s.Place, s => s.Address, s => s.SpotsAvailable))
+            _context.AttachRange(Events);
+
+            try
             {
                 await _context.SaveChangesAsync();
-                return RedirectToPage("./Index");
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                    if (!EventExists(Event.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }                
             }
 
             return Page();
