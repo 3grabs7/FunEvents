@@ -15,10 +15,10 @@ namespace FunEvents.Pages.Events
     public class EditTemplateModel : PageModel
     {
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<ActiveUser> _userManager;
+        private readonly UserManager<AppUser> _userManager;
 
         public EditTemplateModel(ApplicationDbContext context,
-             UserManager<ActiveUser> userManager)
+             UserManager<AppUser> userManager)
         {
             _context = context;
             _userManager = userManager;
@@ -34,7 +34,7 @@ namespace FunEvents.Pages.Events
         {
             string userId = _userManager.GetUserId(User);
 
-            Events = await _context.Events.Where(e => e.Organizer.ActiveUser.Id == userId).ToListAsync();
+            Events = await _context.Events.Where(e => e.Organizer.Id == userId).ToListAsync();
 
             return Page();
         }
