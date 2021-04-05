@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace FunEvents.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<ActiveUser>
+    public class ApplicationDbContext : IdentityDbContext<AppUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -18,7 +18,6 @@ namespace FunEvents.Data
         }
 
         public DbSet<Event> Events { get; set; }
-        public DbSet<Organizer> Organizers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -26,14 +25,14 @@ namespace FunEvents.Data
         }
 
         // Mock Users Password = "Password!123"
-        public async Task SeedDatabase(UserManager<ActiveUser> userManager)
+        public async Task SeedDatabase(UserManager<AppUser> userManager)
         {
             await Database.EnsureDeletedAsync();
             await Database.EnsureCreatedAsync();
 
-            var hasher = new PasswordHasher<ActiveUser>();
-            var user = new ActiveUser();
-            ActiveUser adminUser = new ActiveUser()
+            var hasher = new PasswordHasher<AppUser>();
+            var user = new AppUser();
+            AppUser adminUser = new AppUser()
             {
                 Email = "admin@admin.com",
                 NormalizedEmail = "ADMIN@ADMIN.COM",
@@ -47,12 +46,12 @@ namespace FunEvents.Data
                 SecurityStamp = Guid.NewGuid().ToString()
             };
 
-            var password = new PasswordHasher<ActiveUser>();
+            var password = new PasswordHasher<AppUser>();
             var hashed = password.HashPassword(adminUser, "Password5%");
 
             adminUser.PasswordHash = hashed;
 
-            var userStore = new UserStore<ActiveUser>(this);
+            var userStore = new UserStore<AppUser>(this);
             var result = userStore.CreateAsync(adminUser);
 
             string[] roles = new string[] { "Admin", "Organizer" };

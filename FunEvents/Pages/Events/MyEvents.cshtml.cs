@@ -16,12 +16,12 @@ namespace FunEvents.Pages.Events
     public class MyEventsModel : PageModel
     {
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<ActiveUser> _userManager;
-        private readonly SignInManager<ActiveUser> _signInManager;
+        private readonly UserManager<AppUser> _userManager;
+        private readonly SignInManager<AppUser> _signInManager;
 
         public MyEventsModel(ApplicationDbContext context,
-           UserManager<ActiveUser> userManager,
-           SignInManager<ActiveUser> signInManager)
+           UserManager<AppUser> userManager,
+           SignInManager<AppUser> signInManager)
         {
             _context = context;
             _userManager = userManager;
@@ -29,7 +29,7 @@ namespace FunEvents.Pages.Events
         }
 
         [BindProperty]
-        public ActiveUser ActiveUser { get; set; }
+        public AppUser AppUser { get; set; }
         public List<Event> Events { get; set; }
         [BindProperty(SupportsGet = true)]
         public bool RemovingEventFailed { get; set; }
@@ -38,9 +38,9 @@ namespace FunEvents.Pages.Events
         {
             string userId = _userManager.GetUserId(User);
 
-            ActiveUser = await _context.Users.Where(u => u.Id == userId).Include(u => u.MyEvents).FirstOrDefaultAsync();
+            AppUser = await _context.Users.Where(u => u.Id == userId).Include(u => u.JoinedEvents).FirstOrDefaultAsync();
 
-            Events = await _context.Events.Where(e => e.Attendees.Contains(ActiveUser)).ToListAsync();
+            Events = await _context.Events.Where(e => e.Attendees.Contains(AppUser)).ToListAsync();
         }
 
         public async Task<IActionResult> OnPostAsync(int? id)
@@ -48,15 +48,15 @@ namespace FunEvents.Pages.Events
             try
             {
                 string userId = _userManager.GetUserId(User);
-                ActiveUser = await _context.Users.Where(u => u.Id == userId).Include(u => u.MyEvents).FirstOrDefaultAsync();
+                AppUser = await _context.Users.Where(u => u.Id == userId).Include(u => u.JoinedEvents).FirstOrDefaultAsync();
                 Event eventToRemove = await _context.Events.Where(e => e.Id == id).FirstOrDefaultAsync();
-                ActiveUser.MyEvents.Remove(eventToRemove);
+                AppUser.JoinedEvents.Remove(eventToRemove);
                 eventToRemove.SpotsAvailable++;
                 await _context.SaveChangesAsync();
             }
             catch
             {
-                return RedirectToPage("./MyEvents", new { RemovingEventFailed = true });
+                return RedirectToPage("./JoinedEvents", new { RemovingEventFailed = true });
             }
 
             return Page();

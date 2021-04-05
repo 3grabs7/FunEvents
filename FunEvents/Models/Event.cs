@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -15,17 +16,19 @@ namespace FunEvents.Models
         public DateTime Date { get; set; }
         public int SpotsAvailable { get; set; }
 
-        public List<ActiveUser> Attendees { get; set; }
-        public Organizer Organizer { get; set; }
+        [InverseProperty("HostedEvents")]
+        public AppUser Organizer { get; set; }
 
+        [InverseProperty("JoinedEvents")]
+        public ICollection<AppUser> Attendees { get; set; }
     }
 
-    // Tillfällig klass -> Byt ut mot roles senare.
-    public class Organizer
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public ActiveUser ActiveUser { get; set; }
-        public List<Event> Events { get; set; }
-    }
+    // Tillfällig klass -> Ta bort när nya modellen funkar
+    //public class Organizer
+    //{
+    //    public int Id { get; set; }
+    //    public string Name { get; set; }
+    //    public AppUser AppUser { get; set; }
+    //    public List<Event> Events { get; set; }
+    //}
 }

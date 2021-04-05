@@ -16,10 +16,10 @@ namespace FunEvents.Pages.AccountManagement
     public class RolesModel : PageModel
     {
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<ActiveUser> _userManager;
+        private readonly UserManager<AppUser> _userManager;
 
         public RolesModel(ApplicationDbContext context,
-            UserManager<ActiveUser> userManager)
+            UserManager<AppUser> userManager)
         {
             _context = context;
             _userManager = userManager;

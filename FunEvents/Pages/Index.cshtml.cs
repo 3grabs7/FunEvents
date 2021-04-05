@@ -15,13 +15,13 @@ namespace FunEvents.Pages
     {
         private readonly ILogger<IndexModel> _logger;
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<ActiveUser> _userManager;
-        private readonly SignInManager<ActiveUser> _signInManager;
+        private readonly UserManager<AppUser> _userManager;
+        private readonly SignInManager<AppUser> _signInManager;
 
         public IndexModel(ILogger<IndexModel> logger,
             ApplicationDbContext context,
-            UserManager<ActiveUser> userManager,
-            SignInManager<ActiveUser> signInManager)
+            UserManager<AppUser> userManager,
+            SignInManager<AppUser> signInManager)
         {
             _logger = logger;
             _context = context;

@@ -16,16 +16,16 @@ namespace FunEvents.Pages.Events
     public class EditEventModel : PageModel
     {
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<ActiveUser> _userManager;
+        private readonly UserManager<AppUser> _userManager;
 
-        public EditEventModel(ApplicationDbContext context, UserManager<ActiveUser> userManager)
+        public EditEventModel(ApplicationDbContext context, UserManager<AppUser> userManager)
         {
             _context = context;
             _userManager = userManager;
         }
 
         [BindProperty]
-        public ActiveUser ActiveUser { get; set; }
+        public AppUser AppUser { get; set; }
         [BindProperty]
         public IList<Event> Events { get; set; }
         [BindProperty]
@@ -34,8 +34,7 @@ namespace FunEvents.Pages.Events
         public async Task<IActionResult> OnGetAsync()
         {
             string userId = _userManager.GetUserId(User);
-
-            Events = await _context.Events.Where(e => e.Organizer.ActiveUser.Id == userId).ToListAsync();
+            Events = await _context.Events.Where(e => e.Organizer.Id == userId).ToListAsync();
 
             return Page();
         }
@@ -55,16 +54,9 @@ namespace FunEvents.Pages.Events
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception exception)
             {
-                //if (!EventExists(Events.Id))
-                //{
-                //    return NotFound();
-                //}
-                //else
-                //{
-                //    throw;
-                //}
+                Console.WriteLine(exception.Message); // Tillfällig lösning. Bör loggas korrekt
             }
 
             return Page();

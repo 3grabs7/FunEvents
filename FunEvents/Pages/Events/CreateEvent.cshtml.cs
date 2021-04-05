@@ -16,12 +16,12 @@ namespace FunEvents.Pages.Events
     public class CreateEventModel : PageModel
     {
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<ActiveUser> _userManager;
-        private readonly SignInManager<ActiveUser> _signInManager;
+        private readonly UserManager<AppUser> _userManager;
+        private readonly SignInManager<AppUser> _signInManager;
 
         public CreateEventModel(ApplicationDbContext context,
-           UserManager<ActiveUser> userManager,
-           SignInManager<ActiveUser> signInManager)
+           UserManager<AppUser> userManager,
+           SignInManager<AppUser> signInManager)
         {
             _context = context;
             _userManager = userManager;
@@ -38,14 +38,7 @@ namespace FunEvents.Pages.Events
                 return Page();
             }
 
-            string organizerId = _userManager.GetUserId(User);
-            Organizer TempOrganizer = new Organizer()
-            {
-                Name = "Default",
-                ActiveUser = await _context.Users.Where(u => u.Id == organizerId).FirstOrDefaultAsync()
-            };
-
-            NewEvent.Organizer = TempOrganizer;
+            NewEvent.Organizer = _context.Users.Find(_userManager.GetUserId(User));
             _context.Events.Add(NewEvent);
 
             await _context.SaveChangesAsync();

@@ -59,7 +59,7 @@
                     <p>@Html.DisplayFor(modelItem => item.Description)</p>
                     <p>@Html.DisplayFor(modelItem => item.Place)</p>
                     <p>@Html.DisplayFor(modelItem => item.Date)</p>
-                    @if (item.Attendees?.Contains(Model.ActiveUser) ?? false)
+                    @if (item.Attendees?.Contains(Model.AppUser) ?? false)
                     {
                         <a class="btn btn-primary disabled">Already Joined 👺</a>
                     }

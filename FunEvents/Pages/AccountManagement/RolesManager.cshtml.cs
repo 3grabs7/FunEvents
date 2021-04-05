@@ -16,10 +16,10 @@ namespace FunEvents.Pages.AccountManagement
     public class RolesManagerModel : PageModel
     {
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<ActiveUser> _userManager;
+        private readonly UserManager<AppUser> _userManager;
 
         public RolesManagerModel(ApplicationDbContext context,
-            UserManager<ActiveUser> userManager)
+            UserManager<AppUser> userManager)
         {
             _context = context;
             _userManager = userManager;
@@ -29,8 +29,8 @@ namespace FunEvents.Pages.AccountManagement
             Users = await _context.Users.ToListAsync();
         }
 
-        public IList<ActiveUser> Users { get; set; }
-        public ActiveUser SelectedUser { get; set; }
+        public IList<AppUser> Users { get; set; }
+        public AppUser SelectedUser { get; set; }
         // Only need this if we want several roles to choose from
         //public IdentityRole Role { get; set; }
         public async Task<IActionResult> OnPostAddAsync(string id)
@@ -38,7 +38,7 @@ namespace FunEvents.Pages.AccountManagement
             SelectedUser = await _context.Users
                 .Where(u => u.Id == id)
                 .FirstOrDefaultAsync();
-            // await _userManager.AddToRoleAsync(ActiveUser, Role.Name);
+            // await _userManager.AddToRoleAsync(AppUser, Role.Name);
             await _userManager.AddToRoleAsync(SelectedUser, "Organizer");
             await _context.SaveChangesAsync();
 

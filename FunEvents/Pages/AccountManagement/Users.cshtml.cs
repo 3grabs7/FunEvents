@@ -16,23 +16,23 @@ namespace FunEvents.Pages.AccountManagement
     public class ManageRolesModel : PageModel
     {
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<ActiveUser> _userManager;
+        private readonly UserManager<AppUser> _userManager;
 
         public ManageRolesModel(ApplicationDbContext context,
-            UserManager<ActiveUser> userManager)
+            UserManager<AppUser> userManager)
         {
             _context = context;
             _userManager = userManager;
         }
 
-        public ActiveUser ActiveUser { get; set; }
-        public IList<ActiveUser> Users { get; set; }
+        public AppUser AppUser { get; set; }
+        public IList<AppUser> Users { get; set; }
 
         public async Task<IActionResult> OnGet()
         {
             string userId = _userManager.GetUserId(User);
 
-            ActiveUser = await _context.Users.Where(u => u.Id == userId).SingleOrDefaultAsync();
+            AppUser = await _context.Users.Where(u => u.Id == userId).SingleOrDefaultAsync();
             Users = await _context.Users.ToListAsync();
 
             return Page();

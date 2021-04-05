@@ -18,10 +18,10 @@ namespace FunEvents.Pages.Events
     public class IndexModel : PageModel
     {
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<ActiveUser> _userManager;
+        private readonly UserManager<AppUser> _userManager;
 
         public IndexModel(ApplicationDbContext context,
-            UserManager<ActiveUser> userManager)
+            UserManager<AppUser> userManager)
         {
             _context = context;
             _userManager = userManager;
@@ -38,7 +38,7 @@ namespace FunEvents.Pages.Events
 
         public IList<Event> Events { get; set; }
 
-        public ActiveUser ActiveUser { get; set; }
+        public AppUser AppUser { get; set; }
 
         public async Task OnGetAsync()
         {
@@ -54,7 +54,7 @@ namespace FunEvents.Pages.Events
 
             string userId = _userManager.GetUserId(User);
 
-            ActiveUser = await _context.Users.Where(u => u.Id == userId).Include(u => u.MyEvents).FirstOrDefaultAsync();
+            AppUser = await _context.Users.Where(u => u.Id == userId).Include(u => u.JoinedEvents).FirstOrDefaultAsync();
         }
 
         public async Task<List<Event>> GetPaginatedResult(int currentPage, int pageSize)

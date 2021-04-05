@@ -11,7 +11,7 @@
     </div>
 }
 
-<h1>@Model.ActiveUser.UserName</h1>
+<h1>@Model.AppUser.UserName</h1>
 <p>The events you've joined are displayed here!</p>
 
 <table class="table">
@@ -30,7 +30,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.ActiveUser.MyEvents)
+        @foreach (var item in Model.AppUser.JoinedEvents)
         {
             <tr>
                 <td>
