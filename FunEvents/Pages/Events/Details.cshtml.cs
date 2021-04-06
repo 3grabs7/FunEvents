@@ -28,17 +28,36 @@ namespace FunEvents.Pages.Events
 
         public AppUser AppUser { get; set; }
         public Event EventToJoin { get; set; }
-        public async Task<IActionResult> OnGetAsync(int? id)
+
+        public async Task OnGetAsync(int? id)
+        {
+            EventToJoin = await _context.Events.FindAsync(id);
+        }
+
+        public async Task<IActionResult> OnPostAsync()
         {
             string userId = _userManager.GetUserId(User);
             AppUser = await _context.Users.Where(u => u.Id == userId).Include(u => u.JoinedEvents).FirstOrDefaultAsync();
-            EventToJoin = await _context.Events.Where(e => e.Id == id).FirstOrDefaultAsync();
+
             AppUser.JoinedEvents.Add(EventToJoin);
+
             EventToJoin.SpotsAvailable--;
             await _context.SaveChangesAsync();
 
             return Page();
-            //return RedirectToPage("./JoinedEvents");
+        }
+
+        public int AttendeesCount() => _context.Events
+            .Include(e => e.Attendees)
+            .Where(e => e.Id == EventToJoin.Id)
+            .First()
+            .Attendees.Count;
+
+        public string GetAttendeeInfo()
+        {
+
+
+            return "";
         }
     }
 }
