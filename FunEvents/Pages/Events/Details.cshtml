@@ -13,7 +13,7 @@
 
 @if (Model.FailedToJoinEvent)
 {
-    <div class="alert alert-success" role="alert">
+    <div class="alert alert-danger" role="alert">
         Something went wrong, please try again.
     </div>
 }
@@ -34,21 +34,27 @@
                     <h5 class="card-title">About</h5>
                     <p class="card-text">@Model.EventToJoin.Description</p>
                     <form method="post">
-                        @if (Model.EventToJoin.Attendees?.Contains(Model.AppUser) ?? false)
+                        @if (User.Identity.IsAuthenticated)
                         {
-                            <a class="btn btn-primary disabled">Already Joined 👺</a>
-                        }
-                        else
-                        {
-                            if (Model.EventToJoin.SpotsAvailable > 0)
+                            @if (Model.EventToJoin.Attendees?.Contains(Model.AppUser) ?? false)
                             {
-                                <button type="submit" class="btn btn-primary">Join</button>
+                                <a class="btn btn-primary disabled">Already Joined 👺</a>
                             }
                             else
                             {
-                                <button class="btn btn-primary disabled" disabled>Fully Booked 🥶</button>
+                                if (Model.EventToJoin.SpotsAvailable > 0)
+                                {
+                                    <button type="submit" class="btn btn-primary">Join</button>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-primary disabled" disabled>Fully Booked 🥶</button>
+                                }
                             }
-
+                        }
+                        else
+                        {
+                            <a asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="~/Events/Details?id=@Model.EventToJoin.Id" class="btn btn-success">Join</a>
                         }
                     </form>
                 </div>

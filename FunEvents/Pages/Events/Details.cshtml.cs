@@ -45,13 +45,6 @@ namespace FunEvents.Pages.Events
             FailedToJoinEvent = failedToJoinEvent ?? false;
 
             EventToJoin = await _context.Events.FindAsync(id);
-            string userId = _userManager.GetUserId(User);
-            AppUser = await _context.Users.Where(u => u.Id == userId).Include(u => u.JoinedEvents).FirstOrDefaultAsync();
-
-            if (AppUser == default)
-            {
-                return RedirectToPage("/Errors/NotFound");
-            }
 
             Attendees = GetAttendeeInfo();
 
