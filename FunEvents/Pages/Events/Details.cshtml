@@ -3,6 +3,7 @@
 @{
 }
 
+
 <div class="container">
     <div class="card w-100">
         <div class="card-header">
@@ -15,13 +16,21 @@
                     <h5 class="card-title">About</h5>
                     <p class="card-text">@Model.EventToJoin.Description</p>
                     <form method="post">
-                        @if (Model.EventToJoin.SpotsAvailable > 0)
+                        @if (Model.EventToJoin.Attendees?.Contains(Model.AppUser) ?? false)
                         {
-                            <button type="submit" class="btn btn-primary">Join</button>
+                            <a class="btn btn-primary disabled">Already Joined 👺</a>
                         }
                         else
                         {
-                            <button class="btn btn-primary disabled" disabled>Fully Booked 🥶</button>
+                            if (Model.EventToJoin.SpotsAvailable > 0)
+                            {
+                                <button type="submit" class="btn btn-primary">Join</button>
+                            }
+                            else
+                            {
+                                <button class="btn btn-primary disabled" disabled>Fully Booked 🥶</button>
+                            }
+
                         }
                     </form>
                 </div>
@@ -48,9 +57,10 @@
                         <tr>
                             <td>Attendees</td>
                             <td>
-                                <button type="button" class="btn btn-lg btn-danger" data-bs-toggle="popover" title="Popover title" data-bs-content="@(Model.GetAttendeeInfo())">
+                                <a href="#"
+                                   title="@(Model.GetAttendeeInfo())">
                                     @Model.AttendeesCount()
-                                </button>
+                                </a>
                             </td>
                         </tr>
                     </tbody>
@@ -59,7 +69,7 @@
         </div>
         <div class="card-footer">
             <p class="text-right">
-                Find more events from this Organizer <a href="#" class="btn btn-primary">🎯</a>
+                Find more events from this Organizer <a href="" class="btn btn-primary">🎯</a>
             </p>
         </div>
     </div>

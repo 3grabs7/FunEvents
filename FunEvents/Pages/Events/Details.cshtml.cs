@@ -26,38 +26,48 @@ namespace FunEvents.Pages.Events
             _signInManager = signInManager;
         }
 
-        public AppUser AppUser { get; set; }
         public Event EventToJoin { get; set; }
+        public AppUser AppUser { get; set; }
 
         public async Task OnGetAsync(int? id)
         {
             EventToJoin = await _context.Events.FindAsync(id);
-        }
-
-        public async Task<IActionResult> OnPostAsync()
-        {
             string userId = _userManager.GetUserId(User);
             AppUser = await _context.Users.Where(u => u.Id == userId).Include(u => u.JoinedEvents).FirstOrDefaultAsync();
+        }
 
-            AppUser.JoinedEvents.Add(EventToJoin);
+        public async Task<IActionResult> OnPostAsync(int id)
+        {
+            EventToJoin = await _context.Events.FindAsync(id);
+            string userId = _userManager.GetUserId(User);
+            AppUser appUser = await _context.Users.Where(u => u.Id == userId).Include(u => u.JoinedEvents).FirstOrDefaultAsync();
 
+            appUser.JoinedEvents.Add(EventToJoin);
             EventToJoin.SpotsAvailable--;
+
             await _context.SaveChangesAsync();
 
-            return Page();
+            return RedirectToPage("/Events/Details", new { id = id });
         }
 
         public int AttendeesCount() => _context.Events
             .Include(e => e.Attendees)
             .Where(e => e.Id == EventToJoin.Id)
-            .First()
-            .Attendees.Count;
+            .First().Attendees.Count;
 
         public string GetAttendeeInfo()
         {
+            var attendees = _context.Events
+                .Include(e => e.Attendees)
+                .Where(e => e.Id == EventToJoin.Id)
+                .First().Attendees;
 
+            string output = String.Join('\n', attendees?.Select(a => a.UserName)
+                ?? new List<string> { "Couldn't Load Users" });
 
-            return "";
+            return output;
         }
+
+
     }
 }

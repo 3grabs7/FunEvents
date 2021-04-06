@@ -35,9 +35,9 @@
                                 <a class="nav-link text-dark" asp-area="" asp-page="/Events/MyEvents">My Events</a>
                             </li>
                             @if (_userManager.IsInRoleAsync(_context.Users
-                                 .Where(u=>u.Id == _userManager.GetUserId(User))
-                                 .First()
-                                 , "Organizer").Result)
+                        .Where(u => u.Id == _userManager.GetUserId(User))
+                        .First()
+                        , "Organizer").Result)
                             {
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-page="/Events/CreateEvent">Create Events</a>
@@ -75,6 +75,7 @@
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
