@@ -4,10 +4,17 @@
     ViewData["Title"] = "Index";
 }
 
-@if (Model.RemovingEventFailed)
+@if (Model?.RemovingEventFailed ?? false)
 {
     <div class="alert alert-warning" role="alert">
         Something went wrong trying to remove the event. Please try again later.
+    </div>
+}
+
+@if (Model?.RemovingEventSuccess ?? false)
+{
+    <div class="alert alert-success" role="alert">
+        Bye Bye Event, it's cozier at home anyway.'
     </div>
 }
 
@@ -44,7 +51,7 @@
                 </td>
                 <td>
                     <form method="post">
-                        <input type="submit" class="btn-outline-danger" value="Remove" asp-route-id="@null" />
+                        <input type="submit" class="btn-outline-danger" value="Remove" asp-route-id="@item.Id" />
                     </form>
                 </td>
             </tr>

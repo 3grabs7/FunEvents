@@ -31,16 +31,38 @@ namespace FunEvents.Pages.Events
         [BindProperty]
         public AppUser AppUser { get; set; }
         public List<Event> Events { get; set; }
-        [BindProperty(SupportsGet = true)]
-        public bool RemovingEventFailed { get; set; }
 
-        public async Task OnGetAsync()
+        [BindProperty]
+        public bool? RemovingEventFailed { get; set; }
+
+        [BindProperty]
+        public bool? RemovingEventSuccess { get; set; }
+
+        public async Task OnGetAsync(
+            bool? removingEventFailed,
+            bool? removingEventSuccess)
         {
+            if (removingEventFailed != null)
+            {
+                RemovingEventFailed = removingEventFailed;
+            }
+
+            if (removingEventSuccess != null)
+            {
+                RemovingEventSuccess = removingEventSuccess;
+            }
+
             string userId = _userManager.GetUserId(User);
 
-            AppUser = await _context.Users.Where(u => u.Id == userId).Include(u => u.JoinedEvents).FirstOrDefaultAsync();
+            AppUser = await _context.Users
+                .Where(u => u.Id == userId)
+                .Include(u => u.JoinedEvents)
+                .FirstOrDefaultAsync();
 
-            Events = await _context.Events.Where(e => e.Attendees.Contains(AppUser)).ToListAsync();
+            Events = await _context.Events
+                .Where(e => e.Attendees
+                .Contains(AppUser))
+                .ToListAsync();
         }
 
         public async Task<IActionResult> OnPostAsync(int? id)
@@ -48,18 +70,26 @@ namespace FunEvents.Pages.Events
             try
             {
                 string userId = _userManager.GetUserId(User);
-                AppUser = await _context.Users.Where(u => u.Id == userId).Include(u => u.JoinedEvents).FirstOrDefaultAsync();
-                Event eventToRemove = await _context.Events.Where(e => e.Id == id).FirstOrDefaultAsync();
+                AppUser = await _context.Users
+                    .Where(u => u.Id == userId)
+                    .Include(u => u.JoinedEvents)
+                    .FirstOrDefaultAsync();
+
+                Event eventToRemove = await _context.Events
+                    .Where(e => e.Id == id)
+                    .FirstOrDefaultAsync();
+
                 AppUser.JoinedEvents.Remove(eventToRemove);
                 eventToRemove.SpotsAvailable++;
+
                 await _context.SaveChangesAsync();
             }
             catch
             {
-                return RedirectToPage("./JoinedEvents", new { RemovingEventFailed = true });
+                return RedirectToPage("/Events/MyEvents", new { RemovingEventFailed = true });
             }
 
-            return Page();
+            return RedirectToPage("/Events/MyEvents", new { RemovingEventSuccess = true });
         }
     }
 }
