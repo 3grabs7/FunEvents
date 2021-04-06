@@ -38,12 +38,11 @@ namespace FunEvents.Pages.Events
             bool? removingEventFailed,
             bool? removingEventSucceeded)
         {
-
+            // Check if page was loaded with any prompts to display alerts
             RemovingEventFailed = removingEventFailed ?? false;
             RemovingEventSucceeded = removingEventSucceeded ?? false;
 
             string userId = _userManager.GetUserId(User);
-
             AppUser = await _context.Users
                 .Where(u => u.Id == userId)
                 .Include(u => u.JoinedEvents)

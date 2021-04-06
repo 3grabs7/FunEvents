@@ -15,6 +15,8 @@ namespace FunEvents.Models
         public string Place { get; set; }
         public string Address { get; set; }
         public DateTime Date { get; set; }
+        [Display(Name = "Created")]
+        public DateTime CreatedAt { get; set; }
         public int SpotsAvailable { get; set; }
 
         [InverseProperty("HostedEvents")]

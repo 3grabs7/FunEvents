@@ -31,6 +31,7 @@ namespace FunEvents.Pages.Events
             if (String.IsNullOrWhiteSpace(id))
             {
                 // Post alert about organizer not having a page set up yet
+                // (Events are seeded without organizers)
                 return NotFound();
             }
 

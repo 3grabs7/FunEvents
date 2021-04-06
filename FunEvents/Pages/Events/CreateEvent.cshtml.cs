@@ -38,8 +38,9 @@ namespace FunEvents.Pages.Events
                 return Page();
             }
 
-            NewEvent.Organizer = _context.Users.Find(_userManager.GetUserId(User));
-            _context.Events.Add(NewEvent);
+            NewEvent.Organizer = await _context.Users.FindAsync(_userManager.GetUserId(User));
+            NewEvent.CreatedAt = DateTime.Now;
+            await _context.Events.AddAsync(NewEvent);
 
             await _context.SaveChangesAsync();
 

@@ -62,7 +62,7 @@ namespace FunEvents.Pages.Events
         public async Task<List<Event>> GetPaginatedResult(int currentPage, int pageSize)
         {
             IList<Event> data = await _context.Events.ToListAsync();
-            return data.OrderBy(d => d.Id)
+            return data.OrderBy(d => d?.CreatedAt)
                 .Skip((currentPage - 1) * pageSize)
                 .Take(pageSize)
                 .ToList();

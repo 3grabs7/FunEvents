@@ -43,6 +43,7 @@ namespace FunEvents.Pages.Events
                 return RedirectToPage("/Errors/NotFound");
             }
 
+            // Check if page was loaded with any prompts to display alerts
             SucceededToJoinEvent = succeededToJoinEvent ?? false;
             FailedToJoinEvent = failedToJoinEvent ?? false;
 
