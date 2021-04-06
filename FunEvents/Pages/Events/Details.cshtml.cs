@@ -30,6 +30,7 @@ namespace FunEvents.Pages.Events
         public AppUser AppUser { get; set; }
         public bool SucceededToJoinEvent { get; set; }
         public bool FailedToJoinEvent { get; set; }
+        public List<string> Attendees { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id,
             bool? succeededToJoinEvent,
@@ -51,6 +52,8 @@ namespace FunEvents.Pages.Events
             {
                 return RedirectToPage("/Errors/NotFound");
             }
+
+            Attendees = GetAttendeeInfo();
 
             return Page();
         }
@@ -88,15 +91,14 @@ namespace FunEvents.Pages.Events
             ?.First().Attendees.Count
             ?? 0;
 
-        public string GetAttendeeInfo()
+        public List<string> GetAttendeeInfo()
         {
             var attendees = _context.Events
                 .Include(e => e.Attendees)
                 .Where(e => e.Id == EventToJoin.Id)
                 .First().Attendees;
 
-            string output = String.Join('\n', attendees?.Select(a => a.UserName)
-                ?? new List<string> { "Couldn't Load Users" });
+            List<string> output = attendees?.Select(a => a.UserName).ToList() ?? new List<string> { "Couldn't Load Users" };
 
             return output;
         }

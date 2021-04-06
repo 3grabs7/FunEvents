@@ -2,13 +2,15 @@
 @model FunEvents.Pages.Events.OrganizerPageModel
 @{
 }
-
+<p>@Model.Organizer.UserName</p>
+<p>@Model.Organizer.Email</p>
+<p>@Model.Organizer.PhoneNumber</p>
 <table class="table">
     <thead>
         <tr>
-            <th>@Model.Organizer.UserName</th>
-            <th>@Model.Organizer.Email</th>
-            <th>@Model.Organizer.PhoneNumber</th>
+            <th>Title</th>
+            <th>Place</th>
+            <th>Date</th>
             <th></th>
         </tr>
     </thead>

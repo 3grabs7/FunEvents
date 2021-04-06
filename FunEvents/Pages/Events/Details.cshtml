@@ -75,10 +75,14 @@
                         <tr>
                             <td>Attendees</td>
                             <td>
-                                <a href="#"
-                                   title="@(Model.GetAttendeeInfo())">
-                                    @Model.AttendeesCount()
-                                </a>
+                                @for (int i = 0; i < 3; i++)
+                                {
+                                    <p>@(Model.Attendees[i])</p>
+                                }
+                                @if (Model.Attendees.Count > 3)
+                                {
+                                    <p>and @(Model.Attendees.Count - 3) others</p>
+                                }
                             </td>
                         </tr>
                     </tbody>

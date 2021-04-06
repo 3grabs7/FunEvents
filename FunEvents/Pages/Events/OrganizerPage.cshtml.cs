@@ -37,7 +37,8 @@ namespace FunEvents.Pages.Events
             Organizer = await _context.Users.FindAsync(id);
 
             Events = await _context.Events
-                .Where(e => e.Organizer.Id == id).ToListAsync();
+                .Where(e => e.Organizer.Id == id)
+                .ToListAsync();
 
             return Page();
         }
