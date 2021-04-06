@@ -37,7 +37,7 @@ namespace FunEvents.Pages.Events
         public async Task<IActionResult> OnGetAsync()
         {
             string userId = _userManager.GetUserId(User);
-            Events = await _context.Events.Where(e => e.Organizer.Id == userId).ToListAsync();
+            Events = await _context.Events.Include(e => e.Organizer).Where(e => e.Organizer.Id == userId).ToListAsync();
 
             return Page();
         }
@@ -46,7 +46,7 @@ namespace FunEvents.Pages.Events
         // Funkar inte som det ska ännu
         public async Task<IActionResult> OnPostSaveAsync(int? id)
         {
-            var eventToUpdate = await _context.Events.FindAsync(id);
+            var eventToUpdate = await _context.Events.Include(e => e.Organizer).FirstOrDefaultAsync(e => e.Id == id);
 
             if(eventToUpdate == null)
             {
