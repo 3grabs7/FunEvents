@@ -28,14 +28,21 @@ namespace FunEvents.Pages.Events
 
         public Event EventToJoin { get; set; }
         public AppUser AppUser { get; set; }
+        public bool SucceededToJoinEvent { get; set; }
+        public bool FailedToJoinEvent { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(int? id)
+        public async Task<IActionResult> OnGetAsync(int? id,
+            bool? succeededToJoinEvent,
+            bool? failedToJoinEvent)
         {
             if (id == null)
             {
                 // Add Custom Page for problem loading event from db
                 return NotFound();
             }
+
+            SucceededToJoinEvent = succeededToJoinEvent ?? false;
+            FailedToJoinEvent = failedToJoinEvent ?? false;
 
             EventToJoin = await _context.Events.FindAsync(id);
             string userId = _userManager.GetUserId(User);
@@ -69,16 +76,13 @@ namespace FunEvents.Pages.Events
                 EventToJoin.SpotsAvailable--;
 
                 await _context.SaveChangesAsync();
-
             }
-            catch (Exception e)
+            catch
             {
-                // Add Custom Page for problem joining event
-                // Route Exception
-                return Page();
+                return RedirectToPage("/Events/Details", new { id = id, failedToJoinEvent = true });
             }
 
-            return RedirectToPage("/Events/Details", new { id = id });
+            return RedirectToPage("/Events/Details", new { id = id, succeededToJoinEvent = true });
         }
 
         public int AttendeesCount() => _context.Events
@@ -99,7 +103,6 @@ namespace FunEvents.Pages.Events
 
             return output;
         }
-
 
     }
 }

@@ -36,20 +36,20 @@ namespace FunEvents.Pages.Events
         public bool? RemovingEventFailed { get; set; }
 
         [BindProperty]
-        public bool? RemovingEventSuccess { get; set; }
+        public bool? RemovingEventSucceeded { get; set; }
 
         public async Task OnGetAsync(
             bool? removingEventFailed,
-            bool? removingEventSuccess)
+            bool? removingEventSucceeded)
         {
             if (removingEventFailed != null)
             {
                 RemovingEventFailed = removingEventFailed;
             }
 
-            if (removingEventSuccess != null)
+            if (removingEventSucceeded != null)
             {
-                RemovingEventSuccess = removingEventSuccess;
+                RemovingEventSucceeded = removingEventSucceeded;
             }
 
             string userId = _userManager.GetUserId(User);
@@ -89,7 +89,7 @@ namespace FunEvents.Pages.Events
                 return RedirectToPage("/Events/MyEvents", new { RemovingEventFailed = true });
             }
 
-            return RedirectToPage("/Events/MyEvents", new { RemovingEventSuccess = true });
+            return RedirectToPage("/Events/MyEvents", new { RemovingEventSucceeded = true });
         }
     }
 }

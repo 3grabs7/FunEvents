@@ -20,7 +20,9 @@ namespace FunEvents.Pages.Events
         private readonly UserManager<AppUser> _userManager;
         private readonly ILogger<EditEventModel> _logger;
 
-        public EditEventModel(ApplicationDbContext context, UserManager<AppUser> userManager, ILogger<EditEventModel> logger)
+        public EditEventModel(ApplicationDbContext context,
+            UserManager<AppUser> userManager,
+            ILogger<EditEventModel> logger)
         {
             _context = context;
             _userManager = userManager;
@@ -48,12 +50,12 @@ namespace FunEvents.Pages.Events
         {
             var eventToUpdate = await _context.Events.Include(e => e.Organizer).FirstOrDefaultAsync(e => e.Id == id);
 
-            if(eventToUpdate == null)
+            if (eventToUpdate == null)
             {
                 return NotFound();
             }
 
-            if(await TryUpdateModelAsync<Event>(eventToUpdate, "event",
+            if (await TryUpdateModelAsync<Event>(eventToUpdate, "event",
                 s => s.Title, s => s.Description, s => s.Date, s => s.Place, s => s.Address, s => s.SpotsAvailable))
             {
                 await _context.SaveChangesAsync();

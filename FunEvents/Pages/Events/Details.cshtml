@@ -3,6 +3,20 @@
 @{
 }
 
+@if (Model.SucceededToJoinEvent)
+{
+    <div class="alert alert-success" role="alert">
+        Event Added, No Excuses.
+        <a asp-page="/Events/MyEvents">Go to your events 🦼</a>
+    </div>
+}
+
+@if (Model.FailedToJoinEvent)
+{
+    <div class="alert alert-success" role="alert">
+        Something went wrong, please try again.
+    </div>
+}
 
 <div class="container">
     <div class="card w-100">

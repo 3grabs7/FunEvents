@@ -11,7 +11,7 @@
     </div>
 }
 
-@if (Model?.RemovingEventSuccess ?? false)
+@if (Model?.RemovingEventSucceeded ?? false)
 {
     <div class="alert alert-success" role="alert">
         Bye Bye Event, it's cozier at home anyway.'
@@ -20,7 +20,6 @@
 
 <h1>@Model.AppUser.UserName</h1>
 <p>The events you've joined are displayed here!</p>
-
 <table class="table">
     <thead>
         <tr>
@@ -47,7 +46,7 @@
                     @Html.DisplayFor(modelItem => item.Place)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Date)
+                    @item.Date.ToShortDateString()
                 </td>
                 <td>
                     <form method="post">
