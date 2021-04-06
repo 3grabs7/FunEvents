@@ -70,5 +70,15 @@ namespace FunEvents.Pages.AccountManagement
             return await _context.UserRoles
                 .AnyAsync(ur => ur.UserId == id && ur.RoleId == role.Id);
         }
+
+        public async Task<bool> IsAdmin(string id)
+        {
+            IdentityRole role = await _context.Roles
+                .Where(r => r.Name == "Admin")
+                .FirstOrDefaultAsync();
+
+            return await _context.UserRoles
+                .AnyAsync(ur => ur.UserId == id && ur.RoleId == role.Id);
+        }
     }
 }

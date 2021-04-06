@@ -4,14 +4,14 @@
     ViewData["Title"] = "Index";
 }
 
-@if (Model?.RemovingEventFailed ?? false)
+@if (Model.RemovingEventFailed)
 {
     <div class="alert alert-warning" role="alert">
         Something went wrong trying to remove the event. Please try again later.
     </div>
 }
 
-@if (Model?.RemovingEventSucceeded ?? false)
+@if (Model.RemovingEventSucceeded)
 {
     <div class="alert alert-success" role="alert">
         Bye Bye Event, it's cozier at home anyway.'

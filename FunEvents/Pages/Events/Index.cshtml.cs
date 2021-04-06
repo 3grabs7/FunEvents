@@ -29,15 +29,14 @@ namespace FunEvents.Pages.Events
 
         [BindProperty(SupportsGet = true)]
         public int CurrentPage { get; set; }
+
         [BindProperty(SupportsGet = true)]
         public string SortBy { get; set; }
+
         public int Count { get; set; }
         public int PageSize { get; set; } = 9;
-
         public int TotalPages => (int)Math.Ceiling(decimal.Divide(Count, PageSize));
-
         public IList<Event> Events { get; set; }
-
         public AppUser AppUser { get; set; }
 
         public async Task OnGetAsync()
@@ -50,11 +49,14 @@ namespace FunEvents.Pages.Events
             {
                 Events = await GetPaginatedResult(CurrentPage, PageSize, SortBy);
             }
+
             Count = await GetCount();
 
             string userId = _userManager.GetUserId(User);
-
-            AppUser = await _context.Users.Where(u => u.Id == userId).Include(u => u.JoinedEvents).FirstOrDefaultAsync();
+            AppUser = await _context.Users
+                .Where(u => u.Id == userId)
+                .Include(u => u.JoinedEvents)
+                .FirstOrDefaultAsync();
         }
 
         public async Task<List<Event>> GetPaginatedResult(int currentPage, int pageSize)
@@ -74,12 +76,13 @@ namespace FunEvents.Pages.Events
                 .Take(pageSize)
                 .ToListAsync();
 
-            if (sortResultsBy != "Title")
+            if (sortResultsBy != "Title" ||
+                sortResultsBy != "Place")
             {
                 data.Reverse();
             }
-            return data;
 
+            return data;
         }
 
         public async Task<int> GetCount()
@@ -91,8 +94,8 @@ namespace FunEvents.Pages.Events
         public string CondenseDescription(string input)
         {
             string[] splitInput = Regex.Split(input, @"[!?.]");
-            return splitInput.Length == 1 ? 
-                $"{splitInput[0]}." : 
+            return splitInput.Length == 1 ?
+                $"{splitInput[0]}." :
                 $"{splitInput[0]}...";
         }
 

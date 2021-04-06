@@ -25,7 +25,11 @@
         </div>
         <div class="row">
             <div class="col-5">
-                <img src="~/img/Untitled-1.png" class="card-img-top" alt="...">
+                <img src="~/img/Untitled-1.png"
+                     class="card-img-top img-fluid"
+                     style="max-height: 40%;
+                        width: auto;
+                        margin: 20px;">
                 <div class="card-body">
                     <h5 class="card-title">About</h5>
                     <p class="card-text">@Model.EventToJoin.Description</p>
@@ -83,7 +87,12 @@
         </div>
         <div class="card-footer">
             <p class="text-right">
-                Find more events from this Organizer <a href="" class="btn btn-primary">🎯</a>
+                Find more events from this Organizer
+                <a asp-page="/Events/OrganizerPage"
+                   asp-route-id="@Model.EventToJoin.Organizer.Id"
+                   class="btn btn-primary">
+                    🎯
+                </a>
             </p>
         </div>
     </div>

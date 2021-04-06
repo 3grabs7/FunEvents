@@ -31,26 +31,16 @@ namespace FunEvents.Pages.Events
         [BindProperty]
         public AppUser AppUser { get; set; }
         public List<Event> Events { get; set; }
-
-        [BindProperty]
-        public bool? RemovingEventFailed { get; set; }
-
-        [BindProperty]
-        public bool? RemovingEventSucceeded { get; set; }
+        public bool RemovingEventFailed { get; set; }
+        public bool RemovingEventSucceeded { get; set; }
 
         public async Task OnGetAsync(
             bool? removingEventFailed,
             bool? removingEventSucceeded)
         {
-            if (removingEventFailed != null)
-            {
-                RemovingEventFailed = removingEventFailed;
-            }
 
-            if (removingEventSucceeded != null)
-            {
-                RemovingEventSucceeded = removingEventSucceeded;
-            }
+            RemovingEventFailed = removingEventFailed ?? false;
+            RemovingEventSucceeded = removingEventSucceeded ?? false;
 
             string userId = _userManager.GetUserId(User);
 
