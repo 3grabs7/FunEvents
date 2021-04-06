@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace FunEvents.Pages
 {
@@ -35,6 +36,39 @@ namespace FunEvents.Pages
             {
                 await _context.SeedDatabase(_userManager);
             }
+        }
+
+        private const int EVENTS_PER_TOP_VIEW = 3;
+        public async Task<IList<Event>> LoadPopularEvents()
+        {
+            // Create row wich saves event detail visits and order by most to least
+            var events = await _context.Events
+                .Where(e => e.SpotsAvailable > 0)
+                .OrderBy(e => e.SpotsAvailable) // <- Insert vists here
+                .Take(EVENTS_PER_TOP_VIEW)
+                .ToListAsync();
+            return events;
+        }
+
+        public async Task<IList<Event>> LoadNewEvents()
+        {
+            var events = await _context.Events
+                .Where(e => e.SpotsAvailable > 0)
+                .OrderBy(e => e.CreatedAt)
+                .Reverse()
+                .Take(EVENTS_PER_TOP_VIEW)
+                .ToListAsync();
+            return events;
+        }
+
+        public async Task<IList<Event>> LoadAlmostFullyBookesEvents()
+        {
+            var events = await _context.Events
+                .Where(e => e.SpotsAvailable > 0)
+                .OrderBy(e => e.SpotsAvailable)
+                .Take(EVENTS_PER_TOP_VIEW)
+                .ToListAsync();
+            return events;
         }
     }
 }
