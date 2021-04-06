@@ -30,11 +30,13 @@ namespace FunEvents.Pages.Events
         public AppUser AppUser { get; set; }
         public bool SucceededToJoinEvent { get; set; }
         public bool FailedToJoinEvent { get; set; }
+        public bool RedirectedFromLogin { get; set; }
         public List<string> Attendees { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id,
             bool? succeededToJoinEvent,
-            bool? failedToJoinEvent)
+            bool? failedToJoinEvent,
+            bool? redirectedFromLogin)
         {
             if (id == null)
             {
@@ -47,6 +49,19 @@ namespace FunEvents.Pages.Events
             EventToJoin = await _context.Events.FindAsync(id);
 
             Attendees = GetAttendeeInfo();
+
+            string userId = _userManager.GetUserId(User);
+            AppUser = await _context.Users
+                .Where(u => u.Id == userId)
+                .Include(u => u.JoinedEvents)
+                .FirstOrDefaultAsync();
+
+            if (redirectedFromLogin ?? false)
+            {
+                await JoinEventOnRedirectFromLogin(id);
+                //redirectedFromLogin = null;
+                return Redirect($"/Events/Details?id={id}");
+            }
 
             return Page();
         }
@@ -61,7 +76,10 @@ namespace FunEvents.Pages.Events
             EventToJoin = await _context.Events.FindAsync(id);
 
             string userId = _userManager.GetUserId(User);
-            AppUser appUser = await _context.Users.Where(u => u.Id == userId).Include(u => u.JoinedEvents).FirstOrDefaultAsync();
+            AppUser appUser = await _context.Users
+                .Where(u => u.Id == userId)
+                .Include(u => u.JoinedEvents)
+                .FirstOrDefaultAsync();
 
             try
             {
@@ -96,5 +114,17 @@ namespace FunEvents.Pages.Events
             return output;
         }
 
+        public async Task JoinEventOnRedirectFromLogin(int? id)
+        {
+            EventToJoin = await _context.Events.FindAsync(id);
+
+            string userId = _userManager.GetUserId(User);
+            AppUser appUser = await _context.Users.Where(u => u.Id == userId).Include(u => u.JoinedEvents).FirstOrDefaultAsync();
+
+            appUser.JoinedEvents.Add(EventToJoin);
+            EventToJoin.SpotsAvailable--;
+
+            await _context.SaveChangesAsync();
+        }
     }
 }
