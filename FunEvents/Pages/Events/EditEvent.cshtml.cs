@@ -36,8 +36,12 @@ namespace FunEvents.Pages.Events
         [BindProperty]
         public Event Event { get; set; }
 
-        public async Task<IActionResult> OnGetAsync()
+        public bool hasEventBeenSelected { get; set; }
+
+        public async Task<IActionResult> OnGetAsync(int? selectedEvent)
         {
+            Event = _context.Events.Find(selectedEvent);
+            hasEventBeenSelected = selectedEvent == null ? false : true;
             string userId = _userManager.GetUserId(User);
             Events = await _context.Events.Include(e => e.Organizer).Where(e => e.Organizer.Id == userId).ToListAsync();
 
