@@ -9,6 +9,7 @@ using FunEvents.Data;
 using FunEvents.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace FunEvents.Pages.Events
 {
@@ -17,11 +18,13 @@ namespace FunEvents.Pages.Events
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<AppUser> _userManager;
+        private readonly ILogger<EditEventModel> _logger;
 
-        public EditEventModel(ApplicationDbContext context, UserManager<AppUser> userManager)
+        public EditEventModel(ApplicationDbContext context, UserManager<AppUser> userManager, ILogger<EditEventModel> logger)
         {
             _context = context;
             _userManager = userManager;
+            _logger = logger;
         }
 
         [BindProperty]
@@ -41,29 +44,58 @@ namespace FunEvents.Pages.Events
 
 
         // Funkar inte som det ska ännu
-        public async Task<IActionResult> OnPostAsync(int? id)
+        public async Task<IActionResult> OnPostSaveAsync(int? id)
         {
-            if (!ModelState.IsValid)
+            var eventToUpdate = await _context.Events.FindAsync(id);
+
+            if(eventToUpdate == null)
             {
-                return Page();
+                return NotFound();
             }
 
-            Event eventToUpdate = await _context.Events.Where(e => e.Id == id).FirstOrDefaultAsync();
+            if(await TryUpdateModelAsync<Event>(eventToUpdate, "event",
+                s => s.Title, s => s.Description, s => s.Date, s => s.Place, s => s.Address, s => s.SpotsAvailable))
+            {
+                await _context.SaveChangesAsync();
+                return RedirectToPage("./Index");
+            }
 
-            bool hasUpdateSucceeded = await TryUpdateModelAsync<Event>(eventToUpdate, "student",
-                s => s.Title, s => s.Description, s => s.Date, s => s.Place, s => s.Address, s => s.SpotsAvailable);
+            return Page();
 
             //_context.AttachRange(Events);
 
+            //try
+            //{
+            //    await _context.SaveChangesAsync();
+            //}
+            //catch (Exception exception)
+            //{
+            //    Console.WriteLine(exception.Message); // Tillfällig lösning. Bör loggas korrekt
+            //}
+            //return Page();
+        }
+
+        public async Task<IActionResult> OnPostCancelAsync(int? id)
+        {
+            var eventToDelete = await _context.Events.FindAsync(id);
+
+            if (eventToDelete == null)
+            {
+                return NotFound();
+            }
+
             try
             {
+                _context.Events.Remove(eventToDelete);
                 await _context.SaveChangesAsync();
+                return RedirectToPage("./Index");
             }
-            catch (Exception exception)
+            catch (DbUpdateException ex)
             {
-                Console.WriteLine(exception.Message); // Tillfällig lösning. Bör loggas korrekt
+                _logger.LogError(ex, "ERROR! Could not cancel event.");
+
+                return RedirectToPage("./Index");
             }
-            return Page();
         }
 
         private bool EventExists(int id)
