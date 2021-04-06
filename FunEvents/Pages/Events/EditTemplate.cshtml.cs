@@ -25,9 +25,6 @@ namespace FunEvents.Pages.Events
         }
 
         [BindProperty]
-        public Event Event { get; set; }
-
-        [BindProperty]
         public IList<Event> Events { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
@@ -58,14 +55,10 @@ namespace FunEvents.Pages.Events
                 }
             }
 
-            await _context.SaveChangesAsync();
+            _context.AttachRange(Events);
 
             return RedirectToPage("./EditTemplate");
         }
 
-        private bool EventExists(int id)
-        {
-            return _context.Events.Any(e => e.Id == id);
-        }
     }
 }

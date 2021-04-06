@@ -23,12 +23,4 @@ namespace FunEvents.Models
         public ICollection<AppUser> Attendees { get; set; }
     }
 
-    // Tillfällig klass -> Ta bort när nya modellen funkar
-    //public class Organizer
-    //{
-    //    public int Id { get; set; }
-    //    public string Name { get; set; }
-    //    public AppUser AppUser { get; set; }
-    //    public List<Event> Events { get; set; }
-    //}
 }
