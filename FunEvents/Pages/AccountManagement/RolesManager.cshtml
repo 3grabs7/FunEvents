@@ -10,15 +10,14 @@
     {
         <li class="list-group-item @(Model.IsOrganizer(user.Id).Result ? "active" : "")">
             <div class="row">
-                <div class="col">
-                    @user.UserName
+                <div class="col text-left">
+                    @user.UserName @(Model.IsAdmin(user.Id).Result ? "(Admin👸)" : "")
                 </div>
-                <div class="col-7"></div>
-                <div class="col">
+                <div class="col-4 text-right">
                     @if (Model.IsOrganizer(user.Id).Result)
                     {
                         <form method="post" asp-route-id="@user.Id" asp-page-handler="Remove">
-                            <button class="btn btn-block btn-info" 
+                            <button class="btn btn-block btn-info"
                                     type="submit">
                                 Remove as Organizer
                             </button>

@@ -1,0 +1,30 @@
+﻿@page
+@model FunEvents.Pages.Events.OrganizerPageModel
+@{
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>@Model.Organizer.UserName</th>
+            <th>@Model.Organizer.Email</th>
+            <th>@Model.Organizer.PhoneNumber</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Events)
+        {
+            <tr>
+                <td>@item.Title</td>
+                <td>@item.Place</td>
+                <td>@item.Date.ToShortDateString()</td>
+                <td>
+                    <a asp-page="/Events/Details" asp-route-id="@item.Id">
+                        Read More
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

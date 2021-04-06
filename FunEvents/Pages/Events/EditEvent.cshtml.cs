@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,7 +20,9 @@ namespace FunEvents.Pages.Events
         private readonly UserManager<AppUser> _userManager;
         private readonly ILogger<EditEventModel> _logger;
 
-        public EditEventModel(ApplicationDbContext context, UserManager<AppUser> userManager, ILogger<EditEventModel> logger)
+        public EditEventModel(ApplicationDbContext context,
+            UserManager<AppUser> userManager,
+            ILogger<EditEventModel> logger)
         {
             _context = context;
             _userManager = userManager;
@@ -43,12 +45,12 @@ namespace FunEvents.Pages.Events
         }
 
 
-        // Funkar inte som det ska ännu
+        // Funkar inte som det ska ï¿½nnu
         public async Task<IActionResult> OnPostSaveAsync(string newTitle, string newDescription, DateTime newDate, string newPlace, string newAdress, int newSpotsAvailable, int? id)
         {
             var eventToUpdate = await _context.Events.Include(e => e.Organizer).FirstOrDefaultAsync(e => e.Id == id);
 
-            if(eventToUpdate == null)
+            if (eventToUpdate == null)
             {
                 return NotFound();
             }
@@ -77,7 +79,7 @@ namespace FunEvents.Pages.Events
             //}
             //catch (Exception exception)
             //{
-            //    Console.WriteLine(exception.Message); // Tillfällig lösning. Bör loggas korrekt
+            //    Console.WriteLine(exception.Message); // Tillfï¿½llig lï¿½sning. Bï¿½r loggas korrekt
             //}
             //return Page();
         }

@@ -28,32 +28,65 @@ namespace FunEvents.Pages.Events
 
         public Event EventToJoin { get; set; }
         public AppUser AppUser { get; set; }
+        public bool SucceededToJoinEvent { get; set; }
+        public bool FailedToJoinEvent { get; set; }
 
-        public async Task OnGetAsync(int? id)
+        public async Task<IActionResult> OnGetAsync(int? id,
+            bool? succeededToJoinEvent,
+            bool? failedToJoinEvent)
         {
+            if (id == null)
+            {
+                return RedirectToPage("/Errors/NotFound");
+            }
+
+            SucceededToJoinEvent = succeededToJoinEvent ?? false;
+            FailedToJoinEvent = failedToJoinEvent ?? false;
+
             EventToJoin = await _context.Events.FindAsync(id);
             string userId = _userManager.GetUserId(User);
             AppUser = await _context.Users.Where(u => u.Id == userId).Include(u => u.JoinedEvents).FirstOrDefaultAsync();
+
+            if (AppUser == default)
+            {
+                return RedirectToPage("/Errors/NotFound");
+            }
+
+            return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync(int id)
+        public async Task<IActionResult> OnPostAsync(int? id)
         {
+            if (id == null)
+            {
+                return RedirectToPage("/Errors/NotFound");
+            }
+
             EventToJoin = await _context.Events.FindAsync(id);
+
             string userId = _userManager.GetUserId(User);
             AppUser appUser = await _context.Users.Where(u => u.Id == userId).Include(u => u.JoinedEvents).FirstOrDefaultAsync();
 
-            appUser.JoinedEvents.Add(EventToJoin);
-            EventToJoin.SpotsAvailable--;
+            try
+            {
+                appUser.JoinedEvents.Add(EventToJoin);
+                EventToJoin.SpotsAvailable--;
 
-            await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                return RedirectToPage("/Events/Details", new { id = id, failedToJoinEvent = true });
+            }
 
-            return RedirectToPage("/Events/Details", new { id = id });
+            return RedirectToPage("/Events/Details", new { id = id, succeededToJoinEvent = true });
         }
 
         public int AttendeesCount() => _context.Events
             .Include(e => e.Attendees)
             .Where(e => e.Id == EventToJoin.Id)
-            .First().Attendees.Count;
+            ?.First().Attendees.Count
+            ?? 0;
 
         public string GetAttendeeInfo()
         {
@@ -67,7 +100,6 @@ namespace FunEvents.Pages.Events
 
             return output;
         }
-
 
     }
 }

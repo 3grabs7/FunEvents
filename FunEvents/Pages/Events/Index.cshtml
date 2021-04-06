@@ -23,90 +23,54 @@
         </a>
     </div>
 </div>
+<div>
+    <ul class="pagination">
+        @for (int i = 1; i <= Model.TotalPages; i++)
+        {
+            <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                <a asp-page="./Index" asp-all-route-data="@(new Dictionary<string, string>
+               {{ "currentpage", i.ToString() }, { "sortby", Model.SortBy }})"
+                   class="page-link">@i</a>
+            </li>
+        }
+    </ul>
+</div>
 <div class="row">
-    @foreach (var item in Model.Events)
+    @for (int i = Model.Events.Count - 1; i >= 0; i--)
     {
         <div class="col-4">
-            <div class="card" style="width: 18rem;">
+            <div class="card" style="width: 18rem; height: 18rem;">
                 <div class="card-body">
-                    <h5 class="card-title">@item.Title</h5>
-                    <p class="card-text">@Model.CondenseDescription(item.Description)</p>
-                    @if (item.SpotsAvailable == 0)
+                    <h5 class="card-title">@Model.Events[i].Title</h5>
+                    <p class="card-text">@Model.CondenseDescription(Model.Events[i].Description)</p>
+                    @if (Model.Events[i].SpotsAvailable == 0)
                     {
                         <p class="card-text alert alert-danger">
                             All spots booked!
                         </p>
                     }
-                    else if (item.SpotsAvailable != 0 && item.SpotsAvailable < 10)
+                    else if (Model.Events[i].SpotsAvailable != 0 && Model.Events[i].SpotsAvailable < 10)
                     {
                         <p class="card-text alert alert-warning">
                             Only a few spots left!
                         </p>
                     }
-                    <a class="btn btn-primary" asp-page="./Details" asp-route-id="@item.Id">Read More🐱‍🐉</a>
+                    <a class="btn btn-primary" asp-page="./Details" asp-route-id="@Model.Events[i].Id">Read More🐱‍🐉</a>
                 </div>
             </div>
         </div>
     }
 </div>
-
-    <div>
-        @foreach (var item in Model.Events)
+<div>
+    <ul class="pagination">
+        @for (int i = 1; i <= Model.TotalPages; i++)
         {
-            <div class="accordion">
-                <h3>@Html.DisplayFor(modelItem => item.Title)</h3>
-                <div class="panel">
-                    <p>@Html.DisplayFor(modelItem => item.Description)</p>
-                    <p>@Html.DisplayFor(modelItem => item.Place)</p>
-                    <p>@Html.DisplayFor(modelItem => item.Date)</p>
-                    @if (item.Attendees?.Contains(Model.AppUser) ?? false)
-                    {
-                        <a class="btn btn-primary disabled">Already Joined 👺</a>
-                    }
-                    else
-                    {
-                        <div class="row">
-                            @if (item.SpotsAvailable == 0)
-                            {
-                                <div class="col-3">
-                                    <a class="btn btn-primary disabled">Fully booked 😢</a>
-                                </div>
-                                <div class="col-9">
-                                    <div class="alert alert-danger">
-                                        All spots booked!
-                                    </div>
-                                </div>
-                            }
-                            else
-                            {
-                                <div class="col-3">
-                                    <a class="btn btn-primary" asp-page="./Details" asp-route-id="@item.Id">JOIN 🐱‍🐉</a>
-                                </div>
-                                @if (item.SpotsAvailable < 10)
-                                {
-                                    <div class="col-9">
-                                        <div class="alert alert-warning">
-                                            Only a few spots left!
-                                        </div>
-                                    </div>
-                                }
-                            }
-                        </div>
-                    }
-                </div>
-            </div>
-        }
-    </div>
-    <div>
-        <ul class="pagination">
-            @for (int i = 1; i <= Model.TotalPages; i++)
-            {
-                <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
-                    <a asp-page="./Index" asp-all-route-data="@(new Dictionary<string, string>
+            <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                <a asp-page="./Index" asp-all-route-data="@(new Dictionary<string, string>
                {{ "currentpage", i.ToString() }, { "sortby", Model.SortBy }})"
-                       class="page-link">@i</a>
-                </li>
-            }
-        </ul>
-    </div>
+                   class="page-link">@i</a>
+            </li>
+        }
+    </ul>
+</div>
 
