@@ -3,80 +3,101 @@
 @{
 }
 
-@using (Html.BeginForm()) {
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    Title
-                </th>
-                <th>
-                    Description
-                </th>
-                <th>
-                    Date
-                </th>
-                <th>
-                    Place
-                </th>
-                <th>
-                    Adress
-                </th>
-                <th>
-                    Organizer
-                </th>
-                <th>
-                    Spots Available
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @for (int i = 0; i < Model.Events.Count; i++)
-            {
+@if (Model.hasEventBeenSelected)
+{
+<form method="post">
+    <div class="input-group mb-3">
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1" asp-validation-for="@Model.Event.Title">Title</span>
+        </div>
+        <input type="text" class="form-control" placeholder="@Model.Event.Title" aria-label="Username" aria-describedby="basic-addon1" asp-for="@Model.Event.Title">
+    </div>
 
-            <tr>
-                <td>
-                    <input asp-for="@Model.Events[i].Title" class="form-control" />
-                    <span asp-validation-for="@Model.Events[i].Title" class="text-danger"></span>
-                </td>
-                <td>
-                    <input asp-for="@Model.Events[i].Description" class="form-control" />
-                    <span asp-validation-for="@Model.Events[i].Description" class="text-danger"></span>
-                </td>
-                <td>
-                    <input asp-for="@Model.Events[i].Date" class="form-control" />
-                    <span asp-validation-for="@Model.Events[i].Date" class="text-danger"></span>
-                </td>
-                <td>
-                    <input asp-for="@Model.Events[i].Place" class="form-control" />
-                    <span asp-validation-for="@Model.Events[i].Place" class="text-danger"></span>
-                </td>
-                <td>
-                    <input asp-for="@Model.Events[i].Address" class="form-control" />
-                    <span asp-validation-for="@Model.Events[i].Address" class="text-danger"></span>
-                </td>
-                <td>
-                    <p>@Model.Events[i].Organizer.UserName</p>
-                </td>
-                <td>
-                    <input asp-for="@Model.Events[i].SpotsAvailable" class="form-control" />
-                    <span asp-validation-for="@Model.Events[i].SpotsAvailable" class="text-danger"></span>
-                </td>
-                <td>
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <span class="input-group-text">Desciption</span>
+        </div>
+        <textarea class="form-control" placeholder="@Model.Event.Description" aria-label="With textarea"></textarea>
+    </div>
+    <div class="input-group mb-3">
+        <input type="text" class="form-control" placeholder="Date" aria-label="Recipient's username" aria-describedby="basic-addon2">
+        <div class="input-group-append">
+            <span class="input-group-text" id="basic-addon2">Date</span>
+        </div>
+    </div>
 
-                    <input type="submit" value="Save" class="btn btn-success" asp-page-handler="Save" asp-route-id="@Model.Events[i].Id" />
+    <input type="submit" value="Save" class="btn btn-success" asp-page-handler="Save" asp-route-id="@Model.Event.Id" />
 
-                </td>
-                <td>
-                    <input type="submit" value="Cancel Event" class="btn btn-danger" asp-page-handler="Cancel" asp-route-id="@Model.Events[i].Id" />
-                </td>
-            </tr>
-
-            }
-        </tbody>
-    </table>
-}
-
-    @*</tbody>*@
-
+</form>
+<br /><br />
+        }
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Title
+                    </th>
+                    <th>
+                        Description
+                    </th>
+                    <th>
+                        Date
+                    </th>
+                    <th>
+                        Place
+                    </th>
+                    <th>
+                        Adress
+                    </th>
+                    <th>
+                        Organizer
+                    </th>
+                    <th>
+                        Spots Available
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <form method="post">
+                <tbody>
+                    @for (int i = 0; i < Model.Events.Count; i++)
+                    {
+                        <tr>
+                            <td>
+                                <input asp-for="@Model.Events[i].Title" class="form-control" id="titleInput" oninput="setRouteParam" />
+                                <span asp-validation-for="@Model.Events[i].Title" class="text-danger"></span>
+                            </td>
+                            <td>
+                                <input asp-for="@Model.Events[i].Description" class="form-control" />
+                                <span asp-validation-for="@Model.Events[i].Description" class="text-danger"></span>
+                            </td>
+                            <td>
+                                <input asp-for="@Model.Events[i].Date" class="form-control" />
+                                <span asp-validation-for="@Model.Events[i].Date" class="text-danger"></span>
+                            </td>
+                            <td>
+                                <input asp-for="@Model.Events[i].Place" class="form-control" />
+                                <span asp-validation-for="@Model.Events[i].Place" class="text-danger"></span>
+                            </td>
+                            <td>
+                                <input asp-for="@Model.Events[i].Address" class="form-control" />
+                                <span asp-validation-for="@Model.Events[i].Address" class="text-danger"></span>
+                            </td>
+                            <td>
+                                <p>@Model.Events[i].Organizer.UserName</p>
+                            </td>
+                            <td>
+                                <input asp-for="@Model.Events[i].SpotsAvailable" asp-route-newspotsavailable="@Model.Events[i].SpotsAvailable" class="form-control" />
+                                <span asp-validation-for="@Model.Events[i].SpotsAvailable" class="text-danger"></span>
+                            </td>
+                            <td>
+                                <a class="btn btn-success" asp-route-selectedEvent="@Model.Events[i].Id" asp-page="/Events/EditEvent" />
+                            </td>
+                            <td>
+                                <input type="submit" value="Cancel Event" class="btn btn-danger" asp-page-handler="Cancel" asp-route-id="@Model.Events[i].Id" />
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </form>
+        </table>

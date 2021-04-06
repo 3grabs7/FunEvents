@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -36,8 +36,12 @@ namespace FunEvents.Pages.Events
         [BindProperty]
         public Event Event { get; set; }
 
-        public async Task<IActionResult> OnGetAsync()
+        public bool hasEventBeenSelected { get; set; }
+
+        public async Task<IActionResult> OnGetAsync(int? selectedEvent)
         {
+            Event = _context.Events.Find(selectedEvent);
+            hasEventBeenSelected = selectedEvent == null ? false : true;
             string userId = _userManager.GetUserId(User);
             Events = await _context.Events.Include(e => e.Organizer).Where(e => e.Organizer.Id == userId).ToListAsync();
 
@@ -45,8 +49,8 @@ namespace FunEvents.Pages.Events
         }
 
 
-        // Funkar inte som det ska ännu
-        public async Task<IActionResult> OnPostSaveAsync(int? id)
+        // Funkar inte som det ska ï¿½nnu
+        public async Task<IActionResult> OnPostSaveAsync(string newTitle, string newDescription, DateTime newDate, string newPlace, string newAdress, int newSpotsAvailable, int? id)
         {
             var eventToUpdate = await _context.Events.Include(e => e.Organizer).FirstOrDefaultAsync(e => e.Id == id);
 
@@ -55,12 +59,19 @@ namespace FunEvents.Pages.Events
                 return NotFound();
             }
 
-            if (await TryUpdateModelAsync<Event>(eventToUpdate, "event",
-                s => s.Title, s => s.Description, s => s.Date, s => s.Place, s => s.Address, s => s.SpotsAvailable))
-            {
-                await _context.SaveChangesAsync();
-                return RedirectToPage("./Index");
-            }
+            //if(await TryUpdateModelAsync<Event>(eventToUpdate, "event",
+            //    s => s.Title, s => s.Description, s => s.Date, s => s.Place, s => s.Address, s => s.SpotsAvailable))
+            //{
+            //    await _context.SaveChangesAsync();
+            //    return RedirectToPage("./Index");
+            //}
+
+            eventToUpdate.Title = newTitle;
+            eventToUpdate.Description = newDescription;
+            eventToUpdate.Date = newDate;
+            eventToUpdate.Place = newPlace;
+            eventToUpdate.Address = newAdress;
+            eventToUpdate.SpotsAvailable = newSpotsAvailable;
 
             return Page();
 
@@ -72,7 +83,7 @@ namespace FunEvents.Pages.Events
             //}
             //catch (Exception exception)
             //{
-            //    Console.WriteLine(exception.Message); // Tillfällig lösning. Bör loggas korrekt
+            //    Console.WriteLine(exception.Message); // Tillfï¿½llig lï¿½sning. Bï¿½r loggas korrekt
             //}
             //return Page();
         }
