@@ -89,7 +89,7 @@
             <p class="text-right">
                 Find more events from this Organizer
                 <a asp-page="/Events/OrganizerPage"
-                   asp-route-id="@Model.EventToJoin.Organizer.Id"
+                   asp-route-id="@(Model.EventToJoin.Organizer?.Id ?? null)"
                    class="btn btn-primary">
                     🎯
                 </a>

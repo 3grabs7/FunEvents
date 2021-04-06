@@ -37,8 +37,7 @@ namespace FunEvents.Pages.Events
         {
             if (id == null)
             {
-                // Add Custom Page for problem loading event from db
-                return NotFound();
+                return RedirectToPage("/Errors/NotFound");
             }
 
             SucceededToJoinEvent = succeededToJoinEvent ?? false;
@@ -50,8 +49,7 @@ namespace FunEvents.Pages.Events
 
             if (AppUser == default)
             {
-                // Add Custom Page for problem with finding user, log in log out
-                return NotFound();
+                return RedirectToPage("/Errors/NotFound");
             }
 
             return Page();
@@ -61,8 +59,7 @@ namespace FunEvents.Pages.Events
         {
             if (id == null)
             {
-                // Add Custom Page for problem loading event from db
-                return NotFound();
+                return RedirectToPage("/Errors/NotFound");
             }
 
             EventToJoin = await _context.Events.FindAsync(id);
