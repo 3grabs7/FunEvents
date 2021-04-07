@@ -36,23 +36,42 @@ namespace FunEvents.Pages.Events
         [BindProperty]
         public Event Event { get; set; }
 
-        public bool hasEventBeenSelected { get; set; }
+        public bool eventSelected { get; set; }
+        public bool editSuccess { get; set; }
+        public bool editFailed { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? selectedEvent)
         {
             Event = _context.Events.Find(selectedEvent);
-            hasEventBeenSelected = selectedEvent == null ? false : true;
+            eventSelected = selectedEvent == null ? false : true;
             string userId = _userManager.GetUserId(User);
             Events = await _context.Events.Include(e => e.Organizer).Where(e => e.Organizer.Id == userId).ToListAsync();
+
+            AppUser = await _context.Users
+                .Where(u => u.Id == userId)
+                .Include(u => u.HostedEvents)
+                .FirstOrDefaultAsync();
 
             return Page();
         }
 
 
         // Funkar inte som det ska �nnu
-        public async Task<IActionResult> OnPostSaveAsync(int? id)
+        public async Task<IActionResult> OnPostSaveAsync(int? id, int? selectedEvent)
         {
+            Event = _context.Events.Find(selectedEvent);
+            eventSelected = selectedEvent == null ? false : true;
+
             var eventToUpdate = await _context.Events.Include(e => e.Organizer).FirstOrDefaultAsync(e => e.Id == id);
+
+            string userId = _userManager.GetUserId(User);
+
+            AppUser = await _context.Users
+                .Where(u => u.Id == userId)
+                .Include(u => u.HostedEvents)
+                .FirstOrDefaultAsync();
+
+            Events = await _context.Events.Include(e => e.Organizer).Where(e => e.Organizer.Id == userId).ToListAsync();
 
             if (eventToUpdate == null)
             {
@@ -62,24 +81,21 @@ namespace FunEvents.Pages.Events
             if(await TryUpdateModelAsync<Event>(eventToUpdate, "event",
                 s => s.Title, s => s.Description, s => s.Date, s => s.Place, s => s.Address, s => s.SpotsAvailable))
             {
-                await _context.SaveChangesAsync();
-                return RedirectToPage("./Index");
+                if (eventToUpdate.SpotsAvailable < 0)
+                {
+                    editFailed = true;
+                    return Page();
+                }
+                else 
+                {
+                    editSuccess = true;
+                    await _context.SaveChangesAsync();
+                    return Page();
+                }
             }
 
-
+            editFailed = true;
             return Page();
-
-            //_context.AttachRange(Events);
-
-            //try
-            //{
-            //    await _context.SaveChangesAsync();
-            //}
-            //catch (Exception exception)
-            //{
-            //    Console.WriteLine(exception.Message); // Tillf�llig l�sning. B�r loggas korrekt
-            //}
-            //return Page();
         }
 
         public async Task<IActionResult> OnPostCancelAsync(int? id)
@@ -103,11 +119,6 @@ namespace FunEvents.Pages.Events
 
                 return RedirectToPage("./Index");
             }
-        }
-
-        private bool EventExists(int id)
-        {
-            return _context.Events.Any(e => e.Id == id);
         }
     }
 }
