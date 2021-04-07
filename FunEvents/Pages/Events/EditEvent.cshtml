@@ -21,7 +21,9 @@
 {
     <div class="row h-100 justify-content-center align-items-center">
         <div class="col-10 col-md-8 col-lg-6">
-            <h1>Edit </h1><h1 style="font-style: italic; font-weight:100;">@Model.Event.Title</h1>
+            <h1>@Model.Event.Title</h1>
+            <p style="font-style: italic;">Edit your chosen event here</p>
+            <hr />
             <form method="post">
                 <div class="form-group">
                     <label asp-for="@Model.Event.Title" class="col-sm-10 col-form-label col-form-label-lg" style="font-weight: bold;"></label>
@@ -60,7 +62,7 @@
                 </div>
                 <div class="form-row align-items-end">
                     <div class="form-group col-md-1">
-                        <input type="submit" value="Save" class="btn btn-success" asp-page-handler="Save" asp-route-id="@Model.Event.Id" asp-route-selectedEvent="@Model.Event.Id"/>
+                        <input type="submit" value="Save" class="btn btn-success" asp-page-handler="Save" asp-route-id="@Model.Event.Id" asp-route-selectedEvent="@Model.Event.Id" />
                     </div>
                     <div class="form-group col-md-2">
                         <a asp-page="/Events/EditEvent" class="text-dark">Back to Events</a>
@@ -74,11 +76,11 @@
     <hr />
 }
 
-<div class="row h-100 w-80 p-3 justify-content-center align-items-center">
-    <div class="col-10 col-md-8 col-lg-6">
+<div class="row h-100 justify-content-center align-items-center">
+    <div class="col-12 w-75 col-lg-6">
         <h1>@Model.AppUser.UserName's Events!</h1>
         <p style="font-style:italic;">Edit or cancel your events here</p>
-        <table class="table w-80 p-3">
+        <table class="table">
             <thead class="thead-dark">
                 <tr>
                     <th>
