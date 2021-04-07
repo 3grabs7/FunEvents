@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FunEvents.Data;
 using FunEvents.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -16,14 +17,17 @@ namespace FunEvents.Pages.Events
         private readonly ApplicationDbContext _context;
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
+        private readonly IHttpContextAccessor _accessor;
 
         public DetailsModel(ApplicationDbContext context,
            UserManager<AppUser> userManager,
-           SignInManager<AppUser> signInManager)
+           SignInManager<AppUser> signInManager,
+           IHttpContextAccessor accessor)
         {
             _context = context;
             _userManager = userManager;
             _signInManager = signInManager;
+            _accessor = accessor;
         }
 
         public Event EventToJoin { get; set; }
@@ -63,6 +67,15 @@ namespace FunEvents.Pages.Events
 
                 return Redirect($"/Events/Details?id={id}");
             }
+
+            string clientIpAddress = _accessor.HttpContext.Connection.RemoteIpAddress.ToString();
+            if (!_context.Analytics.AnyAsync(a => a.Event.Id == id && a.Ip == clientIpAddress).Result)
+            {
+                EventToJoin.UniquePageVisits++;
+
+            }
+            EventToJoin.PageVisits++;
+            await _context.SaveChangesAsync();
 
             return Page();
         }

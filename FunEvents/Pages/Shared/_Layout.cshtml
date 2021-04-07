@@ -39,9 +39,9 @@
                         </ul>
                         <!-- This updates the navbar instantly when the admin user adds organizer role to itself -->
                         @if (_userManager.IsInRoleAsync(_context.Users
-                        .Where(u => u.Id == _userManager.GetUserId(User))
-                        .First()
-                        , "Organizer").Result)
+                       .Where(u => u.Id == _userManager.GetUserId(User))
+                       .First()
+                       , "Organizer").Result)
                         {
                             <ul class="navbar-nav flex-grow-1 justify-content-end">
                                 <li class="nav-item">
@@ -58,11 +58,11 @@
                                 <li class="nav-item">
                                     <a class="nav-link text-danger" asp-area="" asp-page="/AccountManagement/RolesManager">Manage Users</a>
                                 </li>
-                                </ul>
-                                }
-                                }
-                            <partial name="_LoginPartial" />
-                        </div>
+                            </ul>
+                        }
+                    }
+                    <partial name="_LoginPartial" />
+                </div>
             </div>
         </nav>
     </header>

@@ -17,7 +17,13 @@ namespace FunEvents.Data
         {
         }
 
+        public ApplicationDbContext()
+            : base()
+        {
+        }
+
         public DbSet<Event> Events { get; set; }
+        public DbSet<Analytics> Analytics { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

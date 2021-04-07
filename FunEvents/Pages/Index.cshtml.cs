@@ -41,10 +41,10 @@ namespace FunEvents.Pages
         private const int EVENTS_PER_TOP_VIEW = 3;
         public async Task<IList<Event>> LoadPopularEvents()
         {
-            // Create row wich saves event detail visits and order by most to least
             var events = await _context.Events
                 .Where(e => e.SpotsAvailable > 0)
-                .OrderBy(e => e.SpotsAvailable) // <- Insert vists here
+                .OrderBy(e => e.PageVisits)
+                .Reverse()
                 .Take(EVENTS_PER_TOP_VIEW)
                 .ToListAsync();
             return events;

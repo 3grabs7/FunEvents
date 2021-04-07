@@ -24,5 +24,14 @@ namespace FunEvents.Models
 
         [InverseProperty("JoinedEvents")]
         public ICollection<AppUser> Attendees { get; set; }
+        public int PageVisits { get; set; }
+        public int UniquePageVisits { get; set; }
+    }
+
+    public class Analytics
+    {
+        public int Id { get; set; }
+        public Event Event { get; set; }
+        public string Ip { get; set; }
     }
 }
