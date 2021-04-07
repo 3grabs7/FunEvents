@@ -3,124 +3,145 @@
 @{
 }
 
-@if (Model.hasEventBeenSelected)
+@if (Model.editSuccess)
+{
+    <div class="alert alert-success" role="alert">
+        Event edited successfully! <a asp-page="/Events/EditEvent">Back To Events</a>
+    </div>
+}
+
+@if (Model.editFailed)
+{
+    <div class="alert alert-danger" role="alert">
+        Something went wrong.. 
+    </div>
+}
+
+@if (Model.eventSelected)
 {
     <div class="row h-100 justify-content-center align-items-center">
         <div class="col-10 col-md-8 col-lg-6">
             <h1>Edit </h1><h1 style="font-style: italic; font-weight:100;">@Model.Event.Title</h1>
-                          <form method="post">
-                              <div class="form-group">
-                                  <label asp-for="@Model.Event.Title" class="col-sm-10 col-form-label col-form-label-lg" style="font-weight: bold;"></label>
-                                  <input asp-for="@Model.Event.Title" class="form-control form-control-lg">
-                                  <span asp-validation-for="@Model.Event.Title" class="text-danger"></span>
-                              </div>
+            <form method="post">
+                <div class="form-group">
+                    <label asp-for="@Model.Event.Title" class="col-sm-10 col-form-label col-form-label-lg" style="font-weight: bold;"></label>
+                    <input asp-for="@Model.Event.Title" class="form-control form-control-lg">
+                    <span asp-validation-for="@Model.Event.Title" class="text-danger"></span>
+                </div>
 
-                              <div class="form-group">
-                                  <label asp-for="@Model.Event.Description" class="col-sm-10 col-form-label col-form-label-lg" style="font-weight: bold;">Description</label>
-                                  <textarea asp-for="@Model.Event.Description" class="form-control" id="exampleFormControlTextarea1" rows="4"></textarea>
-                                  <span asp-validation-for="@Model.Event.Description" class="text-danger"></span>
-                              </div>
-                              <div class="form-row">
-                                  <div class="form-group col-md-4">
-                                      <label asp-for="@Model.Event.Date" class="col-sm-10 col-form-label col-form-label-lg" style="font-weight: bold;"></label>
-                                      <input asp-for="@Model.Event.Date" class="form-control">
-                                      <span asp-validation-for="@Model.Event.Date" id="basic-addon2"></span>
-                                  </div>
-                                  <div class="form-group col-md-8">
-                                      <label asp-for="@Model.Event.Place" class="col-sm-10 col-form-label col-form-label-lg" style="font-weight: bold;"></label>
-                                      <input asp-for="@Model.Event.Place" class="form-control">
-                                      <span asp-validation-for="@Model.Event.Place" id="basic-addon2"></span>
-                                  </div>
-                              </div>
-                              <div class="form-row">
-                                  <div class="form-group col-md-8">
-                                      <label asp-for="@Model.Event.Address" class="col-sm-10 col-form-label col-form-label-lg" style="font-weight: bold;"></label>
-                                      <input asp-for="@Model.Event.Address" class="form-control">
-                                      <span asp-validation-for="@Model.Event.Address" id="basic-addon2"></span>
-                                  </div>
-                                  <div class="form-group col-md-4">
-                                      <label asp-for="@Model.Event.SpotsAvailable" class="col-sm-10 col-form-label col-form-label-lg" style="font-weight: bold;"></label>
-                                      <input asp-for="@Model.Event.SpotsAvailable" class="form-control">
-                                      <span asp-validation-for="@Model.Event.SpotsAvailable" id="basic-addon2"></span>
-                                  </div>
-                              </div>
-                              <input type="submit" value="Save" class="btn btn-success" asp-page-handler="Save" asp-route-id="@Model.Event.Id" />
-                          </form>
+                <div class="form-group">
+                    <label asp-for="@Model.Event.Description" class="col-sm-10 col-form-label col-form-label-lg" style="font-weight: bold;">Description</label>
+                    <textarea asp-for="@Model.Event.Description" class="form-control" id="exampleFormControlTextarea1" rows="4"></textarea>
+                    <span asp-validation-for="@Model.Event.Description" class="text-danger"></span>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label asp-for="@Model.Event.Date" class="col-sm-10 col-form-label col-form-label-lg" style="font-weight: bold;"></label>
+                        <input asp-for="@Model.Event.Date" class="form-control">
+                        <span asp-validation-for="@Model.Event.Date" id="basic-addon2"></span>
+                    </div>
+                    <div class="form-group col-md-8">
+                        <label asp-for="@Model.Event.Place" class="col-sm-10 col-form-label col-form-label-lg" style="font-weight: bold;"></label>
+                        <input asp-for="@Model.Event.Place" class="form-control">
+                        <span asp-validation-for="@Model.Event.Place" id="basic-addon2"></span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-8">
+                        <label asp-for="@Model.Event.Address" class="col-sm-10 col-form-label col-form-label-lg" style="font-weight: bold;"></label>
+                        <input asp-for="@Model.Event.Address" class="form-control">
+                        <span asp-validation-for="@Model.Event.Address" id="basic-addon2"></span>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label asp-for="@Model.Event.SpotsAvailable" class="col-sm-10 col-form-label col-form-label-lg" style="font-weight: bold;"></label>
+                        <input asp-for="@Model.Event.SpotsAvailable" class="form-control">
+                        <span asp-validation-for="@Model.Event.SpotsAvailable" id="basic-addon2"></span>
+                    </div>
+                </div>
+                <div class="form-row align-items-end">
+                    <div class="form-group col-md-1">
+                        <input type="submit" value="Save" class="btn btn-success" asp-page-handler="Save" asp-route-id="@Model.Event.Id" asp-route-selectedEvent="@Model.Event.Id"/>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <a asp-page="/Events/EditEvent" class="text-dark">Back to Events</a>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
+    <br />
+    <br />
+    <hr />
+}
 
-                
-            
-            <br /><br />
-            }
-            <table class="table">
-                <thead>
+<div class="row h-100 w-80 p-3 justify-content-center align-items-center">
+    <div class="col-10 col-md-8 col-lg-6">
+        <h1>@Model.AppUser.UserName's Events!</h1>
+        <p style="font-style:italic;">Edit or cancel your events here</p>
+        <table class="table w-80 p-3">
+            <thead class="thead-dark">
+                <tr>
+                    <th>
+                        Title
+                    </th>
+                    <th>
+                        Description
+                    </th>
+                    <th>
+                        Date
+                    </th>
+                    <th>
+                        Place
+                    </th>
+                    <th>
+                        Adress
+                    </th>
+                    <th>
+                        Organizer
+                    </th>
+                    <th>
+                        Spots Available
+                    </th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.Events.Count; i++)
+                {
                     <tr>
-                        <th>
-                            Title
-                        </th>
-                        <th>
-                            Description
-                        </th>
-                        <th>
-                            Date
-                        </th>
-                        <th>
-                            Place
-                        </th>
-                        <th>
-                            Adress
-                        </th>
-                        <th>
-                            Organizer
-                        </th>
-                        <th>
-                            Spots Available
-                        </th>
-                        <th></th>
+                        <td>
+                            <p>@Model.Events[i].Title</p>
+                        </td>
+                        <td>
+                            <p>@Model.Events[i].Description</p>
+                        </td>
+                        <td>
+                            <p>@Model.Events[i].Date</p>
+                        </td>
+                        <td>
+                            <p>@Model.Events[i].Place</p>
+                        </td>
+                        <td>
+                            <p>@Model.Events[i].Address</p>
+                        </td>
+                        <td>
+                            <p>@Model.Events[i].Organizer.UserName</p>
+                        </td>
+                        <td>
+                            <p>@Model.Events[i].SpotsAvailable</p>
+                        </td>
+                        <td>
+                            <a class="btn btn-success" asp-route-selectedEvent="@Model.Events[i].Id" asp-page="/Events/EditEvent">Edit</a>
+                        </td>
+                        <td>
+                            <form method="post">
+                                <input type="submit" value="Cancel Event" class="btn btn-danger" asp-page-handler="Cancel" asp-route-id="@Model.Events[i].Id" />
+                            </form>
+                        </td>
                     </tr>
-                </thead>
-                <form method="post">
-                    <tbody>
-                        @for (int i = 0; i < Model.Events.Count; i++)
-                        {
-                            <tr>
-                                <td>
-                                    <input asp-for="@Model.Events[i].Title" class="form-control" id="titleInput" oninput="setRouteParam" />
-                                    <span asp-validation-for="@Model.Events[i].Title" class="text-danger"></span>
-                                </td>
-                                <td>
-                                    <input asp-for="@Model.Events[i].Description" class="form-control" />
-                                    <span asp-validation-for="@Model.Events[i].Description" class="text-danger"></span>
-                                </td>
-                                <td>
-                                    <input asp-for="@Model.Events[i].Date" class="form-control" />
-                                    <span asp-validation-for="@Model.Events[i].Date" class="text-danger"></span>
-                                </td>
-                                <td>
-                                    <input asp-for="@Model.Events[i].Place" class="form-control" />
-                                    <span asp-validation-for="@Model.Events[i].Place" class="text-danger"></span>
-                                </td>
-                                <td>
-                                    <input asp-for="@Model.Events[i].Address" class="form-control" />
-                                    <span asp-validation-for="@Model.Events[i].Address" class="text-danger"></span>
-                                </td>
-                                <td>
-                                    @*<p>@Model.Events[i].Organizer.UserName</p>*@
-                                    Organizer
-                                </td>
-                                <td>
-                                    <input asp-for="@Model.Events[i].SpotsAvailable" asp-route-newspotsavailable="@Model.Events[i].SpotsAvailable" class="form-control" />
-                                    <span asp-validation-for="@Model.Events[i].SpotsAvailable" class="text-danger"></span>
-                                </td>
-                                <td>
-                                    <a class="btn btn-success" asp-route-selectedEvent="@Model.Events[i].Id" asp-page="/Events/EditEvent">Edit</a>
-                                </td>
-                                <td>
-                                    <input type="submit" value="Cancel Event" class="btn btn-danger" asp-page-handler="Cancel" asp-route-id="@Model.Events[i].Id" />
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </form>
-            </table>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
