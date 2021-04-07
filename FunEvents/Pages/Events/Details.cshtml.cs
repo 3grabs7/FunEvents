@@ -60,7 +60,7 @@ namespace FunEvents.Pages.Events
             if (redirectedFromLogin ?? false)
             {
                 await JoinEventOnRedirectFromLogin(id);
-                //redirectedFromLogin = null;
+
                 return Redirect($"/Events/Details?id={id}");
             }
 
@@ -120,9 +120,13 @@ namespace FunEvents.Pages.Events
             EventToJoin = await _context.Events.FindAsync(id);
 
             string userId = _userManager.GetUserId(User);
-            AppUser appUser = await _context.Users.Where(u => u.Id == userId).Include(u => u.JoinedEvents).FirstOrDefaultAsync();
+            AppUser appUser = await _context.Users
+                .Where(u => u.Id == userId)
+                .Include(u => u.JoinedEvents)
+                .FirstOrDefaultAsync();
 
             appUser.JoinedEvents.Add(EventToJoin);
+
             EventToJoin.SpotsAvailable--;
 
             await _context.SaveChangesAsync();

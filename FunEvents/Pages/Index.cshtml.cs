@@ -61,7 +61,7 @@ namespace FunEvents.Pages
             return events;
         }
 
-        public async Task<IList<Event>> LoadAlmostFullyBookesEvents()
+        public async Task<IList<Event>> LoadAlmostFullyBookedEvents()
         {
             var events = await _context.Events
                 .Where(e => e.SpotsAvailable > 0)
