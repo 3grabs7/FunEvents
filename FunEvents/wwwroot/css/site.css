@@ -75,11 +75,6 @@ body {
 
 
 /* Home Page */
-.mainbackground {
-    width: 100vw;
-    height: 120%;
-    background-color: lightgray;
-}
 
 .topevents {
     margin-top: 4vh;
