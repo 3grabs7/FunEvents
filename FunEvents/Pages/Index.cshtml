@@ -23,63 +23,54 @@
         }
     </div>
 </div>
-
-<div class="container-fluid mainbackground">
-    <div class="container topevents align-baseline">
-        <h1>Popular events</h1>
-        <div class="row justify-content-around text-center">
-            @foreach (var item in Model.LoadPopularEvents().Result)
-            {
-                <div class="col-sm-3">
-                    <img class="rounded-circle border border-secondary"
-                         src="~/img/timmy.png" alt="Generic placeholder image"
-                         width="140" height="140">
-                    <h2>@item.Title</h2>
-                    <p>@item.Description</p>
-                    <a class="btn btn-primary" role="button"
-                       asp-page="/Events/Details" asp-route-id="@item.Id">Read more »</a>
-                </div>
-            }
-        </div>
+<div class="container topevents align-baseline">
+    <h1>Popular events</h1>
+    <div class="row justify-content-around text-center">
+        @foreach (var item in Model.LoadPopularEvents().Result)
+        {
+            <div class="col-sm-3">
+                <img class="rounded-circle border border-secondary"
+                     src="~/img/timmy.png" alt="Generic placeholder image"
+                     width="140" height="140">
+                <h2>@item.Title</h2>
+                <p>@item.Description</p>
+                <a class="btn btn-primary" role="button"
+                   asp-page="/Events/Details" asp-route-id="@item.Id">Read more »</a>
+            </div>
+        }
     </div>
 </div>
-
-<div class="container-fluid mainbackground">
-    <div class="container topevents align-baseline">
-        <h1>Almost fully booked</h1>
-        <div class="row justify-content-around text-center">
-            @foreach (var item in Model.LoadAlmostFullyBookedEvents().Result)
-            {
-                <div class="col-sm-3">
-                    <img class="rounded-circle border border-secondary"
-                         src="~/img/timmy.png" alt="Generic placeholder image"
-                         width="140" height="140">
-                    <h2>@item.Title</h2>
-                    <p>@item.Description</p>
-                    <a class="btn btn-primary" role="button"
-                       asp-page="/Events/Details" asp-route-id="@item.Id">Read more »</a>
-                </div>
-            }
-        </div>
+<div class="container topevents align-baseline">
+    <h1>Almost fully booked</h1>
+    <div class="row justify-content-around text-center">
+        @foreach (var item in Model.LoadAlmostFullyBookedEvents().Result)
+        {
+            <div class="col-sm-3">
+                <img class="rounded-circle border border-secondary"
+                     src="~/img/timmy.png" alt="Generic placeholder image"
+                     width="140" height="140">
+                <h2>@item.Title</h2>
+                <p>@item.Description</p>
+                <a class="btn btn-primary" role="button"
+                   asp-page="/Events/Details" asp-route-id="@item.Id">Read more »</a>
+            </div>
+        }
     </div>
 </div>
-
-<div class="container-fluid mainbackground">
-    <div class="container topevents align-baseline">
-        <h1>Newly listed events</h1>
-        <div class="row justify-content-around text-center">
-            @foreach (var item in Model.LoadNewEvents().Result)
-            {
-                <div class="col-sm-3">
-                    <img class="rounded-circle border border-secondary"
-                         src="~/img/timmy.png" alt="Generic placeholder image"
-                         width="140" height="140">
-                    <h2>@item.Title</h2>
-                    <p>@item.Description</p>
-                    <a class="btn btn-primary" role="button"
-                       asp-page="/Events/Details" asp-route-id="@item.Id">Read more »</a>
-                </div>
-            }
-        </div>
+<div class="container topevents align-baseline">
+    <h1>Newly listed events</h1>
+    <div class="row justify-content-around text-center">
+        @foreach (var item in Model.LoadNewEvents().Result)
+        {
+            <div class="col-sm-3">
+                <img class="rounded-circle border border-secondary"
+                     src="~/img/timmy.png" alt="Generic placeholder image"
+                     width="140" height="140">
+                <h2>@item.Title</h2>
+                <p>@item.Description</p>
+                <a class="btn btn-primary" role="button"
+                   asp-page="/Events/Details" asp-route-id="@item.Id">Read more »</a>
+            </div>
+        }
     </div>
 </div>
