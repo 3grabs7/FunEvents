@@ -50,7 +50,7 @@ namespace FunEvents.Pages.Events
 
 
         // Funkar inte som det ska �nnu
-        public async Task<IActionResult> OnPostSaveAsync(string newTitle, string newDescription, DateTime newDate, string newPlace, string newAdress, int newSpotsAvailable, int? id)
+        public async Task<IActionResult> OnPostSaveAsync(int? id)
         {
             var eventToUpdate = await _context.Events.Include(e => e.Organizer).FirstOrDefaultAsync(e => e.Id == id);
 
@@ -59,19 +59,13 @@ namespace FunEvents.Pages.Events
                 return NotFound();
             }
 
-            //if(await TryUpdateModelAsync<Event>(eventToUpdate, "event",
-            //    s => s.Title, s => s.Description, s => s.Date, s => s.Place, s => s.Address, s => s.SpotsAvailable))
-            //{
-            //    await _context.SaveChangesAsync();
-            //    return RedirectToPage("./Index");
-            //}
+            if(await TryUpdateModelAsync<Event>(eventToUpdate, "event",
+                s => s.Title, s => s.Description, s => s.Date, s => s.Place, s => s.Address, s => s.SpotsAvailable))
+            {
+                await _context.SaveChangesAsync();
+                return RedirectToPage("./Index");
+            }
 
-            eventToUpdate.Title = newTitle;
-            eventToUpdate.Description = newDescription;
-            eventToUpdate.Date = newDate;
-            eventToUpdate.Place = newPlace;
-            eventToUpdate.Address = newAdress;
-            eventToUpdate.SpotsAvailable = newSpotsAvailable;
 
             return Page();
 
