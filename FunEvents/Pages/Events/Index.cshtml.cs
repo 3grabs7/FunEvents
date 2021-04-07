@@ -51,13 +51,13 @@ namespace FunEvents.Pages.Events
             }
 
             Count = await GetCount();
-
-            string userId = _userManager.GetUserId(User);
-            AppUser = await _context.Users
-                .Where(u => u.Id == userId)
-                .Include(u => u.JoinedEvents)
-                .FirstOrDefaultAsync();
+            AppUser = await GetAppuser(_userManager.GetUserId(User));
         }
+
+        public async Task<AppUser> GetAppuser(string userId) => await _context.Users
+            .Where(u => u.Id == userId)
+            .Include(u => u.JoinedEvents)
+            .FirstOrDefaultAsync();
 
         public async Task<List<Event>> GetPaginatedResult(int currentPage, int pageSize)
         {

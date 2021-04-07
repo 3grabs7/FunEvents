@@ -8,13 +8,13 @@
 <ul class="list-group">
     @foreach (var user in Model.Users)
     {
-        <li class="list-group-item @(Model.IsOrganizer(user.Id).Result ? "active" : "")">
+        <li class="list-group-item @(Model.IsInSpecificRole(user.Id, "Organizer").Result ? "active" : "")">
             <div class="row">
                 <div class="col text-left">
-                    @user.UserName @(Model.IsAdmin(user.Id).Result ? "(Admin👸)" : "")
+                    @user.UserName @(Model.IsInSpecificRole(user.Id, "Admin").Result ? "(Admin👸)" : "")
                 </div>
                 <div class="col-4 text-right">
-                    @if (Model.IsOrganizer(user.Id).Result)
+                    @if (Model.IsInSpecificRole(user.Id, "Organizer").Result)
                     {
                         <form method="post" asp-route-id="@user.Id" asp-page-handler="Remove">
                             <button class="btn btn-block btn-info"

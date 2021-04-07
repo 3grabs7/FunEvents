@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using FunEvents.Data;
 using FunEvents.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -9,6 +5,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace FunEvents.Pages.AccountManagement
 {
@@ -24,27 +23,26 @@ namespace FunEvents.Pages.AccountManagement
             _context = context;
             _userManager = userManager;
         }
+
+        public IList<AppUser> Users { get; set; }
+
+        //public IdentityRole Role { get; set; } // Only need this if we want several roles to choose from
+
         public async Task OnGetAsync()
         {
             Users = await _context.Users.ToListAsync();
         }
 
-        public IList<AppUser> Users { get; set; }
-        public AppUser SelectedUser { get; set; }
-        // Only need this if we want several roles to choose from
-        //public IdentityRole Role { get; set; }
         public async Task<IActionResult> OnPostAddAsync(string id)
         {
-            SelectedUser = await _context.Users
-                .Where(u => u.Id == id)
-                .FirstOrDefaultAsync();
+            var user = await SelectedUser(id);
             // await _userManager.AddToRoleAsync(AppUser, Role.Name);
-            await _userManager.AddToRoleAsync(SelectedUser, "Organizer");
+            await _userManager.AddToRoleAsync(user, "Organizer");
             await _context.SaveChangesAsync();
 
-            if (_userManager.GetUserId(User) == SelectedUser.Id)
+            if (_userManager.GetUserId(User) == user.Id)
             {
-                await _userManager.UpdateSecurityStampAsync(SelectedUser);
+                await _userManager.UpdateSecurityStampAsync(user);
             }
 
             return RedirectToPage("/AccountManagement/RolesManager");
@@ -52,33 +50,26 @@ namespace FunEvents.Pages.AccountManagement
 
         public async Task<IActionResult> OnPostRemoveAsync(string id)
         {
-            SelectedUser = await _context.Users
-                .Where(u => u.Id == id)
-                .FirstOrDefaultAsync();
-            var result = await _userManager.RemoveFromRoleAsync(SelectedUser, "Organizer");
+            var user = await SelectedUser(id);
+            var result = await _userManager.RemoveFromRoleAsync(user, "Organizer");
             await _context.SaveChangesAsync();
 
             return RedirectToPage("/AccountManagement/RolesManager");
         }
 
-        public async Task<bool> IsOrganizer(string id)
+        public async Task<AppUser> SelectedUser(string id) => await _context.Users
+            .Where(u => u.Id == id)
+            .FirstOrDefaultAsync();
+
+        public async Task<bool> IsInSpecificRole(string id, string role)
         {
-            IdentityRole role = await _context.Roles
-                .Where(r => r.Name == "Organizer")
+            IdentityRole roleToCheck = await _context.Roles
+                .Where(r => r.Name == role)
                 .FirstOrDefaultAsync();
 
             return await _context.UserRoles
-                .AnyAsync(ur => ur.UserId == id && ur.RoleId == role.Id);
+                .AnyAsync(ur => ur.UserId == id && ur.RoleId == roleToCheck.Id);
         }
 
-        public async Task<bool> IsAdmin(string id)
-        {
-            IdentityRole role = await _context.Roles
-                .Where(r => r.Name == "Admin")
-                .FirstOrDefaultAsync();
-
-            return await _context.UserRoles
-                .AnyAsync(ur => ur.UserId == id && ur.RoleId == role.Id);
-        }
     }
 }
