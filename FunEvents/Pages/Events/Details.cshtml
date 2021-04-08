@@ -22,7 +22,7 @@
 <div class="container">
     <div class="card w-100">
         <div class="card-header">
-            @Model.EventToJoin.Title
+            @Model.Event.Title
         </div>
         <div class="row">
             <div class="col-5">
@@ -33,17 +33,17 @@
                         margin: 20px;">
                 <div class="card-body">
                     <h5 class="card-title">About</h5>
-                    <p class="card-text">@Model.EventToJoin.Description</p>
+                    <p class="card-text">@Model.Event.Description</p>
                     <form method="post">
                         @if (_signInManager.IsSignedIn(User))
                         {
-                            @if (Model.EventToJoin.Attendees?.Contains(Model.AppUser) ?? false)
+                            @if (Model.Event.Attendees?.Contains(Model.AppUser) ?? false)
                             {
                                 <a class="btn btn-primary disabled">Already Joined 👺</a>
                             }
                             else
                             {
-                                if (Model.EventToJoin.SpotsAvailable > 0)
+                                if (Model.Event.SpotsAvailable > 0)
                                 {
                                     <button type="submit" class="btn btn-primary">Join</button>
                                 }
@@ -56,7 +56,7 @@
                         else
                         {
                             <a asp-area="Identity" asp-page="/Account/Login"
-                               asp-route-returnUrl="~/Events/Details?id=@(Model.EventToJoin.Id)&redirectedFromLogin=true"
+                               asp-route-returnUrl="~/Events/Details?id=@(Model.Event.Id)&redirectedFromLogin=true"
                                class="btn btn-success">
                                 Join Keff STYLE
                             </a>
@@ -69,19 +69,19 @@
                     <tbody>
                         <tr>
                             <td>Date</td>
-                            <td>@(Model.EventToJoin.Date.ToShortDateString())</td>
+                            <td>@(Model.Event.Date.ToShortDateString())</td>
                         </tr>
                         <tr>
                             <td>Place</td>
-                            <td>@Model.EventToJoin.Place</td>
+                            <td>@Model.Event.Place</td>
                         </tr>
                         <tr>
                             <td>Adress</td>
-                            <td>@Model.EventToJoin.Address</td>
+                            <td>@Model.Event.Address</td>
                         </tr>
                         <tr>
                             <td>Spots Left</td>
-                            <td>@Model.EventToJoin.SpotsAvailable</td>
+                            <td>@Model.Event.SpotsAvailable</td>
                         </tr>
                         <tr>
                             <td>Attendees</td>
@@ -104,7 +104,7 @@
             <p class="text-right">
                 Find more events from this Organizer
                 <a asp-page="/Events/OrganizerPage"
-                   asp-route-id="@(Model.EventToJoin.Organizer?.Id ?? null)"
+                   asp-route-id="@(Model.Event.Organizer?.Id ?? null)"
                    class="btn btn-primary">
                     🎯
                 </a>
