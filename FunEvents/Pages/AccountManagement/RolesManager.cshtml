@@ -3,36 +3,40 @@
 @{
 }
 
-<h1>User Manager</h1>
-<h4>Assign Organizer Privileges To User</h4>
-<ul class="list-group">
-    @foreach (var user in Model.Users)
-    {
-        <li class="list-group-item @(Model.IsInSpecificRole(user.Id, "Organizer").Result ? "active" : "")">
-            <div class="row">
-                <div class="col text-left">
-                    @user.UserName @(Model.IsInSpecificRole(user.Id, "Admin").Result ? "(Admin👸)" : "")
+@if (User.IsInRole("Admin"))
+{
+    <h1>User Manager</h1>
+    <h4>Assign Organizer Privileges To User</h4>
+    <ul class="list-group">
+        @foreach (var user in Model.Users)
+        {
+            <li class="list-group-item @(Model.IsInSpecificRole(user.Id, "Organizer").Result ? "active" : "")">
+                <div class="row">
+                    <div class="col text-left">
+                        @user.UserName @(Model.IsInSpecificRole(user.Id, "Admin").Result ? "(Admin👸)" : "")
+                    </div>
+                    <div class="col-4 text-right">
+                        @if (Model.IsInSpecificRole(user.Id, "Organizer").Result)
+                        {
+                            <form method="post" asp-route-id="@user.Id" asp-page-handler="Remove">
+                                <button class="btn btn-block btn-info"
+                                        type="submit">
+                                    Remove as Organizer
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <form method="post" asp-route-id="@user.Id" asp-page-handler="Add">
+                                <button class="btn btn-block btn-info" type="submit">
+                                    Make Organizer
+                                </button>
+                            </form>
+                        }
+                    </div>
                 </div>
-                <div class="col-4 text-right">
-                    @if (Model.IsInSpecificRole(user.Id, "Organizer").Result)
-                    {
-                        <form method="post" asp-route-id="@user.Id" asp-page-handler="Remove">
-                            <button class="btn btn-block btn-info"
-                                    type="submit">
-                                Remove as Organizer
-                            </button>
-                        </form>
-                    }
-                    else
-                    {
-                        <form method="post" asp-route-id="@user.Id" asp-page-handler="Add">
-                            <button class="btn btn-block btn-info" type="submit">
-                                Make Organizer
-                            </button>
-                        </form>
-                    }
-                </div>
-            </div>
-        </li>
-    }
-</ul>
+            </li>
+        }
+    </ul>
+}
+

@@ -36,6 +36,7 @@ namespace FunEvents.Data
             await Database.EnsureDeletedAsync();
             await Database.EnsureCreatedAsync();
 
+            // Seed users
             AppUser adminUser = new AppUser()
             {
                 Email = "admin@admin.com",
@@ -44,9 +45,41 @@ namespace FunEvents.Data
                 LastName = "Adminsson"
             };
 
-            var result = userManager.CreateAsync(adminUser, "Password5%");
+            var adminResult = await userManager.CreateAsync(adminUser, "Password5%");
 
-            string[] roles = new string[] { "Admin", "EventManager", "Organizer", "Assistant" };
+            AppUser organizer = new AppUser()
+            {
+                Email = "organizer@organizer.com",
+                UserName = "ORGANIZER",
+                FirstName = "Tina",
+                LastName = "Björk"
+            };
+
+            var organizerResult = await userManager.CreateAsync(organizer, "Password6%");
+
+            AppUser manager = new AppUser()
+            {
+                Email = "manager@manager.com",
+                UserName = "MANAGER",
+                FirstName = "Ursula",
+                LastName = "Boss"
+            };
+
+            var managerResult = await userManager.CreateAsync(manager, "Password7%");
+
+            AppUser assistant = new AppUser()
+            {
+                Email = "assistant@assistant.com",
+                UserName = "ASSISTANT",
+                FirstName = "Kurt",
+                LastName = "Larsson"
+            };
+
+            var assistantResult = await userManager.CreateAsync(assistant, "Password8%");
+
+
+            // Seed roles
+            string[] roles = new string[] { "Admin", "Organizer", "Manager", "Assistant" };
             foreach (string role in roles)
             {
                 if (!this.Roles.Any(r => r.Name == role))
@@ -57,6 +90,9 @@ namespace FunEvents.Data
             }
 
             var rolesResult = await userManager.AddToRoleAsync(adminUser, "Admin");
+            await userManager.AddToRoleAsync(organizer, "Organizer");
+            await userManager.AddToRoleAsync(manager, "Manager");
+            await userManager.AddToRoleAsync(assistant, "Assistant");
 
             if (!rolesResult.Succeeded)
             {
@@ -68,6 +104,7 @@ namespace FunEvents.Data
                 throw new Exception(errorMessage);
             }
 
+            // Seed events
             await Events.AddRangeAsync(new List<Event>() {
                 new Event{Title="Food Festival", Description="All you can eat - food from all around the world - all you need is a ticket!", Place="On the street", Address="Gourmet Lane 63", Date= new DateTime(2021,7,21), SpotsAvailable=1000, CreatedAt=DateTime.Now},
                 new Event{Title="Free Karaoke night",  Description="Join this event to be a part of a fantastic karaoke night!", Place="Sing Along", Address="Vocals street 2", Date= new DateTime(2021,5,13), SpotsAvailable=35, CreatedAt=DateTime.Now },

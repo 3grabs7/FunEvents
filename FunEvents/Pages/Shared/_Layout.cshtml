@@ -50,7 +50,7 @@
                 <a class="nav-link text-success" asp-area="" asp-page="/Events/EditEvent">Organize Events</a>
             </li>
         </ul>}
-                                        @if (User.IsInRole("Admin"))
+                                        @if (User.IsInRole("Admin") || User.IsInRole("Organizer"))
                                         {
                         <ul class="navbar-nav flex-grow-1 justify-content-end">
                             <li class="nav-item">

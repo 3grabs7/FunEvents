@@ -7,30 +7,40 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace FunEvents.Pages.AccountManagement
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin, Organizer")]
     public class RolesManagerModel : PageModel
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<AppUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
         public RolesManagerModel(ApplicationDbContext context,
-            UserManager<AppUser> userManager)
+            UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             _context = context;
             _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         public IList<AppUser> Users { get; set; }
 
-        //public IdentityRole Role { get; set; } // Only need this if we want several roles to choose from
+        public IdentityRole Role { get; set; } // Only need this if we want several roles to choose from
+
+        public IList<IdentityRole> Roles { get; set; }
 
         public async Task OnGetAsync()
         {
             Users = await _context.Users.ToListAsync();
+        }
+
+        private string[] GetRolesForUser(ClaimsPrincipal user)
+        {
+            throw new System.NotImplementedException();
         }
 
         public async Task<IActionResult> OnPostAddAsync(string id)
