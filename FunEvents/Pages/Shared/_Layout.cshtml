@@ -3,7 +3,11 @@
 @inject ApplicationDbContext _context;
 @{
     // We do this so if admin changes its own role to organizer, they won't need to relogin to update navbar
-    bool isOrganizer = _userManager.IsInRoleAsync(_context.Users.Where(u => u.Id == _userManager.GetUserId(User)).First(), "Organizer").Result;
+    bool isOrganizer = false;
+    @if (User.Identity.IsAuthenticated)
+    {
+        isOrganizer = _userManager.IsInRoleAsync(_context.Users.Where(u => u.Id == _userManager.GetUserId(User)).First(), "Organizer").Result;
+    }
 }
 
 <!DOCTYPE html>

@@ -10,46 +10,36 @@
     <ul class="list-group">
         @foreach (var user in Model.Users)
         {
-            <li class="list-group-item @(Model.IsInSpecificRole(user.Id, "Organizer").Result ? "active" : "")">
+            <li class="list-group-item">
                 <div class="row">
                     <div class="col text-left">
                         @user.UserName @(Model.IsInSpecificRole(user.Id, "Admin").Result ? "(Admin👸)" : "")
                     </div>
-                    <div class="col-4 text-right">
-                        @if (Model.IsInSpecificRole(user.Id, "Organizer").Result)
-                        {
-                            <form method="post" asp-route-id="@user.Id" asp-route-role="Organizer" asp-page-handler="Remove">
-                                <button class="btn btn-block btn-info"
-                                        type="submit">
-                                    Remove as Organizer
-                                </button>
-                            </form>
-                        }
-                        else
-                        {
-                            <form method="post" asp-route-id="@user.Id" asp-route-role="Organizer" asp-page-handler="Add">
-                                <button class="btn btn-block btn-info" type="submit">
-                                    Make Organizer
-                                </button>
-                            </form>
-                        }
-                        @if (Model.IsInSpecificRole(user.Id, "Manager").Result)
-                        {
-                            <form method="post" asp-route-id="@user.Id" asp-route-role="Manager" asp-page-handler="Remove">
-                                <button class="btn btn-block btn-info"
-                                        type="submit">
-                                    Remove as Manager
-                                </button>
-                            </form>
-                        }
-                        else
-                        {
-                            <form method="post" asp-route-id="@user.Id" asp-route-role="Manager" asp-page-handler="Add">
-                                <button class="btn btn-block btn-info" type="submit">
-                                    Make Manager
-                                </button>
-                            </form>
-                        }
+                    <div class="col-8 text-right">
+                        <div class="row">
+                            @foreach (var role in Model.Roles)
+                            {
+                                <div class="col">
+                                    @if (Model.IsInSpecificRole(user.Id, role.Name).Result)
+                                    {
+                                        <form method="post" asp-route-id="@user.Id" asp-route-role="@role.Name" asp-page-handler="Remove">
+                                            <button class="btn btn-block btn-danger"
+                                                    type="submit">
+                                                @($"Remove as {role.Name}")
+                                            </button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <form method="post" asp-route-id="@user.Id" asp-route-role="@role.Name" asp-page-handler="Add">
+                                            <button class="btn btn-block btn-success" type="submit">
+                                                @($"Make {role.Name}")
+                                            </button>
+                                        </form>
+                                    }
+                                </div>
+                            }
+                        </div>
                     </div>
                 </div>
             </li>
