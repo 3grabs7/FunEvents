@@ -62,7 +62,9 @@ namespace FunEvents.Pages.Events
             Event = _context.Events.Find(selectedEvent);
             eventSelected = selectedEvent == null ? false : true;
 
-            var eventToUpdate = await _context.Events.Include(e => e.Organizer).FirstOrDefaultAsync(e => e.Id == id);
+            var eventToUpdate = await _context.Events
+                .Include(e => e.Organizer)
+                .FirstOrDefaultAsync(e => e.Id == id);
 
             string userId = _userManager.GetUserId(User);
 
@@ -71,14 +73,17 @@ namespace FunEvents.Pages.Events
                 .Include(u => u.HostedEvents)
                 .FirstOrDefaultAsync();
 
-            Events = await _context.Events.Include(e => e.Organizer).Where(e => e.Organizer.Id == userId).ToListAsync();
+            Events = await _context.Events
+                .Include(e => e.Organizer)
+                .Where(e => e.Organizer.Id == userId)
+                .ToListAsync();
 
             if (eventToUpdate == null)
             {
                 return NotFound();
             }
 
-            if(await TryUpdateModelAsync<Event>(eventToUpdate, "event",
+            if (await TryUpdateModelAsync<Event>(eventToUpdate, "event",
                 s => s.Title, s => s.Description, s => s.Date, s => s.Place, s => s.Address, s => s.SpotsAvailable))
             {
                 if (eventToUpdate.SpotsAvailable < 0)
@@ -86,7 +91,7 @@ namespace FunEvents.Pages.Events
                     editFailed = true;
                     return Page();
                 }
-                else 
+                else
                 {
                     editSuccess = true;
                     await _context.SaveChangesAsync();

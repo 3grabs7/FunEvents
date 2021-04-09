@@ -15,6 +15,9 @@
 {
     <div class="alert alert-success" role="alert">
         Event removed, it's cozier at home anyway.
+        <form asp-page-handler="Undo" asp-route-id="@Model.EventToUndoId" method="post">
+            <button type="submit">Undo</button>
+        </form>
     </div>
 }
 
@@ -40,7 +43,9 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Title)
+                    <a asp-page="/Events/Details" asp-route-id="@item.Id">
+                        @Html.DisplayFor(modelItem => item.Title)
+                    </a>
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Place)
