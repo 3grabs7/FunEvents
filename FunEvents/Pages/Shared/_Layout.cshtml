@@ -38,9 +38,9 @@
             </li>
         </ul> <!-- This updates the navbar instantly when the admin user adds organizer role to itself -->
                         @if (_userManager.IsInRoleAsync(_context.Users
-                     .Where(u => u.Id == _userManager.GetUserId(User))
-                     .First()
-                     , "Organizer").Result)
+                    .Where(u => u.Id == _userManager.GetUserId(User))
+                    .First()
+                    , "Organizer").Result)
                         {
         <ul class="navbar-nav flex-grow-1 justify-content-end">
             <li class="nav-item">
@@ -75,7 +75,6 @@
     <footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2021 - FunEvents -
-            <a asp-area="" asp-page="/Privacy">Privacy</a>
             <a asp-route-seedDb="true">Reset Db</a>
         </div>
     </footer>

@@ -36,45 +36,37 @@ namespace FunEvents.Data
             await Database.EnsureDeletedAsync();
             await Database.EnsureCreatedAsync();
 
-            var hasher = new PasswordHasher<AppUser>();
-            var user = new AppUser();
             AppUser adminUser = new AppUser()
             {
                 Email = "admin@admin.com",
-                NormalizedEmail = "ADMIN@ADMIN.COM",
                 UserName = "ADMIN",
-                FirstName = "admin",
-                LastName = "admin",
-                NormalizedUserName = "ADMIN",
-                PasswordHash = hasher.HashPassword(user, "Password5%"),
-                PhoneNumber = "+111111111111",
-                EmailConfirmed = true,
-                LockoutEnabled = false,
-                PhoneNumberConfirmed = true,
-                SecurityStamp = Guid.NewGuid().ToString()
+                FirstName = "Admin",
+                LastName = "Adminsson"
             };
 
-            var password = new PasswordHasher<AppUser>();
-            var hashed = password.HashPassword(adminUser, "Password5%");
-
-            adminUser.PasswordHash = hashed;
-
-            var userStore = new UserStore<AppUser>(this);
-            var result = userStore.CreateAsync(adminUser);
+            var result = userManager.CreateAsync(adminUser, "Password5%");
 
             string[] roles = new string[] { "Admin", "EventManager", "Organizer", "Assistant" };
-
             foreach (string role in roles)
             {
-                if(!this.Roles.Any(r => r.Name == role))
+                if (!this.Roles.Any(r => r.Name == role))
                 {
                     IdentityRole newRole = new IdentityRole(role);
-                    newRole.NormalizedName = role.ToUpper();
                     await roleManager.CreateAsync(newRole);
                 }
             }
 
             var rolesResult = await userManager.AddToRoleAsync(adminUser, "Admin");
+
+            if (!rolesResult.Succeeded)
+            {
+                string errorMessage = "";
+                foreach (var error in rolesResult.Errors)
+                {
+                    errorMessage += $"{error.Description}\n";
+                }
+                throw new Exception(errorMessage);
+            }
 
             await Events.AddRangeAsync(new List<Event>() {
                 new Event{Title="Food Festival", Description="All you can eat - food from all around the world - all you need is a ticket!", Place="On the street", Address="Gourmet Lane 63", Date= new DateTime(2021,7,21), SpotsAvailable=1000, CreatedAt=DateTime.Now},

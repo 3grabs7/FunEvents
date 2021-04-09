@@ -33,12 +33,13 @@ namespace FunEvents.Pages
             _roleManager = roleManager;
         }
 
-        public async Task OnGetAsync(bool? seedDb)
+        public async Task<IActionResult> OnGetAsync(bool? seedDb)
         {
             if (seedDb ?? false)
             {
                 await _context.SeedDatabase(_userManager, _roleManager);
             }
+            return Page();
         }
 
         private const int EVENTS_PER_TOP_VIEW = 3;
