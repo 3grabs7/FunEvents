@@ -31,16 +31,11 @@ namespace FunEvents.Pages.AccountManagement
 
         public IList<AppUser> Users { get; set; }
 
-        public IList<IdentityRole> Roles { get; set; }
+        //public IList<IdentityRole> Roles { get; set; }
 
         public async Task OnGetAsync()
         {
             Users = await _context.Users.ToListAsync();
-        }
-
-        private string[] GetRolesForUser(ClaimsPrincipal user)
-        {
-            throw new System.NotImplementedException();
         }
 
         public async Task<IActionResult> OnPostAddAsync(string id, string role)
