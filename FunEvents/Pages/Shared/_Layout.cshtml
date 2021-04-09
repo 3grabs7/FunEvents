@@ -32,31 +32,31 @@
                     </ul>
                     @if (User.Identity.IsAuthenticated)
                     {
-        <ul class="navbar-nav flex-grow-1 justify-content-start">
-            <li class="nav-item">
-                <a class="nav-link text-dark" asp-area="" asp-page="/Events/MyEvents">My Events</a>
-            </li>
-        </ul> <!-- This updates the navbar instantly when the admin user adds organizer role to itself -->
-                        @if (_userManager.IsInRoleAsync(_context.Users
-                    .Where(u => u.Id == _userManager.GetUserId(User))
-                    .First()
-                    , "Organizer").Result)
-                        {
-        <ul class="navbar-nav flex-grow-1 justify-content-end">
-            <li class="nav-item">
-                <a class="nav-link text-success" asp-area="" asp-page="/Events/CreateEvent">Create Event</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-success" asp-area="" asp-page="/Events/EditEvent">Organize Events</a>
-            </li>
-        </ul>}
-                                        @if (User.IsInRole("Admin") || User.IsInRole("Organizer"))
-                                        {
-                        <ul class="navbar-nav flex-grow-1 justify-content-end">
+                        <ul class="navbar-nav flex-grow-1 justify-content-start">
                             <li class="nav-item">
-                                <a class="nav-link text-danger" asp-area="" asp-page="/AccountManagement/RolesManager">Manage Users</a>
+                                <a class="nav-link text-dark" asp-area="" asp-page="/Events/MyEvents">My Events</a>
                             </li>
-                        </ul>}}
+                        </ul> <!-- This updates the navbar instantly when the admin user adds organizer role to itself -->
+                        @if (_userManager.IsInRoleAsync(_context.Users
+                   .Where(u => u.Id == _userManager.GetUserId(User))
+                   .First()
+                   , "Organizer").Result)
+                        {
+                            <ul class="navbar-nav flex-grow-1 justify-content-end">
+                                <li class="nav-item">
+                                    <a class="nav-link text-success" asp-area="" asp-page="/Events/CreateEvent">Create Event</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-success" asp-area="" asp-page="/Events/EditEvent">Organize Events</a>
+                                </li>
+                            </ul>}
+                        @if (User.IsInRole("Admin") || User.IsInRole("Organizer"))
+                        {
+                            <ul class="navbar-nav flex-grow-1 justify-content-end">
+                                <li class="nav-item">
+                                    <a class="nav-link text-danger" asp-area="" asp-page="/AccountManagement/RolesManager">Manage Users</a>
+                                </li>
+                            </ul>}}
                     <partial name="_LoginPartial" />
                 </div>
             </div>
@@ -75,7 +75,7 @@
     <footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2021 - FunEvents -
-            <a asp-route-seedDb="true">Reset Db</a>
+            <a asp-page="/Index" asp-route-seedDb="true">Reset Db</a>
         </div>
     </footer>
 

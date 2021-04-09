@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication;
 
 namespace FunEvents.Pages
 {
@@ -37,6 +38,7 @@ namespace FunEvents.Pages
         {
             if (seedDb ?? false)
             {
+                await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
                 await _context.SeedDatabase(_userManager, _roleManager);
             }
             return Page();

@@ -31,13 +31,21 @@ namespace FunEvents.Pages.Events
         [BindProperty]
         public AppUser AppUser { get; set; }
         public List<Event> Events { get; set; }
+
+        [BindProperty]
+        public int? EventToUndoId { get; set; }
         public bool RemovingEventFailed { get; set; }
         public bool RemovingEventSucceeded { get; set; }
 
         public async Task OnGetAsync(
             bool? removingEventFailed,
-            bool? removingEventSucceeded)
+            bool? removingEventSucceeded,
+            int? eventToUndoId)
         {
+            if (eventToUndoId != null)
+            {
+                EventToUndoId = eventToUndoId;
+            }
             // Check if page was loaded with any prompts to display alerts
             RemovingEventFailed = removingEventFailed ?? false;
             RemovingEventSucceeded = removingEventSucceeded ?? false;
@@ -78,7 +86,30 @@ namespace FunEvents.Pages.Events
                 return RedirectToPage("/Events/MyEvents", new { RemovingEventFailed = true });
             }
 
-            return RedirectToPage("/Events/MyEvents", new { RemovingEventSucceeded = true });
+            return RedirectToPage("/Events/MyEvents", new { RemovingEventSucceeded = true, EventToUndoId = id });
         }
+
+        public async Task<IActionResult> OnPostUndo(int? id)
+        {
+            if (id == null)
+            {
+                return RedirectToPage("/Errors/NotFound");
+            }
+
+            Event eventToUndo = await _context.Events.FindAsync(id);
+            AppUser = await GetAppuser(_userManager.GetUserId(User));
+
+            AppUser.JoinedEvents.Add(eventToUndo);
+            eventToUndo.SpotsAvailable--;
+
+            await _context.SaveChangesAsync();
+
+            return Page();
+        }
+
+        public async Task<AppUser> GetAppuser(string userId) => await _context.Users
+            .Where(u => u.Id == userId)
+            .Include(u => u.JoinedEvents)
+            .FirstOrDefaultAsync();
     }
 }
