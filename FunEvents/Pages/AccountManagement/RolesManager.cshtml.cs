@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace FunEvents.Pages.AccountManagement
 {
-    [Authorize(Roles = "Admin, Organizer")]
+    [Authorize(Roles = "admin, organizer")]
     public class RolesManagerModel : PageModel
     {
         private readonly ApplicationDbContext _context;
@@ -36,11 +36,6 @@ namespace FunEvents.Pages.AccountManagement
         public async Task OnGetAsync()
         {
             Users = await _context.Users.ToListAsync();
-        }
-
-        private string[] GetRolesForUser(ClaimsPrincipal user)
-        {
-            throw new System.NotImplementedException();
         }
 
         public async Task<IActionResult> OnPostAddAsync(string id, string role)

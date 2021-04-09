@@ -1,7 +1,10 @@
 ﻿@using System.Linq;
 @inject UserManager<Models.AppUser> _userManager;
 @inject ApplicationDbContext _context;
-
+@{
+    // We do this so if admin changes its own role to organizer, they won't need to relogin to update navbar
+    bool isOrganizer = _userManager.IsInRoleAsync(_context.Users.Where(u => u.Id == _userManager.GetUserId(User)).First(), "Organizer").Result;
+}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -29,34 +32,28 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-page="/Events/Index">Events</a>
                         </li>
-                    </ul>
-                    @if (User.Identity.IsAuthenticated)
-                    {
-                        <ul class="navbar-nav flex-grow-1 justify-content-start">
+                        @if (User.Identity.IsAuthenticated)
+                        {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-page="/Events/MyEvents">My Events</a>
                             </li>
-                        </ul> <!-- This updates the navbar instantly when the admin user adds organizer role to itself -->
-                        @if (_userManager.IsInRoleAsync(_context.Users
-                   .Where(u => u.Id == _userManager.GetUserId(User))
-                   .First()
-                   , "Organizer").Result)
-                        {
-                            <ul class="navbar-nav flex-grow-1 justify-content-end">
+                            @if (isOrganizer)
+                            {
                                 <li class="nav-item">
                                     <a class="nav-link text-success" asp-area="" asp-page="/Events/CreateEvent">Create Event</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link text-success" asp-area="" asp-page="/Events/EditEvent">Organize Events</a>
                                 </li>
-                            </ul>}
-                        @if (User.IsInRole("Admin") || User.IsInRole("Organizer"))
-                        {
-                            <ul class="navbar-nav flex-grow-1 justify-content-end">
+                            }
+                            @if (User.IsInRole("Admin") || User.IsInRole("Organizer"))
+                            {
                                 <li class="nav-item">
                                     <a class="nav-link text-danger" asp-area="" asp-page="/AccountManagement/RolesManager">Manage Users</a>
                                 </li>
-                            </ul>}}
+                            }
+                        }
+                    </ul>
                     <partial name="_LoginPartial" />
                 </div>
             </div>
