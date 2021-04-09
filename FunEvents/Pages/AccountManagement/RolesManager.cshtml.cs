@@ -31,7 +31,7 @@ namespace FunEvents.Pages.AccountManagement
 
         public IList<AppUser> Users { get; set; }
 
-        public IList<IdentityRole> Roles { get; set; }
+        //public IList<IdentityRole> Roles { get; set; }
 
         public async Task OnGetAsync()
         {
