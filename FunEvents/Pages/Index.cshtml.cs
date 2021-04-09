@@ -18,23 +18,26 @@ namespace FunEvents.Pages
         private readonly ApplicationDbContext _context;
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
         public IndexModel(ILogger<IndexModel> logger,
             ApplicationDbContext context,
             UserManager<AppUser> userManager,
-            SignInManager<AppUser> signInManager)
+            SignInManager<AppUser> signInManager,
+            RoleManager<IdentityRole> roleManager)
         {
             _logger = logger;
             _context = context;
             _userManager = userManager;
             _signInManager = signInManager;
+            _roleManager = roleManager;
         }
 
         public async Task OnGetAsync(bool? seedDb)
         {
             if (seedDb ?? false)
             {
-                await _context.SeedDatabase(_userManager);
+                await _context.SeedDatabase(_userManager, _roleManager);
             }
         }
 

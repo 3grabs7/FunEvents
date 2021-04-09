@@ -31,7 +31,7 @@ namespace FunEvents.Data
         }
 
         // Mock Users Password = "Password!123"
-        public async Task SeedDatabase(UserManager<AppUser> userManager)
+        public async Task SeedDatabase(UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             await Database.EnsureDeletedAsync();
             await Database.EnsureCreatedAsync();
@@ -62,17 +62,15 @@ namespace FunEvents.Data
             var userStore = new UserStore<AppUser>(this);
             var result = userStore.CreateAsync(adminUser);
 
-            string[] roles = new string[] { "Admin", "Organizer" };
+            string[] roles = new string[] { "Admin", "EventManager", "Organizer", "Assistant" };
 
             foreach (string role in roles)
             {
-                var roleStore = new RoleStore<IdentityRole>(this);
-
-                if (!this.Roles.Any(r => r.Name == role))
+                if(!this.Roles.Any(r => r.Name == role))
                 {
                     IdentityRole newRole = new IdentityRole(role);
                     newRole.NormalizedName = role.ToUpper();
-                    await roleStore.CreateAsync(newRole);
+                    await roleManager.CreateAsync(newRole);
                 }
             }
 
