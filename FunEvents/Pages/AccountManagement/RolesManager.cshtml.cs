@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -20,7 +21,8 @@ namespace FunEvents.Pages.AccountManagement
         private readonly RoleManager<IdentityRole> _roleManager;
 
         public RolesManagerModel(ApplicationDbContext context,
-            UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager)
+            UserManager<AppUser> userManager,
+            RoleManager<IdentityRole> roleManager)
         {
             _context = context;
             _userManager = userManager;
@@ -28,8 +30,6 @@ namespace FunEvents.Pages.AccountManagement
         }
 
         public IList<AppUser> Users { get; set; }
-
-        public IdentityRole Role { get; set; } // Only need this if we want several roles to choose from
 
         public IList<IdentityRole> Roles { get; set; }
 
@@ -43,11 +43,10 @@ namespace FunEvents.Pages.AccountManagement
             throw new System.NotImplementedException();
         }
 
-        public async Task<IActionResult> OnPostAddAsync(string id)
+        public async Task<IActionResult> OnPostAddAsync(string id, string role)
         {
             var user = await SelectedUser(id);
-            // await _userManager.AddToRoleAsync(AppUser, Role.Name);
-            await _userManager.AddToRoleAsync(user, "Organizer");
+            await _userManager.AddToRoleAsync(user, role);
             await _context.SaveChangesAsync();
 
             if (_userManager.GetUserId(User) == user.Id)
@@ -58,10 +57,16 @@ namespace FunEvents.Pages.AccountManagement
             return RedirectToPage("/AccountManagement/RolesManager");
         }
 
-        public async Task<IActionResult> OnPostRemoveAsync(string id)
+        public async Task<IActionResult> OnPostRemoveAsync(string id, string role)
         {
             var user = await SelectedUser(id);
-            var result = await _userManager.RemoveFromRoleAsync(user, "Organizer");
+            var result = await _userManager.RemoveFromRoleAsync(user, role);
+
+            if (!result.Succeeded)
+            {
+                throw new Exception(String.Join(' ', result.Errors.Select(e => e.Description)));
+            }
+
             await _context.SaveChangesAsync();
 
             return RedirectToPage("/AccountManagement/RolesManager");
