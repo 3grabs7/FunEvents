@@ -24,6 +24,7 @@ namespace FunEvents.Data
 
         public DbSet<Event> Events { get; set; }
         public DbSet<Analytics> Analytics { get; set; }
+        public DbSet<Organizer> Organizers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -158,6 +159,5 @@ namespace FunEvents.Data
 
             await SaveChangesAsync();
         }
-
     }
 }

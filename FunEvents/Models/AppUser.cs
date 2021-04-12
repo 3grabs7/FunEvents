@@ -15,6 +15,9 @@ namespace FunEvents.Models
 
         public ICollection<Event> JoinedEvents { get; set; }
 
+        public ICollection<Organizer> ManagerInOrganizations { get; set; }
+
+        public ICollection<Organizer> AssistantInOrganizations { get; set; }
     }
 
 }
