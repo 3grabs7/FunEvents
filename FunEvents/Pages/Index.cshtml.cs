@@ -40,6 +40,7 @@ namespace FunEvents.Pages
 
         public async Task<IActionResult> OnGetAsync(bool? seedDb)
         {
+            // "Reset Db" will redirect us to Index and route seedDb
             if (seedDb ?? false)
             {
                 await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
@@ -89,22 +90,23 @@ namespace FunEvents.Pages
 
         public async Task<bool> IsOrganizerPendingVerification()
         {
+            // If user is anonymous or lack "OrganizerManager role, return immediately
             if (!User.Identity.IsAuthenticated) return false;
-            if (User.IsInRole("OrganizerManager"))
+            if (!User.IsInRole("OrganizerManager")) return false;
+
+            var user = await GetAppuser(_userManager.GetUserId(User));
+            var managerForUnverifiedOrganizer = user.ManagerInOrganizations
+                .Any(o => !o.IsVerified);
+            if (managerForUnverifiedOrganizer)
             {
-                var user = await GetAppuser(_userManager.GetUserId(User));
-                var managerForUnverifiedOrganizer = user.ManagerInOrganizations
-                    .Any(o => !o.IsVerified);
-                if (managerForUnverifiedOrganizer)
-                {
-                    OrganizerToBeValidated = await UnverifiedOrganizer();
-                    return true;
-                }
+                // If unverified organizer is found, set our binded property before returning
+                OrganizerToBeValidated = await GetUnverifiedOrganizer();
+                return true;
             }
             return false;
         }
 
-        public async Task<Organizer> UnverifiedOrganizer()
+        public async Task<Organizer> GetUnverifiedOrganizer()
         {
             var user = await GetAppuser(_userManager.GetUserId(User));
             return user.ManagerInOrganizations

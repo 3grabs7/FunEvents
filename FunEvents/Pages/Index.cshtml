@@ -7,13 +7,16 @@
 
 @section containerFluid
 {
+    <!--
+        Check if current user is manager in a unverified Organization
+        If not, prompt user to edit details to complete verification.
+    -->
     @if (Model.IsOrganizerPendingVerification().Result)
     {
         <partial name="_UnverifiedOrganizerIndex" />
     }
     else
     {
-
         <div class="text-center">
             <h1 class="display-4">Welcome</h1>
             <h4>This is the place where you can find crazy events happening near you!</h4>

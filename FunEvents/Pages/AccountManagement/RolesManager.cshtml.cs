@@ -68,16 +68,20 @@ namespace FunEvents.Pages.AccountManagement
             return RedirectToPage("/AccountManagement/RolesManager");
         }
 
+        // Will merge with other add/remove posts once completely tested
         public async Task<IActionResult> OnPostCreateOrganizerAsync(string id)
         {
             AppUser user = await SelectedUser(id);
 
-            if (user.ManagerInOrganizations.Count > 0)
+            if (user.ManagerInOrganizations?.Count > 0)
             {
-                bool hasPendingOrganization = user.ManagerInOrganizations.Any(o => !o.IsVerified);
-                if (hasPendingOrganization)
+                // make sure that user is not already manager for an unverified organization
+                bool hasUnverifiedOrganization = user.ManagerInOrganizations
+                    .Any(o => !o.IsVerified);
+                if (hasUnverifiedOrganization)
                 {
-                    // *ERROR* this user is already first manager in an organization that has yet to be validated
+                    // once tested, make sure this is checked before loading list
+                    // and button for adding user as organizationmanager is disabled
                     return RedirectToPage("/AccountManagement/RolesManager");
                 }
             }
