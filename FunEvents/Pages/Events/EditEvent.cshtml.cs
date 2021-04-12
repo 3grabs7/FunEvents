@@ -37,6 +37,8 @@ namespace FunEvents.Pages.Events
         public IList<Event> Events { get; set; }
         [BindProperty]
         public Event Event { get; set; }
+        public IList<Event> EventsWhereUserIsManager { get; set; }
+        public IList<Event> EventsWhereUserIsAssistant { get; set; }
 
         public bool eventSelected { get; set; }
         public bool editSuccess { get; set; }
@@ -48,7 +50,11 @@ namespace FunEvents.Pages.Events
             eventSelected = selectedEvent == null ? false : true;
             string userId = _userManager.GetUserId(User);
 
-            //Events = await _context.Events.Where(e => e.EventOrganizer == )
+            EventsWhereUserIsManager = await _context.Events.Where(e => e.EventOrganizer.OrganizerManagers.Any(m => m.Id == userId)).ToListAsync();
+
+            EventsWhereUserIsAssistant = await _context.Events.Where(e => e.EventOrganizer.OrganizerAssistants.Any(a => a.Id == userId)).ToListAsync();
+
+
             //Events = await _context.Events.Include(e => e.Organizer).Where(e => e.Organizer.Id == userId).ToListAsync();
 
             AppUser = await _context.Users
@@ -72,7 +78,7 @@ namespace FunEvents.Pages.Events
             return Page();
         }
 
-        public async Task<IActionResult> OnPostSaveAsync(int? id, int? selectedEvent)
+        public async Task<IActionResult> OnPostEditAsync(int? id, int? selectedEvent)
         {
             Event = _context.Events.Find(selectedEvent);
             eventSelected = selectedEvent == null ? false : true;
@@ -116,6 +122,11 @@ namespace FunEvents.Pages.Events
 
             editFailed = true;
             return Page();
+        }
+
+        public async Task<IActionResult> OnPostRequestEditAsync(int? id)
+        {
+
         }
 
         public async Task<IActionResult> OnPostCancelAsync(int? id)

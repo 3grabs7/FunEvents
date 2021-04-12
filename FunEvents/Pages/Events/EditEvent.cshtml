@@ -24,7 +24,7 @@
             <h1>@Model.Event.Title</h1>
             <p style="font-style: italic;">Edit your chosen event here</p>
             <hr />
-            <form method="post">
+            <form method="post" asp-page-handler="@(Model.EventsWhereUserIsManager.Contains(Model.Event) ? "Edit" : "RequestEdit")">
                 <div class="form-group">
                     <label asp-for="@Model.Event.Title" class="col-sm-10 col-form-label col-form-label-lg" style="font-weight: bold;"></label>
                     <input asp-for="@Model.Event.Title" class="form-control form-control-lg">
@@ -62,7 +62,7 @@
                 </div>
                 <div class="form-row align-items-end">
                     <div class="form-group col-md-1">
-                        <input type="submit" value="Save" class="btn btn-success" asp-page-handler="Save" asp-route-id="@Model.Event.Id" asp-route-selectedEvent="@Model.Event.Id" />
+                        <input type="submit" value="@(Model.EventsWhereUserIsManager.Contains(Model.Event) ? "Edit" : "Request")" class="btn btn-success" asp-route-id="@Model.Event.Id" asp-route-selectedEvent="@Model.Event.Id" />
                     </div>
                     <div class="form-group col-md-2">
                         <a asp-page="/Events/EditEvent" class="text-dark">Back to Events</a>
@@ -76,74 +76,146 @@
     <hr />
 }
 
-<div class="row h-100 justify-content-center align-items-center">
-    <div class="col-12 w-75 col-lg-6">
-        <h1>@Model.AppUser.UserName's Events!</h1>
-        <p style="font-style:italic;">Edit or cancel your events here</p>
-        <table class="table">
-            <thead class="thead-dark">
-                <tr>
-                    <th>
-                        Title
-                    </th>
-                    <th>
-                        Description
-                    </th>
-                    <th>
-                        Date
-                    </th>
-                    <th>
-                        Place
-                    </th>
-                    <th>
-                        Adress
-                    </th>
-                    <th>
-                        Organizer
-                    </th>
-                    <th>
-                        Spots Available
-                    </th>
-                    <th></th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @for (int i = 0; i < Model.Events.Count; i++)
-                {
+    <div class="row h-100 justify-content-center align-items-center">
+        <div class="col-12 w-75 col-lg-6">
+            <h1>Events where you are Manager</h1>
+            <p style="font-style:italic;">Edit or cancel events here</p>
+            <table class="table">
+                <thead class="thead-dark">
                     <tr>
-                        <td>
-                            <p>@Model.Events[i].Title</p>
-                        </td>
-                        <td>
-                            <p>@Model.Events[i].Description</p>
-                        </td>
-                        <td>
-                            <p>@Model.Events[i].Date</p>
-                        </td>
-                        <td>
-                            <p>@Model.Events[i].Place</p>
-                        </td>
-                        <td>
-                            <p>@Model.Events[i].Address</p>
-                        </td>
-                        <td>
-                            <p>@Model.Events[i].Organizer.UserName</p>
-                        </td>
-                        <td>
-                            <p>@Model.Events[i].SpotsAvailable</p>
-                        </td>
-                        <td>
-                            <a class="btn btn-success" asp-route-selectedEvent="@Model.Events[i].Id" asp-page="/Events/EditEvent">Edit</a>
-                        </td>
-                        <td>
-                            <form method="post">
-                                <input type="submit" value="Cancel Event" class="btn btn-danger" asp-page-handler="Cancel" asp-route-id="@Model.Events[i].Id" />
-                            </form>
-                        </td>
+                        <th>
+                            Title
+                        </th>
+                        <th>
+                            Description
+                        </th>
+                        <th>
+                            Date
+                        </th>
+                        <th>
+                            Place
+                        </th>
+                        <th>
+                            Adress
+                        </th>
+                        <th>
+                            Organizer
+                        </th>
+                        <th>
+                            Spots Available
+                        </th>
+                        <th></th>
+                        <th></th>
                     </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < Model.EventsWhereUserIsManager.Count; i++)
+                    {
+                        <tr>
+                            <td>
+                                <p>@Model.EventsWhereUserIsManager[i].Title</p>
+                            </td>
+                            <td>
+                                <p>@Model.EventsWhereUserIsManager[i].Description</p>
+                            </td>
+                            <td>
+                                <p>@Model.EventsWhereUserIsManager[i].Date</p>
+                            </td>
+                            <td>
+                                <p>@Model.EventsWhereUserIsManager[i].Place</p>
+                            </td>
+                            <td>
+                                <p>@Model.EventsWhereUserIsManager[i].Address</p>
+                            </td>
+                            <td>
+                                <p>@Model.EventsWhereUserIsManager[i].Organizer.UserName</p>
+                            </td>
+                            <td>
+                                <p>@Model.EventsWhereUserIsManager[i].SpotsAvailable</p>
+                            </td>
+                            <td>
+                                <a class="btn btn-success" asp-route-selectedEvent="@Model.EventsWhereUserIsManager[i].Id" asp-page="/Events/EditEvent">Edit</a>
+                            </td>
+                            <td>
+                                <form method="post">
+                                    <input type="submit" value="Cancel Event" class="btn btn-danger" asp-page-handler="Cancel" asp-route-id="@Model.EventsWhereUserIsManager[i].Id" />
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     </div>
-</div>
+
+    <div class="row h-100 justify-content-center align-items-center">
+        <div class="col-12 w-75 col-lg-6">
+            <h1>Events where you are assistant</h1>
+            <p style="font-style:italic;">Edit events and request the changes here!</p>
+            <table class="table">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>
+                            Title
+                        </th>
+                        <th>
+                            Description
+                        </th>
+                        <th>
+                            Date
+                        </th>
+                        <th>
+                            Place
+                        </th>
+                        <th>
+                            Adress
+                        </th>
+                        <th>
+                            Organizer
+                        </th>
+                        <th>
+                            Spots Available
+                        </th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < Model.EventsWhereUserIsAssistant.Count; i++)
+                    {
+                        <tr>
+                            <td>
+                                <p>@Model.EventsWhereUserIsAssistant[i].Title</p>
+                            </td>
+                            <td>
+                                <p>@Model.EventsWhereUserIsAssistant[i].Description</p>
+                            </td>
+                            <td>
+                                <p>@Model.EventsWhereUserIsAssistant[i].Date</p>
+                            </td>
+                            <td>
+                                <p>@Model.EventsWhereUserIsAssistant[i].Place</p>
+                            </td>
+                            <td>
+                                <p>@Model.EventsWhereUserIsAssistant[i].Address</p>
+                            </td>
+                            <td>
+                                <p>@Model.EventsWhereUserIsAssistant[i].Organizer.UserName</p>
+                            </td>
+                            <td>
+                                <p>@Model.EventsWhereUserIsAssistant[i].SpotsAvailable</p>
+                            </td>
+                            <td>
+                                <a class="btn btn-success" asp-route-selectedEvent="@Model.EventsWhereUserIsAssistant[i].Id" asp-page="/Events/EditEvent">Edit</a>
+                            </td>
+                            <td>
+                                <form method="post">
+                                    <input type="submit" value="Cancel Event" class="btn btn-danger" asp-page-handler="Cancel" asp-route-id="@Model.EventsWhereUserIsAssistant[i].Id" />
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
