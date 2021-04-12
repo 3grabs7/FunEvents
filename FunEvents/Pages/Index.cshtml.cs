@@ -97,14 +97,14 @@ namespace FunEvents.Pages
                     .Any(o => !o.IsVerified);
                 if (managerForUnverifiedOrganizer)
                 {
-                    OrganizerToBeValidated = await UnverifiedEvent();
+                    OrganizerToBeValidated = await UnverifiedOrganizer();
                     return true;
                 }
             }
             return false;
         }
 
-        public async Task<Organizer> UnverifiedEvent()
+        public async Task<Organizer> UnverifiedOrganizer()
         {
             var user = await GetAppuser(_userManager.GetUserId(User));
             return user.ManagerInOrganizations
@@ -113,11 +113,15 @@ namespace FunEvents.Pages
 
         public async Task<IActionResult> OnPostVerifyOrganizerAsync()
         {
-            await _context.Organizers.AddAsync(OrganizerToBeValidated);
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
             OrganizerToBeValidated.IsVerified = true;
+            _context.Attach(OrganizerToBeValidated).State = EntityState.Modified;
             await _context.SaveChangesAsync();
 
-            return Page();
+            return RedirectToPage("/Index");
         }
     }
 }
