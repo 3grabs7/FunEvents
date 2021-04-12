@@ -32,6 +32,8 @@ namespace FunEvents.Pages.Events
         [BindProperty]
         public AppUser AppUser { get; set; }
         [BindProperty]
+        public IList<Organizer> Organizers { get; set; }
+        [BindProperty]
         public IList<Event> Events { get; set; }
         [BindProperty]
         public Event Event { get; set; }
@@ -51,6 +53,17 @@ namespace FunEvents.Pages.Events
                 .Where(u => u.Id == userId)
                 .Include(u => u.HostedEvents)
                 .FirstOrDefaultAsync();
+
+            // Ignorera detta än så länge
+            Organizers = await _context.Organizers.Where(o => o.OrganizerAssistants.Contains(AppUser)).ToListAsync();
+
+            foreach (var organizer in Organizers)
+            {
+                //if (AppUser.AssistantInOrganizations.Contains(organizer) {
+
+                //}
+            }
+            
 
             return Page();
         }
