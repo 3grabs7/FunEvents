@@ -47,7 +47,9 @@ namespace FunEvents.Pages.Events
             Event = _context.Events.Find(selectedEvent);
             eventSelected = selectedEvent == null ? false : true;
             string userId = _userManager.GetUserId(User);
-            Events = await _context.Events.Include(e => e.Organizer).Where(e => e.Organizer.Id == userId).ToListAsync();
+
+            //Events = await _context.Events.Where(e => e.EventOrganizer == )
+            //Events = await _context.Events.Include(e => e.Organizer).Where(e => e.Organizer.Id == userId).ToListAsync();
 
             AppUser = await _context.Users
                 .Where(u => u.Id == userId)
@@ -55,7 +57,9 @@ namespace FunEvents.Pages.Events
                 .FirstOrDefaultAsync();
 
             // Ignorera detta än så länge
-            Organizers = await _context.Organizers.Where(o => o.OrganizerAssistants.Contains(AppUser)).ToListAsync();
+            // Organizers = await _context.Organizers.Where(o => o.)
+
+            // Organizers = await _context.Organizers.Where(o => o.OrganizerAssistants.Contains(AppUser)).ToListAsync();
 
             foreach (var organizer in Organizers)
             {
