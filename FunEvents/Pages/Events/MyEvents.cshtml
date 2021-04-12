@@ -15,7 +15,7 @@
 {
     <div class="alert alert-success" role="alert">
         Event removed, it's cozier at home anyway.
-        <form asp-page-handler="Undo" asp-route-id="@Model.EventToUndoId" method="post">
+        <form asp-page-handler="Undo" asp-route-id="@Model.LastRemovedEvent" method="post">
             <button type="submit">Undo</button>
         </form>
     </div>

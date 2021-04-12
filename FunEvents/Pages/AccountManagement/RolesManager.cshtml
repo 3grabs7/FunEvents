@@ -19,6 +19,7 @@
                         <div class="row">
                             @foreach (var role in Model.Roles)
                             {
+                                <!-- Once tested, refactor this to work with same post method -->
                                 @if (role.Name == "OrganizerManager")
                                 {
                                     <form method="post" asp-route-id="@user.Id" asp-page-handler="CreateOrganizer">

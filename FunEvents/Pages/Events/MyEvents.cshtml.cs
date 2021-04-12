@@ -33,28 +33,25 @@ namespace FunEvents.Pages.Events
         public List<Event> Events { get; set; }
 
         [BindProperty]
-        public int? EventToUndoId { get; set; }
+        public int? LastRemovedEvent { get; set; }
         public bool RemovingEventFailed { get; set; }
         public bool RemovingEventSucceeded { get; set; }
 
         public async Task OnGetAsync(
             bool? removingEventFailed,
             bool? removingEventSucceeded,
-            int? eventToUndoId)
+            int? lastRemovedEvent)
         {
-            if (eventToUndoId != null)
+            if (lastRemovedEvent != null)
             {
-                EventToUndoId = eventToUndoId;
+                LastRemovedEvent = lastRemovedEvent;
             }
+
             // Check if page was loaded with any prompts to display alerts
             RemovingEventFailed = removingEventFailed ?? false;
             RemovingEventSucceeded = removingEventSucceeded ?? false;
 
-            string userId = _userManager.GetUserId(User);
-            AppUser = await _context.Users
-                .Where(u => u.Id == userId)
-                .Include(u => u.JoinedEvents)
-                .FirstOrDefaultAsync();
+            AppUser = await GetAppUser(_userManager.GetUserId(User));
 
             Events = await _context.Events
                 .Where(e => e.Attendees
@@ -97,7 +94,7 @@ namespace FunEvents.Pages.Events
             }
 
             Event eventToUndo = await _context.Events.FindAsync(id);
-            AppUser = await GetAppuser(_userManager.GetUserId(User));
+            AppUser = await GetAppUser(_userManager.GetUserId(User));
 
             AppUser.JoinedEvents.Add(eventToUndo);
             eventToUndo.SpotsAvailable--;
@@ -107,7 +104,7 @@ namespace FunEvents.Pages.Events
             return Page();
         }
 
-        public async Task<AppUser> GetAppuser(string userId) => await _context.Users
+        public async Task<AppUser> GetAppUser(string userId) => await _context.Users
             .Where(u => u.Id == userId)
             .Include(u => u.JoinedEvents)
             .FirstOrDefaultAsync();
