@@ -21,6 +21,7 @@ namespace FunEvents.Models
 
         [InverseProperty("HostedEvents")]
         public AppUser Organizer { get; set; }
+        public Organizer EventOrganizer { get; set; }
 
         [InverseProperty("JoinedEvents")]
         public ICollection<AppUser> Attendees { get; set; }

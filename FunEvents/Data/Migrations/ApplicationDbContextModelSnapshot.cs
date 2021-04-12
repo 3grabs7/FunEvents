@@ -174,9 +174,6 @@ namespace FunEvents.Data.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("EventId")
-                        .HasColumnType("int");
-
                     b.Property<string>("OrganizerId")
                         .HasColumnType("nvarchar(450)");
 
@@ -196,8 +193,6 @@ namespace FunEvents.Data.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("EventId");
 
                     b.HasIndex("OrganizerId");
 
@@ -422,10 +417,6 @@ namespace FunEvents.Data.Migrations
 
             modelBuilder.Entity("FunEvents.Models.Event", b =>
                 {
-                    b.HasOne("FunEvents.Models.Event", null)
-                        .WithMany("EventChangesPendingManagerValidation")
-                        .HasForeignKey("EventId");
-
                     b.HasOne("FunEvents.Models.AppUser", "Organizer")
                         .WithMany("HostedEvents")
                         .HasForeignKey("OrganizerId");
@@ -487,11 +478,6 @@ namespace FunEvents.Data.Migrations
             modelBuilder.Entity("FunEvents.Models.AppUser", b =>
                 {
                     b.Navigation("HostedEvents");
-                });
-
-            modelBuilder.Entity("FunEvents.Models.Event", b =>
-                {
-                    b.Navigation("EventChangesPendingManagerValidation");
                 });
 #pragma warning restore 612, 618
         }
