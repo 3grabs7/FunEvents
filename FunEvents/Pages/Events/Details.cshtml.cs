@@ -62,8 +62,11 @@ namespace FunEvents.Pages.Events
                 return Redirect($"/Events/Details?id={id}");
             }
 
+
             string clientIpAddress = _accessor.HttpContext.Connection.RemoteIpAddress.ToString();
-            if (!_context.Analytics.AnyAsync(a => a.Event.Id == id && a.Ip == clientIpAddress).Result)
+            bool isClientIpUnique = await _context.Analytics
+                .AnyAsync(a => a.Event.Id == id && a.Ip == clientIpAddress);
+            if (!isClientIpUnique)
             {
                 Event.UniquePageVisits++;
 

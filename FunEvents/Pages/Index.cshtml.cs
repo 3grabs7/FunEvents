@@ -20,6 +20,10 @@ namespace FunEvents.Pages
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private const int EVENTS_PER_TOP_VIEW = 3;
+
+        [BindProperty]
+        public Organizer OrganizerToBeValidated { get; set; }
 
         public IndexModel(ILogger<IndexModel> logger,
             ApplicationDbContext context,
@@ -44,7 +48,6 @@ namespace FunEvents.Pages
             return Page();
         }
 
-        private const int EVENTS_PER_TOP_VIEW = 3;
         public async Task<IList<Event>> LoadPopularEvents()
         {
             var events = await _context.Events
@@ -75,6 +78,37 @@ namespace FunEvents.Pages
                 .Take(EVENTS_PER_TOP_VIEW)
                 .ToListAsync();
             return events;
+        }
+
+        public async Task<AppUser> GetAppuser(string userId) => await _context.Users
+            .Where(u => u.Id == userId)
+            .Include(u => u.JoinedEvents)
+            .FirstOrDefaultAsync();
+
+        public async Task<bool> IsOrganizerVerified()
+        {
+            if (!User.Identity.IsAuthenticated) return false;
+            if (User.IsInRole("OrganizerManager"))
+            {
+                var user = await GetAppuser(_userManager.GetUserId(User));
+                return await user.ManagerInOrganizations.AsQueryable().AnyAsync(o => !o.IsVerified);
+            }
+            return false;
+        }
+
+        public async Task<Organizer> UnverifiedEvent()
+        {
+            var user = await GetAppuser(_userManager.GetUserId(User));
+            return await user.ManagerInOrganizations.AsQueryable().FirstAsync(o => !o.IsVerified);
+        }
+
+        public async Task<IActionResult> OnPostVerifyOrganizerAsync()
+        {
+            await _context.Organizers.AddAsync(OrganizerToBeValidated);
+            OrganizerToBeValidated.IsVerified = true;
+            await _context.SaveChangesAsync();
+
+            return Page();
         }
     }
 }
