@@ -7,7 +7,7 @@
 
 @section containerFluid
 {
-    @if (!Model.IsOrganizerVerified().Result)
+    @if (Model.IsOrganizerPendingVerification().Result)
     {
         <partial name="_UnverifiedOrganizerIndex" />
     }

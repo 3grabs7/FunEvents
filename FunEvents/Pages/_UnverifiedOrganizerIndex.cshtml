@@ -6,3 +6,41 @@
 <h3>Please submit your organization info</h3>
 <h3><i>We need to validate your information before you can start creating events</i></h3>
 
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="OrganizerToBeValidated.Name" class="control-label"></label>
+                <input asp-for="OrganizerToBeValidated.Name" class="form-control" />
+                <span asp-validation-for="OrganizerToBeValidated.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="OrganizerToBeValidated.OrganizationNumber" class="control-label"></label>
+                <input asp-for="OrganizerToBeValidated.OrganizationNumber" class="form-control" />
+                <span asp-validation-for="OrganizerToBeValidated.OrganizationNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="OrganizerToBeValidated.PhoneNumber" class="control-label"></label>
+                <input asp-for="OrganizerToBeValidated.PhoneNumber" class="form-control" />
+                <span asp-validation-for="OrganizerToBeValidated.PhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="OrganizerToBeValidated.Email" class="control-label"></label>
+                <input asp-for="OrganizerToBeValidated.Email" class="form-control" />
+                <span asp-validation-for="OrganizerToBeValidated.Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

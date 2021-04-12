@@ -45,6 +45,7 @@ namespace FunEvents.Pages
                 await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
                 await _context.SeedDatabase(_userManager, _roleManager);
             }
+
             return Page();
         }
 
@@ -82,16 +83,23 @@ namespace FunEvents.Pages
 
         public async Task<AppUser> GetAppuser(string userId) => await _context.Users
             .Where(u => u.Id == userId)
-            .Include(u => u.JoinedEvents)
+            .Include(u => u.ManagerInOrganizations)
+            .Include(u => u.AssistantInOrganizations)
             .FirstOrDefaultAsync();
 
-        public async Task<bool> IsOrganizerVerified()
+        public async Task<bool> IsOrganizerPendingVerification()
         {
             if (!User.Identity.IsAuthenticated) return false;
             if (User.IsInRole("OrganizerManager"))
             {
                 var user = await GetAppuser(_userManager.GetUserId(User));
-                return await user.ManagerInOrganizations.AsQueryable().AnyAsync(o => !o.IsVerified);
+                var managerForUnverifiedOrganizer = user.ManagerInOrganizations
+                    .Any(o => !o.IsVerified);
+                if (managerForUnverifiedOrganizer)
+                {
+                    OrganizerToBeValidated = await UnverifiedEvent();
+                    return true;
+                }
             }
             return false;
         }
@@ -99,7 +107,8 @@ namespace FunEvents.Pages
         public async Task<Organizer> UnverifiedEvent()
         {
             var user = await GetAppuser(_userManager.GetUserId(User));
-            return await user.ManagerInOrganizations.AsQueryable().FirstAsync(o => !o.IsVerified);
+            return user.ManagerInOrganizations
+                .First(o => !o.IsVerified);
         }
 
         public async Task<IActionResult> OnPostVerifyOrganizerAsync()
