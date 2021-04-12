@@ -68,32 +68,42 @@ namespace FunEvents.Pages.AccountManagement
             return RedirectToPage("/AccountManagement/RolesManager");
         }
 
+        // Will merge with other add/remove posts once completely tested
         public async Task<IActionResult> OnPostCreateOrganizerAsync(string id)
         {
             AppUser user = await SelectedUser(id);
-            bool hasPendingOrganization = await user.ManagerInOrganizations
-                .AsQueryable()
-                .AnyAsync(o => !o.IsVerified);
-            if (hasPendingOrganization)
+
+            if (user.ManagerInOrganizations?.Count > 0)
             {
-                // *ERROR* this user is already first manager in an organization that has yet to be validated
-                return Page();
+                // make sure that user is not already manager for an unverified organization
+                bool hasUnverifiedOrganization = user.ManagerInOrganizations
+                    .Any(o => !o.IsVerified);
+                if (hasUnverifiedOrganization)
+                {
+                    // once tested, make sure this is checked before loading list
+                    // and button for adding user as organizationmanager is disabled
+                    return RedirectToPage("/AccountManagement/RolesManager");
+                }
             }
+
             await _userManager.AddToRoleAsync(user, "OrganizerManager");
             Organizer organizer = new Organizer()
             {
                 Name = "Unverified",
-                IsVerified = false
+                IsVerified = false,
+                OrganizerManagers = new List<AppUser>() { }
             };
-            organizer.OrganizerManagers.Add(user);
             await _context.Organizers.AddAsync(organizer);
+            user.ManagerInOrganizations.Add(organizer);
             await _context.SaveChangesAsync();
 
-            return Page();
+            return RedirectToPage("/AccountManagement/RolesManager");
         }
 
         public async Task<AppUser> SelectedUser(string id) => await _context.Users
             .Where(u => u.Id == id)
+            .Include(u => u.ManagerInOrganizations)
+            .Include(u => u.AssistantInOrganizations)
             .FirstOrDefaultAsync();
 
         public async Task<bool> IsInSpecificRole(string id, string role)

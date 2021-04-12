@@ -40,11 +40,13 @@ namespace FunEvents.Pages
 
         public async Task<IActionResult> OnGetAsync(bool? seedDb)
         {
+            // "Reset Db" will redirect us to Index and route seedDb
             if (seedDb ?? false)
             {
                 await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
                 await _context.SeedDatabase(_userManager, _roleManager);
             }
+
             return Page();
         }
 
@@ -82,33 +84,46 @@ namespace FunEvents.Pages
 
         public async Task<AppUser> GetAppuser(string userId) => await _context.Users
             .Where(u => u.Id == userId)
-            .Include(u => u.JoinedEvents)
+            .Include(u => u.ManagerInOrganizations)
+            .Include(u => u.AssistantInOrganizations)
             .FirstOrDefaultAsync();
 
-        public async Task<bool> IsOrganizerVerified()
+        public async Task<bool> IsOrganizerPendingVerification()
         {
+            // If user is anonymous or lack "OrganizerManager role, return immediately
             if (!User.Identity.IsAuthenticated) return false;
-            if (User.IsInRole("OrganizerManager"))
+            if (!User.IsInRole("OrganizerManager")) return false;
+
+            var user = await GetAppuser(_userManager.GetUserId(User));
+            var managerForUnverifiedOrganizer = user.ManagerInOrganizations
+                .Any(o => !o.IsVerified);
+            if (managerForUnverifiedOrganizer)
             {
-                var user = await GetAppuser(_userManager.GetUserId(User));
-                return await user.ManagerInOrganizations.AsQueryable().AnyAsync(o => !o.IsVerified);
+                // If unverified organizer is found, set our binded property before returning
+                OrganizerToBeValidated = await GetUnverifiedOrganizer();
+                return true;
             }
             return false;
         }
 
-        public async Task<Organizer> UnverifiedEvent()
+        public async Task<Organizer> GetUnverifiedOrganizer()
         {
             var user = await GetAppuser(_userManager.GetUserId(User));
-            return await user.ManagerInOrganizations.AsQueryable().FirstAsync(o => !o.IsVerified);
+            return user.ManagerInOrganizations
+                .First(o => !o.IsVerified);
         }
 
         public async Task<IActionResult> OnPostVerifyOrganizerAsync()
         {
-            await _context.Organizers.AddAsync(OrganizerToBeValidated);
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
             OrganizerToBeValidated.IsVerified = true;
+            _context.Attach(OrganizerToBeValidated).State = EntityState.Modified;
             await _context.SaveChangesAsync();
 
-            return Page();
+            return RedirectToPage("/Index");
         }
     }
 }

@@ -76,8 +76,17 @@ namespace FunEvents.Data
                 LastName = "Larsson"
             };
 
-            var assistantResult = await userManager.CreateAsync(organizerAssistant, "Password8%");
+            var assistantResult = await userManager.CreateAsync(organizerAssistant, "Password5%");
 
+            AppUser userToBeVerifiedAsOrganizer = new AppUser()
+            {
+                Email = "almost@there.com",
+                UserName = "PIGGY",
+                FirstName = "Test",
+                LastName = "Test"
+            };
+
+            await userManager.CreateAsync(userToBeVerifiedAsOrganizer, "Password5%");
 
             // Seed roles
             string[] roles = new string[] { "Admin", "Organizer", "OrganizerManager", "OrganizerAssistant" };
