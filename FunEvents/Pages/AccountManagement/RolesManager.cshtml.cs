@@ -68,6 +68,30 @@ namespace FunEvents.Pages.AccountManagement
             return RedirectToPage("/AccountManagement/RolesManager");
         }
 
+        public async Task<IActionResult> OnPostCreateOrganizerAsync(string id)
+        {
+            AppUser user = await SelectedUser(id);
+            bool hasPendingOrganization = await user.ManagerInOrganizations
+                .AsQueryable()
+                .AnyAsync(o => !o.IsVerified);
+            if (hasPendingOrganization)
+            {
+                // *ERROR* this user is already first manager in an organization that has yet to be validated
+                return Page();
+            }
+            await _userManager.AddToRoleAsync(user, "OrganizerManager");
+            Organizer organizer = new Organizer()
+            {
+                Name = "Unverified",
+                IsVerified = false
+            };
+            organizer.OrganizerManagers.Add(user);
+            await _context.Organizers.AddAsync(organizer);
+            await _context.SaveChangesAsync();
+
+            return Page();
+        }
+
         public async Task<AppUser> SelectedUser(string id) => await _context.Users
             .Where(u => u.Id == id)
             .FirstOrDefaultAsync();
