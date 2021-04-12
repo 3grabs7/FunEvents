@@ -13,7 +13,7 @@ using Microsoft.Extensions.Logging;
 
 namespace FunEvents.Pages.Events
 {
-    [Authorize(Roles = "Admin, Organizer")]
+    [Authorize(Roles = "Admin, Organizer, OrganizerManager, OrganizerAssistant")]
     public class EditEventModel : PageModel
     {
         private readonly ApplicationDbContext _context;
@@ -55,8 +55,6 @@ namespace FunEvents.Pages.Events
             return Page();
         }
 
-
-        // Funkar inte som det ska �nnu
         public async Task<IActionResult> OnPostSaveAsync(int? id, int? selectedEvent)
         {
             Event = _context.Events.Find(selectedEvent);

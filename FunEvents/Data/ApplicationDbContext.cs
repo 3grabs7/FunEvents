@@ -58,7 +58,7 @@ namespace FunEvents.Data
 
             var organizerResult = await userManager.CreateAsync(organizer, "Password6%");
 
-            AppUser manager = new AppUser()
+            AppUser organizerManager = new AppUser()
             {
                 Email = "manager@manager.com",
                 UserName = "MANAGER",
@@ -66,9 +66,9 @@ namespace FunEvents.Data
                 LastName = "Boss"
             };
 
-            var managerResult = await userManager.CreateAsync(manager, "Password7%");
+            var managerResult = await userManager.CreateAsync(organizerManager, "Password7%");
 
-            AppUser assistant = new AppUser()
+            AppUser organizerAssistant = new AppUser()
             {
                 Email = "assistant@assistant.com",
                 UserName = "ASSISTANT",
@@ -76,11 +76,11 @@ namespace FunEvents.Data
                 LastName = "Larsson"
             };
 
-            var assistantResult = await userManager.CreateAsync(assistant, "Password8%");
+            var assistantResult = await userManager.CreateAsync(organizerAssistant, "Password8%");
 
 
             // Seed roles
-            string[] roles = new string[] { "Admin", "Organizer", "Manager", "Assistant" };
+            string[] roles = new string[] { "Admin", "Organizer", "OrganizerManager", "OrganizerAssistant" };
             foreach (string role in roles)
             {
                 if (!this.Roles.Any(r => r.Name == role))
@@ -92,8 +92,8 @@ namespace FunEvents.Data
 
             var rolesResult = await userManager.AddToRoleAsync(adminUser, "Admin");
             await userManager.AddToRoleAsync(organizer, "Organizer");
-            await userManager.AddToRoleAsync(manager, "Manager");
-            await userManager.AddToRoleAsync(assistant, "Assistant");
+            await userManager.AddToRoleAsync(organizerManager, "OrganizerManager");
+            await userManager.AddToRoleAsync(organizerAssistant, "OrganizerAssistant");
 
             if (!rolesResult.Succeeded)
             {
