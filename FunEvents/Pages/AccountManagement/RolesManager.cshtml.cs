@@ -82,6 +82,7 @@ namespace FunEvents.Pages.AccountManagement
                 {
                     // once tested, make sure this is checked before loading list
                     // and button for adding user as organizationmanager is disabled
+                    Console.WriteLine("ALREADY PENDING VALIDATION");
                     return RedirectToPage("/AccountManagement/RolesManager");
                 }
             }

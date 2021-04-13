@@ -13,7 +13,7 @@ using Microsoft.Extensions.Logging;
 
 namespace FunEvents.Pages.Events
 {
-    [Authorize(Roles = "Admin, Organizer, OrganizerManager, OrganizerAssistant")]
+    [Authorize(Roles = "Admin, OrganizerManager, OrganizerAssistant")]
     public class EditEventModel : PageModel
     {
         private readonly ApplicationDbContext _context;
@@ -29,8 +29,6 @@ namespace FunEvents.Pages.Events
             _logger = logger;
         }
 
-        [BindProperty]
-        public AppUser AppUser { get; set; }
         [BindProperty]
         public IList<Organizer> Organizers { get; set; }
         [BindProperty]
@@ -51,21 +49,12 @@ namespace FunEvents.Pages.Events
             string userId = _userManager.GetUserId(User);
 
             EventsWhereUserIsManager = await _context.Events
-                .Where(e => e.EventOrganizer.OrganizerManagers.Any(m => m.Id == userId))
+                .Where(e => e.Organizer.OrganizerManagers.Any(m => m.Id == userId))
                 .ToListAsync();
 
             EventsWhereUserIsAssistant = await _context.Events
-                .Where(e => e.EventOrganizer.OrganizerAssistants.Any(a => a.Id == userId))
+                .Where(e => e.Organizer.OrganizerAssistants.Any(a => a.Id == userId))
                 .ToListAsync();
-
-
-            //Events = await _context.Events.Include(e => e.Organizer).Where(e => e.Organizer.Id == userId).ToListAsync();
-
-            AppUser = await _context.Users
-                .Where(u => u.Id == userId)
-                .Include(u => u.HostedEvents)
-                .FirstOrDefaultAsync();
-
 
             return Page();
         }

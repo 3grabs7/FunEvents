@@ -49,6 +49,12 @@ namespace FunEvents.Pages
                 await _context.SeedDatabase(_userManager, _roleManager);
             }
 
+            if (IsOrganizerPendingVerification().Result)
+            {
+                var user = await GetAppuser(_userManager.GetUserId(User));
+                OrganizerToBeValidated = user.ManagerInOrganizations.First(o => !o.IsVerified);
+            }
+
             return Page();
         }
 

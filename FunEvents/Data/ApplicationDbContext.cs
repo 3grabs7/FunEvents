@@ -48,7 +48,7 @@ namespace FunEvents.Data
 
             var adminResult = await userManager.CreateAsync(adminUser, "Password5%");
 
-            AppUser organizer = new AppUser()
+            AppUser organizerManager = new AppUser()
             {
                 Email = "organizer@organizer.com",
                 UserName = "ORGANIZER",
@@ -56,9 +56,9 @@ namespace FunEvents.Data
                 LastName = "Björk"
             };
 
-            var organizerResult = await userManager.CreateAsync(organizer, "Password6%");
+            var organizerResult = await userManager.CreateAsync(organizerManager, "Password6%");
 
-            AppUser organizerManager = new AppUser()
+            AppUser organizerManager2 = new AppUser()
             {
                 Email = "manager@manager.com",
                 UserName = "MANAGER",
@@ -66,7 +66,7 @@ namespace FunEvents.Data
                 LastName = "Boss"
             };
 
-            var managerResult = await userManager.CreateAsync(organizerManager, "Password7%");
+            var managerResult = await userManager.CreateAsync(organizerManager2, "Password7%");
 
             AppUser organizerAssistant = new AppUser()
             {
@@ -89,7 +89,7 @@ namespace FunEvents.Data
             await userManager.CreateAsync(userToBeVerifiedAsOrganizer, "Password5%");
 
             // Seed roles
-            string[] roles = new string[] { "Admin", "Organizer", "OrganizerManager", "OrganizerAssistant" };
+            string[] roles = new string[] { "Admin", "OrganizerManager", "OrganizerAssistant" };
             foreach (string role in roles)
             {
                 if (!this.Roles.Any(r => r.Name == role))
@@ -100,8 +100,8 @@ namespace FunEvents.Data
             }
 
             var rolesResult = await userManager.AddToRoleAsync(adminUser, "Admin");
-            await userManager.AddToRoleAsync(organizer, "Organizer");
             await userManager.AddToRoleAsync(organizerManager, "OrganizerManager");
+            await userManager.AddToRoleAsync(organizerManager2, "OrganizerManager");
             await userManager.AddToRoleAsync(organizerAssistant, "OrganizerAssistant");
 
             if (!rolesResult.Succeeded)

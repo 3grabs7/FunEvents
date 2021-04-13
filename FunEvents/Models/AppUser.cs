@@ -11,8 +11,6 @@ namespace FunEvents.Models
         public string FirstName { get; set; }
         public string LastName { get; set; }
 
-        public List<Event> HostedEvents { get; set; }
-
         public ICollection<Event> JoinedEvents { get; set; }
 
         public ICollection<Organizer> ManagerInOrganizations { get; set; }

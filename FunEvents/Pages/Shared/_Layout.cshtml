@@ -6,7 +6,7 @@
     bool isOrganizer = false;
     @if (User.Identity.IsAuthenticated)
     {
-        isOrganizer = _userManager.IsInRoleAsync(_context.Users.Where(u => u.Id == _userManager.GetUserId(User)).First(), "Organizer").Result;
+        isOrganizer = _userManager.IsInRoleAsync(_context.Users.Where(u => u.Id == _userManager.GetUserId(User)).First(), "OrganizerManager").Result;
     }
 }
 
