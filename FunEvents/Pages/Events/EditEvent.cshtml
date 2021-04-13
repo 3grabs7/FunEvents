@@ -77,67 +77,68 @@
     <hr />
 }
 
-<div class="row h-100 justify-content-center align-items-center">
-    <div class="col-12 w-75 col-lg-6">
+<div class="row h-100 justify-content-center">
+    <div>
         <h1>Events where you are Manager</h1>
         <p style="font-style:italic;">Edit or cancel events here</p>
+        <hr />
         <table class="table">
             <thead class="thead-dark">
                 <tr>
-                    <th>
+                    <th scope="col">
                         Title
                     </th>
-                    <th>
+                    <th scope="col">
                         Description
                     </th>
-                    <th>
+                    <th scope="col">
                         Date
                     </th>
-                    <th>
+                    <th scope="col">
                         Place
                     </th>
-                    <th>
+                    <th scope="col">
                         Adress
                     </th>
-                    <th>
+                    <th scope="col">
                         Organizer
                     </th>
-                    <th>
+                    <th scope="col">
                         Spots Available
                     </th>
-                    <th></th>
-                    <th></th>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
                 </tr>
             </thead>
             <tbody>
                 @for (int i = 0; i < Model.EventsWhereUserIsManager.Count; i++)
                 {
                     <tr>
-                        <td>
+                        <td style="width: 15%">
                             <p>@Model.EventsWhereUserIsManager[i].Title</p>
                         </td>
-                        <td>
+                        <td style="width: 25%">
                             <p>@Model.EventsWhereUserIsManager[i].Description</p>
                         </td>
-                        <td>
+                        <td style="width: 20%">
                             <p>@Model.EventsWhereUserIsManager[i].Date</p>
                         </td>
-                        <td>
+                        <td style="width: 9%">
                             <p>@Model.EventsWhereUserIsManager[i].Place</p>
                         </td>
-                        <td>
+                        <td style="width: 10%">
                             <p>@Model.EventsWhereUserIsManager[i].Address</p>
                         </td>
-                        <td>
+                        <td style="width: 8%">
                             <p>@Model.EventsWhereUserIsManager[i].Organizer.Name</p>
                         </td>
-                        <td>
+                        <td style="width: 5%">
                             <p>@Model.EventsWhereUserIsManager[i].SpotsAvailable</p>
                         </td>
-                        <td>
+                        <td style="width: 3%">
                             <a class="btn btn-success" asp-route-selectedEvent="@Model.EventsWhereUserIsManager[i].Id" asp-page="/Events/EditEvent">Edit</a>
                         </td>
-                        <td>
+                        <td style="width: 5%">
                             <form method="post">
                                 <input type="submit" value="Cancel Event" class="btn btn-danger" asp-page-handler="Cancel" asp-route-id="@Model.EventsWhereUserIsManager[i].Id" />
                             </form>
@@ -149,67 +150,68 @@
     </div>
 </div>
 
-<div class="row h-100 justify-content-center align-items-center">
-    <div class="col-12 w-75 col-lg-6">
+<div class="row h-100 justify-content-center">
+    <div>
         <h1>Events where you are assistant</h1>
         <p style="font-style:italic;">Edit events and request the changes here!</p>
+        <hr />
         <table class="table">
             <thead class="thead-dark">
                 <tr>
-                    <th>
+                    <th scope="col">
                         Title
                     </th>
-                    <th>
+                    <th scope="col">
                         Description
                     </th>
-                    <th>
+                    <th scope="col">
                         Date
                     </th>
-                    <th>
+                    <th scope="col">
                         Place
                     </th>
-                    <th>
+                    <th scope="col">
                         Adress
                     </th>
-                    <th>
+                    <th scope="col">
                         Organizer
                     </th>
-                    <th>
+                    <th scope="col">
                         Spots Available
                     </th>
-                    <th></th>
-                    <th></th>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
                 </tr>
             </thead>
             <tbody>
                 @for (int i = 0; i < Model.EventsWhereUserIsAssistant.Count; i++)
                 {
                     <tr>
-                        <td>
+                        <td style="width: 15%">
                             <p>@Model.EventsWhereUserIsAssistant[i].Title</p>
                         </td>
-                        <td>
+                        <td style="width: 25%">
                             <p>@Model.EventsWhereUserIsAssistant[i].Description</p>
                         </td>
-                        <td>
+                        <td style="width: 20%">
                             <p>@Model.EventsWhereUserIsAssistant[i].Date</p>
                         </td>
-                        <td>
+                        <td style="width: 9%">
                             <p>@Model.EventsWhereUserIsAssistant[i].Place</p>
                         </td>
-                        <td>
+                        <td style="width: 10%">
                             <p>@Model.EventsWhereUserIsAssistant[i].Address</p>
                         </td>
-                        <td>
+                        <td style="width: 8%">
                             <p>@Model.EventsWhereUserIsAssistant[i].Organizer.Name</p>
                         </td>
-                        <td>
+                        <td style="width: 5%">
                             <p>@Model.EventsWhereUserIsAssistant[i].SpotsAvailable</p>
                         </td>
-                        <td>
+                        <td style="width: 3%">
                             <a class="btn btn-success" asp-route-selectedEvent="@Model.EventsWhereUserIsAssistant[i].Id" asp-page="/Events/EditEvent">Edit</a>
                         </td>
-                        <td>
+                        <td style="width: 5%">
                             <form method="post">
                                 <input type="submit" value="Cancel Event" class="btn btn-danger" asp-page-handler="Cancel" asp-route-id="@Model.EventsWhereUserIsAssistant[i].Id" />
                             </form>
