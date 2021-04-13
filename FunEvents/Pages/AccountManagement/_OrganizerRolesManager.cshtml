@@ -11,47 +11,38 @@
                     @user.UserName @(Model.IsInSpecificRole(user.Id, "Admin").Result ? "(Admin👸)" : "")
                 </div>
                 <div class="col-4 text-right">
-                    @if (Model.IsInSpecificRole(user.Id, "Admin").Result)
+                    @foreach (var role in Model.Roles)
                     {
-                        <a class="btn btn-block btn-info disabled" role="button" aria-disabled="true">Admin</a>
-                    }
-                    @if (Model.IsInSpecificRole(user.Id, "Organizer").Result && Model.IsInSpecificRole(user.Id, "Admin").Result == false)
-                    {
-                        <a class="btn btn-block btn-info disabled" role="button" aria-disabled="true">Organizer</a>
-                    }
-                    @if (Model.IsInSpecificRole(user.Id, "Manager").Result && Model.IsInSpecificRole(user.Id, "Admin").Result == false)
-                    {
-                        <form method="post" asp-route-id="@user.Id" asp-route-role="Manager" asp-page-handler="Remove">
-                            <button class="btn btn-block btn-info"
-                                    type="submit">
-                                Remove as Manager
-                            </button>
-                        </form>
-                    }
-                    else if (Model.IsInSpecificRole(user.Id, "Admin").Result == false)
-                    {
-                        <form method="post" asp-route-id="@user.Id" asp-route-role="Manager" asp-page-handler="Add">
-                            <button class="btn btn-block btn-info" type="submit">
-                                Make Manager
-                            </button>
-                        </form>
-                    }
-                    @if (Model.IsInSpecificRole(user.Id, "Assistant").Result && Model.IsInSpecificRole(user.Id, "Admin").Result == false)
-                    {
-                        <form method="post" asp-route-id="@user.Id" asp-route-role="Manager" asp-page-handler="Remove">
-                            <button class="btn btn-block btn-info"
-                                    type="submit">
-                                Remove as Assistant
-                            </button>
-                        </form>
-                    }
-                    else if (Model.IsInSpecificRole(user.Id, "Admin").Result == false)
-                    {
-                        <form method="post" asp-route-id="@user.Id" asp-route-role="Manager" asp-page-handler="Add">
-                            <button class="btn btn-block btn-info" type="submit">
-                                Make Assistant
-                            </button>
-                        </form>
+                        @if (role.Name == "OrganizerManager")
+                        {
+                            <form method="post" asp-route-id="@user.Id" asp-page-handler="CreateOrganizer">
+                                <button class="btn btn-block btn-success" type="submit">
+                                    @($"Make {role.Name}")
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <div class="col">
+                                @if (Model.IsInSpecificRole(user.Id, role.Name).Result)
+                                {
+                                    <form method="post" asp-route-id="@user.Id" asp-route-role="@role.Name" asp-page-handler="Remove">
+                                        <button class="btn btn-block btn-danger"
+                                                type="submit">
+                                            @($"Remove as {role.Name}")
+                                        </button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <form method="post" asp-route-id="@user.Id" asp-route-role="@role.Name" asp-page-handler="Add">
+                                        <button class="btn btn-block btn-success" type="submit">
+                                            @($"Make {role.Name}")
+                                        </button>
+                                    </form>
+                                }
+                            </div>
+                        }
                     }
                 </div>
             </div>

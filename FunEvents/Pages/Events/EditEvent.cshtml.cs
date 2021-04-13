@@ -40,19 +40,23 @@ namespace FunEvents.Pages.Events
         public IList<Event> EventsWhereUserIsManager { get; set; }
         public IList<Event> EventsWhereUserIsAssistant { get; set; }
 
-        public bool eventSelected { get; set; }
-        public bool editSuccess { get; set; }
-        public bool editFailed { get; set; }
+        public bool HasEventBeenSelectedForEdit { get; set; }
+        public bool EditSucceeded { get; set; }
+        public bool EditFailed { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? selectedEvent)
         {
             Event = _context.Events.Find(selectedEvent);
-            eventSelected = selectedEvent == null ? false : true;
+            HasEventBeenSelectedForEdit = selectedEvent == null ? false : true;
             string userId = _userManager.GetUserId(User);
 
-            EventsWhereUserIsManager = await _context.Events.Where(e => e.EventOrganizer.OrganizerManagers.Any(m => m.Id == userId)).ToListAsync();
+            EventsWhereUserIsManager = await _context.Events
+                .Where(e => e.EventOrganizer.OrganizerManagers.Any(m => m.Id == userId))
+                .ToListAsync();
 
-            EventsWhereUserIsAssistant = await _context.Events.Where(e => e.EventOrganizer.OrganizerAssistants.Any(a => a.Id == userId)).ToListAsync();
+            EventsWhereUserIsAssistant = await _context.Events
+                .Where(e => e.EventOrganizer.OrganizerAssistants.Any(a => a.Id == userId))
+                .ToListAsync();
 
 
             //Events = await _context.Events.Include(e => e.Organizer).Where(e => e.Organizer.Id == userId).ToListAsync();
@@ -62,71 +66,46 @@ namespace FunEvents.Pages.Events
                 .Include(u => u.HostedEvents)
                 .FirstOrDefaultAsync();
 
-            // Ignorera detta än så länge
-            // Organizers = await _context.Organizers.Where(o => o.)
-
-            // Organizers = await _context.Organizers.Where(o => o.OrganizerAssistants.Contains(AppUser)).ToListAsync();
-
-            foreach (var organizer in Organizers)
-            {
-                //if (AppUser.AssistantInOrganizations.Contains(organizer) {
-
-                //}
-            }
-            
 
             return Page();
         }
 
-        public async Task<IActionResult> OnPostEditAsync(int? id, int? selectedEvent)
+        public async Task<IActionResult> OnPostEditAsync(int? id)
         {
-            Event = _context.Events.Find(selectedEvent);
-            eventSelected = selectedEvent == null ? false : true;
+            Event = await _context.Events.FindAsync(id);
 
-            var eventToUpdate = await _context.Events
-                .Include(e => e.Organizer)
-                .FirstOrDefaultAsync(e => e.Id == id);
-
-            string userId = _userManager.GetUserId(User);
-
-            AppUser = await _context.Users
-                .Where(u => u.Id == userId)
-                .Include(u => u.HostedEvents)
-                .FirstOrDefaultAsync();
-
-            Events = await _context.Events
-                .Include(e => e.Organizer)
-                .Where(e => e.Organizer.Id == userId)
-                .ToListAsync();
-
-            if (eventToUpdate == null)
+            if (Event == null)
             {
                 return NotFound();
             }
 
-            if (await TryUpdateModelAsync<Event>(eventToUpdate, "event",
+            if (await TryUpdateModelAsync<Event>(Event, "event",
                 s => s.Title, s => s.Description, s => s.Date, s => s.Place, s => s.Address, s => s.SpotsAvailable))
             {
-                if (eventToUpdate.SpotsAvailable < 0)
+                if (Event.SpotsAvailable < 0)
                 {
-                    editFailed = true;
+                    EditFailed = true;
                     return Page();
                 }
                 else
                 {
-                    editSuccess = true;
+                    EditSucceeded = true;
                     await _context.SaveChangesAsync();
                     return Page();
                 }
             }
 
-            editFailed = true;
+            EditFailed = true;
             return Page();
         }
 
         public async Task<IActionResult> OnPostRequestEditAsync(int? id)
         {
+            var requestForEvent = await _context.Events.FindAsync(id);
+            requestForEvent.EventChangesPendingManagerValidation.Add(Event);
+            await _context.SaveChangesAsync();
 
+            return Page();
         }
 
         public async Task<IActionResult> OnPostCancelAsync(int? id)

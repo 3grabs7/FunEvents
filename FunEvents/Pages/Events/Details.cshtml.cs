@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FunEvents.Data;
 using FunEvents.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FunEvents.Pages.Events
 {
+    [AllowAnonymous]
     public class DetailsModel : PageModel
     {
         private readonly ApplicationDbContext _context;
@@ -55,6 +57,9 @@ namespace FunEvents.Pages.Events
             Attendees = GetAttendeeInfo();
             AppUser = await GetAppuser(_userManager.GetUserId(User));
 
+            // Check if we were redirected here from login page after
+            // we tried to join and got prompted to log in.
+            // Automatically join the event on page load
             if (redirectedFromLogin ?? false)
             {
                 await JoinEventOnRedirectFromLogin(id);
@@ -62,7 +67,7 @@ namespace FunEvents.Pages.Events
                 return Redirect($"/Events/Details?id={id}");
             }
 
-
+            // Get ip information and increment events page visits
             string clientIpAddress = _accessor.HttpContext.Connection.RemoteIpAddress.ToString();
             bool isClientIpUnique = await _context.Analytics
                 .AnyAsync(a => a.Event.Id == id && a.Ip == clientIpAddress);

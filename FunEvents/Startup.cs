@@ -42,7 +42,7 @@ namespace FunEvents
             services.AddRazorPages()
                 .AddRazorPagesOptions(options =>
                 {
-
+                    options.Conventions.AuthorizeFolder("/");
                 });
 
         }
