@@ -32,6 +32,15 @@ namespace FunEvents.Pages.Events
         public Event NewEvent { get; set; }
         [BindProperty]
         public Organizer Organizer { get; set; }
+        public ICollection<Organizer> OrganizersWhereUserIsManager { get; set; }
+
+        public async void OnGetAsync()
+        {
+            var user = await GetAppUser(_userManager.GetUserId(User));
+            OrganizersWhereUserIsManager = await _context.Organizers
+                .Where(o => o.OrganizerManagers.Contains(user))
+                .ToListAsync();
+        }
 
         public async Task<IActionResult> OnPostAsync()
         {
@@ -39,8 +48,8 @@ namespace FunEvents.Pages.Events
             {
                 return Page();
             }
-
-            NewEvent.Organizer = Organizer; // await _context.Users.FindAsync(_userManager.GetUserId(User));
+            NewEvent.Organizer = await _context.Organizers
+                .FindAsync(Convert.ToInt32(Request.Form["organizer"]));
             NewEvent.CreatedAt = DateTime.Now;
             await _context.Events.AddAsync(NewEvent);
 
@@ -48,5 +57,10 @@ namespace FunEvents.Pages.Events
 
             return RedirectToPage("./Index");
         }
+
+        public async Task<AppUser> GetAppUser(string userId) => await _context.Users
+            .Where(u => u.Id == userId)
+            .Include(u => u.ManagerInOrganizations)
+            .FirstOrDefaultAsync();
     }
 }

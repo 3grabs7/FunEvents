@@ -3,19 +3,25 @@
 @{
 }
 
-
-
 <div class="row h-100 justify-content-center align-items-center">
     <div class="col-10 col-md-8 col-lg-6">
         <h1>Create New Event</h1>
         <hr />
         <form method="post">
             <div class="form-group">
+                <label asp-for="@Model.NewEvent.Organizer" class="col-sm-10 col-form-label col-form-label-lg" style="font-weight: bold;"></label>
+                <select name="organizer">
+                    @foreach (var organizer in Model.OrganizersWhereUserIsManager)
+                    {
+                        <option value="@organizer.Id">@organizer.Name</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
                 <label asp-for="@Model.NewEvent.Title" class="col-sm-10 col-form-label col-form-label-lg" style="font-weight: bold;"></label>
                 <input asp-for="@Model.NewEvent.Title" class="form-control form-control-lg">
                 <span asp-validation-for="@Model.NewEvent.Title" class="text-danger"></span>
             </div>
-
             <div class="form-group">
                 <label asp-for="@Model.NewEvent.Description" class="col-sm-10 col-form-label col-form-label-lg" style="font-weight: bold;">Description</label>
                 <textarea asp-for="@Model.NewEvent.Description" class="form-control" id="exampleFormControlTextarea1" rows="4"></textarea>
