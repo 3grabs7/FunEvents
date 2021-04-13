@@ -1,48 +1,40 @@
 ﻿@model FunEvents.Pages.AccountManagement.RolesManagerModel
+@{
+    string[] managersRoleManager = new string[] { "OrganizerManager", "OrganizerAssistant" };
+}
 
 <h1>User Manager - Organizer version</h1>
 <h4>Assign roles to users</h4>
 <ul class="list-group">
     @foreach (var user in Model.Users)
     {
-        <li class="list-group-item @(Model.IsInSpecificRole(user.Id, "Organizer").Result ? "active" : "")">
+        <li class="list-group-item @(Model.IsInSpecificRole(user.Id, "OrganizerManager").Result ? "active" : "")">
             <div class="row">
                 <div class="col text-left">
                     @user.UserName @(Model.IsInSpecificRole(user.Id, "Admin").Result ? "(Admin👸)" : "")
                 </div>
                 <div class="col-4 text-right">
-                    @foreach (var role in Model.Roles)
+                    @foreach (var role in managersRoleManager)
                     {
-                        @if (role.Name == "OrganizerManager")
-                        {
-                            <form method="post" asp-route-id="@user.Id" asp-page-handler="CreateOrganizer">
-                                <button class="btn btn-block btn-success" type="submit">
-                                    @($"Make {role.Name}")
-                                </button>
-                            </form>
-                        }
-                        else
-                        {
-                            <div class="col">
-                                @if (Model.IsInSpecificRole(user.Id, role.Name).Result)
-                                {
-                                    <form method="post" asp-route-id="@user.Id" asp-route-role="@role.Name" asp-page-handler="Remove">
-                                        <button class="btn btn-block btn-danger"
-                                                type="submit">
-                                            @($"Remove as {role.Name}")
-                                        </button>
-                                    </form>
-                                }
-                                else
-                                {
-                                    <form method="post" asp-route-id="@user.Id" asp-route-role="@role.Name" asp-page-handler="Add">
-                                        <button class="btn btn-block btn-success" type="submit">
-                                            @($"Make {role.Name}")
-                                        </button>
-                                    </form>
-                                }
-                            </div>
-                        }
+                        <div class="col">
+                            @if (Model.IsInSpecificRole(user.Id, role).Result)
+                            {
+                                <form method="post" asp-route-id="@user.Id" asp-route-role="@role" asp-page-handler="Remove">
+                                    <button class="btn btn-block btn-danger"
+                                            type="submit">
+                                        @($"Remove as {role}")
+                                    </button>
+                                </form>
+                            }
+                            else
+                            {
+                                <form method="post" asp-route-id="@user.Id" asp-route-role="@role" asp-page-handler="Add">
+                                    <button class="btn btn-block btn-success" type="submit">
+                                        @($"Make {role}")
+                                    </button>
+                                </form>
+                            }
+                        </div>
                     }
                 </div>
             </div>

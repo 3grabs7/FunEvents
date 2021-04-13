@@ -34,7 +34,7 @@ namespace FunEvents.Pages.Events
         public Organizer Organizer { get; set; }
         public ICollection<Organizer> OrganizersWhereUserIsManager { get; set; }
 
-        public async void OnGetAsync()
+        public async Task OnGetAsync()
         {
             var user = await GetAppUser(_userManager.GetUserId(User));
             OrganizersWhereUserIsManager = await _context.Organizers

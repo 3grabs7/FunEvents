@@ -6,7 +6,8 @@
     bool isOrganizer = false;
     @if (User.Identity.IsAuthenticated)
     {
-        isOrganizer = _userManager.IsInRoleAsync(_context.Users.Where(u => u.Id == _userManager.GetUserId(User)).First(), "OrganizerManager").Result;
+        isOrganizer = _userManager.IsInRoleAsync(_context.Users.Where(u => u.Id == _userManager.GetUserId(User)).First(), "OrganizerManager").Result
+            || _userManager.IsInRoleAsync(_context.Users.Where(u => u.Id == _userManager.GetUserId(User)).First(), "OrganizerAssistant").Result;
     }
 }
 
@@ -50,7 +51,7 @@
                                     <a class="nav-link text-success" asp-area="" asp-page="/Events/EditEvent">Organize Events</a>
                                 </li>
                             }
-                            @if (User.IsInRole("Admin") || User.IsInRole("Organizer"))
+                            @if (User.IsInRole("Admin") || User.IsInRole("OrganizerManager"))
                             {
                                 <li class="nav-item">
                                     <a class="nav-link text-danger" asp-area="" asp-page="/AccountManagement/RolesManager">Manage Users</a>

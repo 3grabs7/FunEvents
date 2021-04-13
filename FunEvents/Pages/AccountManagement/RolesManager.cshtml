@@ -1,6 +1,7 @@
 ﻿@page
 @model FunEvents.Pages.AccountManagement.RolesManagerModel
 @{
+    string[] AdminRoleManager = new string[] { "Admin", "OrganizerManager" };
 }
 
 @if (User.IsInRole("Admin"))
@@ -17,39 +18,27 @@
                     </div>
                     <div class="col-8 text-right">
                         <div class="row">
-                            @foreach (var role in Model.Roles)
+                            @foreach (var role in AdminRoleManager)
                             {
-                                <!-- Once tested, refactor this to work with same post method -->
-                                @if (role.Name == "OrganizerManager")
-                                {
-                                    <form method="post" asp-route-id="@user.Id" asp-page-handler="CreateOrganizer">
-                                        <button class="btn btn-block btn-success" type="submit">
-                                            @($"Make {role.Name}")
-                                        </button>
-                                    </form>
-                                }
-                                else
-                                {
-                                    <div class="col">
-                                        @if (Model.IsInSpecificRole(user.Id, role.Name).Result)
-                                        {
-                                            <form method="post" asp-route-id="@user.Id" asp-route-role="@role.Name" asp-page-handler="Remove">
-                                                <button class="btn btn-block btn-danger"
-                                                        type="submit">
-                                                    @($"Remove as {role.Name}")
-                                                </button>
-                                            </form>
-                                        }
-                                        else
-                                        {
-                                            <form method="post" asp-route-id="@user.Id" asp-route-role="@role.Name" asp-page-handler="Add">
-                                                <button class="btn btn-block btn-success" type="submit">
-                                                    @($"Make {role.Name}")
-                                                </button>
-                                            </form>
-                                        }
-                                    </div>
-                                }
+                                <div class="col">
+                                    @if (Model.IsInSpecificRole(user.Id, role).Result)
+                                    {
+                                        <form method="post" asp-route-id="@user.Id" asp-route-role="@role" asp-page-handler="Remove">
+                                            <button class="btn btn-block btn-danger @(role == "OrganizerManager" ? "disabled" : "")"
+                                                    type="submit">
+                                                @(role == "OrganizerManager" ? "Has organization" : $"Remove as { role}")
+                                            </button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <form method="post" asp-route-id="@user.Id" asp-route-role="@role" asp-page-handler="Add">
+                                            <button class="btn btn-block btn-success" type="submit">
+                                                @($"Make {role}")
+                                            </button>
+                                        </form>
+                                    }
+                                </div>
                             }
                         </div>
                     </div>
@@ -58,7 +47,7 @@
         }
     </ul>
 }
-else if (User.IsInRole("Organizer"))
+else if (User.IsInRole("OrganizerManager"))
 {
     <partial name="_OrganizerRolesManager" />
 }

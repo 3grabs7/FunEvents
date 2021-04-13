@@ -42,21 +42,22 @@ namespace FunEvents.Pages.Events
         public bool EditSucceeded { get; set; }
         public bool EditFailed { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(int? selectedEvent)
+        public async Task OnGetAsync(int? selectedEvent)
         {
             Event = _context.Events.Find(selectedEvent);
             HasEventBeenSelectedForEdit = selectedEvent == null ? false : true;
             string userId = _userManager.GetUserId(User);
 
             EventsWhereUserIsManager = await _context.Events
+                .Include(e => e.Organizer)
                 .Where(e => e.Organizer.OrganizerManagers.Any(m => m.Id == userId))
                 .ToListAsync();
 
             EventsWhereUserIsAssistant = await _context.Events
+                .Include(e => e.Organizer)
                 .Where(e => e.Organizer.OrganizerAssistants.Any(a => a.Id == userId))
                 .ToListAsync();
 
-            return Page();
         }
 
         public async Task<IActionResult> OnPostEditAsync(int? id)

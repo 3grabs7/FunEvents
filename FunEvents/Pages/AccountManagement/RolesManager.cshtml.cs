@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace FunEvents.Pages.AccountManagement
 {
-    [Authorize(Roles = "Admin, Organizer")]
+    [Authorize(Roles = "Admin, OrganizerManager")]
     public class RolesManagerModel : PageModel
     {
         private readonly ApplicationDbContext _context;
@@ -41,7 +41,38 @@ namespace FunEvents.Pages.AccountManagement
 
         public async Task<IActionResult> OnPostAddAsync(string id, string role)
         {
-            var user = await SelectedUser(id);
+            AppUser user = await SelectedUser(id);
+
+            if (role == "OrganizerManager")
+            {
+                if (user.ManagerInOrganizations?.Count > 0)
+                {
+                    // make sure that user is not already manager for an unverified organization
+                    bool hasUnverifiedOrganization = user.ManagerInOrganizations
+                        .Any(o => !o.IsVerified);
+                    if (hasUnverifiedOrganization)
+                    {
+                        // once tested, make sure this is checked before loading list
+                        // and button for adding user as organizationmanager is disabled
+                        Console.WriteLine("ALREADY PENDING VALIDATION");
+                        return RedirectToPage("/AccountManagement/RolesManager");
+                    }
+                }
+
+                await _userManager.AddToRoleAsync(user, "OrganizerManager");
+                Organizer organizer = new Organizer()
+                {
+                    Name = "Unverified",
+                    IsVerified = false,
+                    OrganizerManagers = new List<AppUser>() { }
+                };
+                await _context.Organizers.AddAsync(organizer);
+                user.ManagerInOrganizations.Add(organizer);
+                await _context.SaveChangesAsync();
+
+                return RedirectToPage("/AccountManagement/RolesManager");
+            }
+
             await _userManager.AddToRoleAsync(user, role);
             await _context.SaveChangesAsync();
 
@@ -63,39 +94,6 @@ namespace FunEvents.Pages.AccountManagement
                 throw new Exception(String.Join(' ', result.Errors.Select(e => e.Description)));
             }
 
-            await _context.SaveChangesAsync();
-
-            return RedirectToPage("/AccountManagement/RolesManager");
-        }
-
-        // Will merge with other add/remove posts once completely tested
-        public async Task<IActionResult> OnPostCreateOrganizerAsync(string id)
-        {
-            AppUser user = await SelectedUser(id);
-
-            if (user.ManagerInOrganizations?.Count > 0)
-            {
-                // make sure that user is not already manager for an unverified organization
-                bool hasUnverifiedOrganization = user.ManagerInOrganizations
-                    .Any(o => !o.IsVerified);
-                if (hasUnverifiedOrganization)
-                {
-                    // once tested, make sure this is checked before loading list
-                    // and button for adding user as organizationmanager is disabled
-                    Console.WriteLine("ALREADY PENDING VALIDATION");
-                    return RedirectToPage("/AccountManagement/RolesManager");
-                }
-            }
-
-            await _userManager.AddToRoleAsync(user, "OrganizerManager");
-            Organizer organizer = new Organizer()
-            {
-                Name = "Unverified",
-                IsVerified = false,
-                OrganizerManagers = new List<AppUser>() { }
-            };
-            await _context.Organizers.AddAsync(organizer);
-            user.ManagerInOrganizations.Add(organizer);
             await _context.SaveChangesAsync();
 
             return RedirectToPage("/AccountManagement/RolesManager");
