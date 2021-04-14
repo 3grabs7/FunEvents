@@ -108,20 +108,20 @@ namespace FunEvents.Pages
             if (managerForUnverifiedOrganizer)
             {
                 // If unverified organizer is found, set our binded property before returning
-                OrganizationToBeValidated = await GetUnverifiedOrganizer();
+                OrganizationToBeValidated = await GetUnverifiedOrganization();
                 return true;
             }
             return false;
         }
 
-        public async Task<Organization> GetUnverifiedOrganizer()
+        public async Task<Organization> GetUnverifiedOrganization()
         {
             var user = await GetAppuser(_userManager.GetUserId(User));
             return user.ManagerInOrganizations
                 .First(o => !o.IsVerified);
         }
 
-        public async Task<IActionResult> OnPostVerifyOrganizerAsync()
+        public async Task<IActionResult> OnPostVerifyOrganizationAsync()
         {
             if (!ModelState.IsValid)
             {
@@ -129,10 +129,12 @@ namespace FunEvents.Pages
             }
             OrganizationToBeValidated.IsVerified = true;
             _context.Attach(OrganizationToBeValidated).State = EntityState.Modified;
+
             var currentUser = await GetAppuser(_userManager.GetUserId(User));
 
-            // adding verified organization to users list of organizations
+            // making current user manager of the created organization
             currentUser.ManagerInOrganizations.Add(OrganizationToBeValidated);
+
             await _context.SaveChangesAsync();
 
             return RedirectToPage("/Index");

@@ -10,7 +10,7 @@
         <form method="post">
             <div class="form-group">
                 <label asp-for="@Model.NewEvent.Organization" class="col-sm-10 col-form-label col-form-label-lg" style="font-weight: bold;"></label>
-                <select name="organizer">
+                <select name="organization">
                     @foreach (var organization in Model.OrganizationsWhereUserIsManager)
                     {
                         <option value="@organization.Id">@organization.Name</option>

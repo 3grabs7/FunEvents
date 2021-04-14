@@ -49,10 +49,8 @@ namespace FunEvents.Pages.Events
                 return Page();
             }
 
-            var user = await GetAppUser(_userManager.GetUserId(User));
-
             NewEvent.Organization = await _context.Organizations
-                .FindAsync(Convert.ToInt32(Request.Form["organizer"]));
+                .FindAsync(Convert.ToInt32(Request.Form["organization"]));
             NewEvent.CreatedAt = DateTime.Now;
             await _context.Events.AddAsync(NewEvent);
 
