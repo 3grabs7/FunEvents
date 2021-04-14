@@ -52,7 +52,8 @@ namespace FunEvents.Pages
             if (IsOrganizerPendingVerification().Result)
             {
                 var user = await GetAppuser(_userManager.GetUserId(User));
-                OrganizerToBeValidated = user.ManagerInOrganizations.First(o => !o.IsVerified);
+                OrganizerToBeValidated = user.ManagerInOrganizations
+                    .First(o => !o.IsVerified);
             }
 
             return Page();
