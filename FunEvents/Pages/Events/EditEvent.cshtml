@@ -63,7 +63,7 @@
                 <div class="form-row align-items-end">
                     <div class="form-group col-md-1">
                         <input type="submit" value="@(Model.EventsWhereUserIsManager.Contains(Model.Event) ? "Edit" : "Request")"
-                               class="btn btn-success" asp-route-id="@Model.Event.Id" />
+                               class="btn btn-success" />
                     </div>
                     <div class="form-group col-md-2">
                         <a asp-page="/Events/EditEvent" class="text-dark">Back to Events</a>

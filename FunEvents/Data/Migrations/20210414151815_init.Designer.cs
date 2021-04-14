@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FunEvents.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210407080916_createdAt")]
-    partial class createdAt
+    [Migration("20210414151815_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -34,6 +34,56 @@ namespace FunEvents.Data.Migrations
                     b.HasIndex("JoinedEventsId");
 
                     b.ToTable("AppUserEvent");
+                });
+
+            modelBuilder.Entity("AppUserOrganization", b =>
+                {
+                    b.Property<int>("AssistantInOrganizationsId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("OrganizationAssistantsId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("AssistantInOrganizationsId", "OrganizationAssistantsId");
+
+                    b.HasIndex("OrganizationAssistantsId");
+
+                    b.ToTable("AppUserOrganization");
+                });
+
+            modelBuilder.Entity("AppUserOrganization1", b =>
+                {
+                    b.Property<int>("ManagerInOrganizationsId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("OrganizationManagersId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("ManagerInOrganizationsId", "OrganizationManagersId");
+
+                    b.HasIndex("OrganizationManagersId");
+
+                    b.ToTable("AppUserOrganization1");
+                });
+
+            modelBuilder.Entity("FunEvents.Models.Analytics", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("EventId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Ip")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EventId");
+
+                    b.ToTable("Analytics");
                 });
 
             modelBuilder.Entity("FunEvents.Models.AppUser", b =>
@@ -126,8 +176,14 @@ namespace FunEvents.Data.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("OrganizerId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int?>("EventId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("OrganizationId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PageVisits")
+                        .HasColumnType("int");
 
                     b.Property<string>("Place")
                         .HasColumnType("nvarchar(max)");
@@ -138,11 +194,43 @@ namespace FunEvents.Data.Migrations
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("UniquePageVisits")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("OrganizerId");
+                    b.HasIndex("EventId");
+
+                    b.HasIndex("OrganizationId");
 
                     b.ToTable("Events");
+                });
+
+            modelBuilder.Entity("FunEvents.Models.Organization", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsVerified")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OrganizationNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Organizations");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -295,11 +383,54 @@ namespace FunEvents.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("AppUserOrganization", b =>
+                {
+                    b.HasOne("FunEvents.Models.Organization", null)
+                        .WithMany()
+                        .HasForeignKey("AssistantInOrganizationsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FunEvents.Models.AppUser", null)
+                        .WithMany()
+                        .HasForeignKey("OrganizationAssistantsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("AppUserOrganization1", b =>
+                {
+                    b.HasOne("FunEvents.Models.Organization", null)
+                        .WithMany()
+                        .HasForeignKey("ManagerInOrganizationsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FunEvents.Models.AppUser", null)
+                        .WithMany()
+                        .HasForeignKey("OrganizationManagersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("FunEvents.Models.Analytics", b =>
+                {
+                    b.HasOne("FunEvents.Models.Event", "Event")
+                        .WithMany()
+                        .HasForeignKey("EventId");
+
+                    b.Navigation("Event");
+                });
+
             modelBuilder.Entity("FunEvents.Models.Event", b =>
                 {
-                    b.HasOne("FunEvents.Models.AppUser", "Organization")
-                        .WithMany("HostedEvents")
-                        .HasForeignKey("OrganizerId");
+                    b.HasOne("FunEvents.Models.Event", null)
+                        .WithMany("EventChangesPendingManagerValidation")
+                        .HasForeignKey("EventId");
+
+                    b.HasOne("FunEvents.Models.Organization", "Organization")
+                        .WithMany()
+                        .HasForeignKey("OrganizationId");
 
                     b.Navigation("Organization");
                 });
@@ -355,9 +486,9 @@ namespace FunEvents.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("FunEvents.Models.AppUser", b =>
+            modelBuilder.Entity("FunEvents.Models.Event", b =>
                 {
-                    b.Navigation("HostedEvents");
+                    b.Navigation("EventChangesPendingManagerValidation");
                 });
 #pragma warning restore 612, 618
         }

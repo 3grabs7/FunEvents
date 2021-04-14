@@ -60,10 +60,8 @@ namespace FunEvents.Pages.Events
 
         }
 
-        public async Task<IActionResult> OnPostEditAsync(int? id)
+        public async Task<IActionResult> OnPostEditAsync()
         {
-            Event = await _context.Events.FindAsync(id);
-
             if (Event == null)
             {
                 return NotFound();
@@ -86,7 +84,7 @@ namespace FunEvents.Pages.Events
             }
 
             EditFailed = true;
-            return Page();
+            return RedirectToAction("get");
         }
 
         public async Task<IActionResult> OnPostRequestEditAsync(int? id)

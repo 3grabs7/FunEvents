@@ -34,34 +34,34 @@ namespace FunEvents.Data.Migrations
                     b.ToTable("AppUserEvent");
                 });
 
-            modelBuilder.Entity("AppUserOrganizer", b =>
+            modelBuilder.Entity("AppUserOrganization", b =>
                 {
                     b.Property<int>("AssistantInOrganizationsId")
                         .HasColumnType("int");
 
-                    b.Property<string>("OrganizerAssistantsId")
+                    b.Property<string>("OrganizationAssistantsId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("AssistantInOrganizationsId", "OrganizerAssistantsId");
+                    b.HasKey("AssistantInOrganizationsId", "OrganizationAssistantsId");
 
-                    b.HasIndex("OrganizerAssistantsId");
+                    b.HasIndex("OrganizationAssistantsId");
 
-                    b.ToTable("AppUserOrganizer");
+                    b.ToTable("AppUserOrganization");
                 });
 
-            modelBuilder.Entity("AppUserOrganizer1", b =>
+            modelBuilder.Entity("AppUserOrganization1", b =>
                 {
                     b.Property<int>("ManagerInOrganizationsId")
                         .HasColumnType("int");
 
-                    b.Property<string>("OrganizerManagersId")
+                    b.Property<string>("OrganizationManagersId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("ManagerInOrganizationsId", "OrganizerManagersId");
+                    b.HasKey("ManagerInOrganizationsId", "OrganizationManagersId");
 
-                    b.HasIndex("OrganizerManagersId");
+                    b.HasIndex("OrganizationManagersId");
 
-                    b.ToTable("AppUserOrganizer1");
+                    b.ToTable("AppUserOrganization1");
                 });
 
             modelBuilder.Entity("FunEvents.Models.Analytics", b =>
@@ -174,8 +174,11 @@ namespace FunEvents.Data.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("OrganizerId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int?>("EventId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("OrganizationId")
+                        .HasColumnType("int");
 
                     b.Property<int>("PageVisits")
                         .HasColumnType("int");
@@ -194,7 +197,9 @@ namespace FunEvents.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OrganizerId");
+                    b.HasIndex("EventId");
+
+                    b.HasIndex("OrganizationId");
 
                     b.ToTable("Events");
                 });
@@ -223,7 +228,7 @@ namespace FunEvents.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Organizers");
+                    b.ToTable("Organizations");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -376,7 +381,7 @@ namespace FunEvents.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("AppUserOrganizer", b =>
+            modelBuilder.Entity("AppUserOrganization", b =>
                 {
                     b.HasOne("FunEvents.Models.Organization", null)
                         .WithMany()
@@ -386,12 +391,12 @@ namespace FunEvents.Data.Migrations
 
                     b.HasOne("FunEvents.Models.AppUser", null)
                         .WithMany()
-                        .HasForeignKey("OrganizerAssistantsId")
+                        .HasForeignKey("OrganizationAssistantsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("AppUserOrganizer1", b =>
+            modelBuilder.Entity("AppUserOrganization1", b =>
                 {
                     b.HasOne("FunEvents.Models.Organization", null)
                         .WithMany()
@@ -401,7 +406,7 @@ namespace FunEvents.Data.Migrations
 
                     b.HasOne("FunEvents.Models.AppUser", null)
                         .WithMany()
-                        .HasForeignKey("OrganizerManagersId")
+                        .HasForeignKey("OrganizationManagersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -417,9 +422,13 @@ namespace FunEvents.Data.Migrations
 
             modelBuilder.Entity("FunEvents.Models.Event", b =>
                 {
-                    b.HasOne("FunEvents.Models.AppUser", "Organization")
-                        .WithMany("HostedEvents")
-                        .HasForeignKey("OrganizerId");
+                    b.HasOne("FunEvents.Models.Event", null)
+                        .WithMany("EventChangesPendingManagerValidation")
+                        .HasForeignKey("EventId");
+
+                    b.HasOne("FunEvents.Models.Organization", "Organization")
+                        .WithMany()
+                        .HasForeignKey("OrganizationId");
 
                     b.Navigation("Organization");
                 });
@@ -475,9 +484,9 @@ namespace FunEvents.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("FunEvents.Models.AppUser", b =>
+            modelBuilder.Entity("FunEvents.Models.Event", b =>
                 {
-                    b.Navigation("HostedEvents");
+                    b.Navigation("EventChangesPendingManagerValidation");
                 });
 #pragma warning restore 612, 618
         }
