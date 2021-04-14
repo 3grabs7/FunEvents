@@ -42,10 +42,18 @@ namespace FunEvents.Pages.Events
         public bool EditSucceeded { get; set; }
         public bool EditFailed { get; set; }
 
-        public async Task OnGetAsync(int? selectedEvent)
+        public async Task OnGetAsync(int? selectedEvent,
+           bool? editSucceeded,
+           bool? editFailed)
         {
-            Event = _context.Events.Find(selectedEvent);
+            EditSucceeded = editSucceeded ?? false;
+            EditFailed = editFailed ?? false;
+
+            Event = await _context.Events
+                .Include(e => e.EventChangesPendingManagerValidation)
+                .FirstOrDefaultAsync(e => e.Id == selectedEvent);
             HasEventBeenSelectedForEdit = selectedEvent == null ? false : true;
+
             string userId = _userManager.GetUserId(User);
 
             EventsWhereUserIsManager = await _context.Events
@@ -62,38 +70,42 @@ namespace FunEvents.Pages.Events
 
         public async Task<IActionResult> OnPostEditAsync()
         {
-            if (Event == null)
+            try
             {
-                return NotFound();
+                _context.Attach(Event).State = EntityState.Modified;
+                EditSucceeded = true;
+                await _context.SaveChangesAsync();
+                return RedirectToPage("/Events/EditEvent", new { EditSucceeded = true });
             }
-
-            if (await TryUpdateModelAsync<Event>(Event, "event",
-                s => s.Title, s => s.Description, s => s.Date, s => s.Place, s => s.Address, s => s.SpotsAvailable))
+            catch
             {
-                if (Event.SpotsAvailable < 0)
-                {
-                    EditFailed = true;
-                    return Page();
-                }
-                else
-                {
-                    EditSucceeded = true;
-                    await _context.SaveChangesAsync();
-                    return Page();
-                }
+                return RedirectToPage("/Events/EditEvent", new { EditFailed = true });
             }
-
-            EditFailed = true;
-            return RedirectToAction("get");
         }
 
-        public async Task<IActionResult> OnPostRequestEditAsync(int? id)
+        public async Task<IActionResult> OnPostRequestEditAsync()
         {
-            var requestForEvent = await _context.Events.FindAsync(id);
-            requestForEvent.EventChangesPendingManagerValidation.Add(Event);
-            await _context.SaveChangesAsync();
+            var shadowEvent = new Event() { Id = 999999 };
+            var reflections = Event.GetType().GetProperties();
+            foreach (var reflection in reflections)
+            {
+                if (reflection.Name == "Id") continue;
+                shadowEvent.GetType()
+                    .GetProperty(reflection.Name)
+                    .SetValue(shadowEvent, reflection.GetValue(Event, null));
+            }
 
-            return Page();
+            try
+            {
+                Event.EventChangesPendingManagerValidation.Add(shadowEvent);
+                await _context.SaveChangesAsync();
+                return RedirectToPage("/Events/EditEvent", new { EditSucceeded = true });
+            }
+            catch (Exception e)
+            {
+                // throw new Exception(e.Message);
+                return RedirectToPage("/Events/EditEvent", new { EditFailed = true });
+            }
         }
 
         public async Task<IActionResult> OnPostCancelAsync(int? id)
