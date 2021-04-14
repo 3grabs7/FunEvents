@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using FunEvents.Data;
 using FunEvents.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -5,99 +9,86 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace FunEvents.Pages.AccountManagement
 {
-    [Authorize(Roles = "Admin, OrganizationManager")]
-    public class RolesManagerModel : PageModel
+    [Authorize(Roles = "OrganizationManager")]
+    public class OrganizationRolesManagerModel : PageModel
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<AppUser> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public RolesManagerModel(ApplicationDbContext context,
-            UserManager<AppUser> userManager,
-            RoleManager<IdentityRole> roleManager)
+        public OrganizationRolesManagerModel(ApplicationDbContext context,
+            UserManager<AppUser> userManager)
         {
             _context = context;
             _userManager = userManager;
-            _roleManager = roleManager;
         }
 
         public IList<AppUser> Users { get; set; }
-
         public IList<IdentityRole> Roles { get; set; }
 
-        public async Task OnGetAsync()
+        // list of the current users organizations
+        public IList<Organization> UserOrganizations { get; set; }
+
+        public async Task OnGet()
         {
             Roles = await _context.Roles.ToListAsync();
             Users = await _context.Users.ToListAsync();
+
+            var currentUser = await _userManager.GetUserAsync(User);
+
+            if(currentUser.ManagerInOrganizations?.Count != null)
+            {
+                UserOrganizations = currentUser.ManagerInOrganizations.ToList();
+            }
         }
 
         public async Task<IActionResult> OnPostAddAsync(string id, string role)
         {
-            AppUser user = await SelectedUser(id);
+            AppUser selectedUser = await SelectedUser(id);
 
             if (role == "OrganizationManager")
             {
-                if (user.ManagerInOrganizations?.Count > 0)
+                if (selectedUser.ManagerInOrganizations?.Count > 0)
                 {
                     // make sure that user is not already manager for an unverified organization
-                    bool hasUnverifiedOrganization = user.ManagerInOrganizations
+                    bool hasUnverifiedOrganization = selectedUser.ManagerInOrganizations
                         .Any(o => !o.IsVerified);
                     if (hasUnverifiedOrganization)
                     {
                         // once tested, make sure this is checked before loading list
                         // and button for adding user as organizationmanager is disabled
                         Console.WriteLine("ALREADY PENDING VALIDATION");
-                        return RedirectToPage("/AccountManagement/RolesManager");
+                        return RedirectToPage("/AccountManagement/OrganizationRolesManager");
                     }
                 }
 
-                await _userManager.AddToRoleAsync(user, "OrganizationManager");
-                Organization organizer = new Organization()
+                await _userManager.AddToRoleAsync(selectedUser, "OrganizationManager");
+                Organization organization = new Organization()
                 {
                     Name = "Unverified",
                     IsVerified = false,
                     OrganizationManagers = new List<AppUser>() { }
                 };
-                await _context.Organizations.AddAsync(organizer);
-                user.ManagerInOrganizations.Add(organizer);
+                await _context.Organizations.AddAsync(organization);
+                selectedUser.ManagerInOrganizations.Add(organization);
                 await _context.SaveChangesAsync();
 
-                return RedirectToPage("/AccountManagement/RolesManager");
+                return RedirectToPage("/AccountManagement/OrganizationRolesManager");
             }
 
-            await _userManager.AddToRoleAsync(user, role);
+            await _userManager.AddToRoleAsync(selectedUser, role);
             await _context.SaveChangesAsync();
 
-            if (_userManager.GetUserId(User) == user.Id)
+            if (_userManager.GetUserId(User) == selectedUser.Id)
             {
-                await _userManager.UpdateSecurityStampAsync(user);
+                await _userManager.UpdateSecurityStampAsync(selectedUser);
             }
 
-            return RedirectToPage("/AccountManagement/RolesManager");
+            return RedirectToPage("/AccountManagement/OrganizationRolesManager");
         }
 
-        public async Task<IActionResult> OnPostRemoveAsync(string id, string role)
-        {
-            var user = await SelectedUser(id);
-            var result = await _userManager.RemoveFromRoleAsync(user, role);
-
-            if (!result.Succeeded)
-            {
-                throw new Exception(String.Join(' ', result.Errors.Select(e => e.Description)));
-            }
-
-            await _context.SaveChangesAsync();
-
-            return RedirectToPage("/AccountManagement/RolesManager");
-        }
 
         public async Task<AppUser> SelectedUser(string id) => await _context.Users
             .Where(u => u.Id == id)
@@ -114,6 +105,5 @@ namespace FunEvents.Pages.AccountManagement
             return await _context.UserRoles
                 .AnyAsync(ur => ur.UserId == id && ur.RoleId == roleToCheck.Id);
         }
-
     }
 }

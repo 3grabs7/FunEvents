@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FunEvents.Pages.Events
 {
-    [Authorize(Roles = "Admin, OrganizerManager")]
+    [Authorize(Roles = "Admin, OrganizationManager")]
     public class CreateEventModel : PageModel
     {
         private readonly ApplicationDbContext _context;
@@ -48,6 +48,9 @@ namespace FunEvents.Pages.Events
             {
                 return Page();
             }
+
+            var user = await GetAppUser(_userManager.GetUserId(User));
+
             NewEvent.Organization = await _context.Organizations
                 .FindAsync(Convert.ToInt32(Request.Form["organizer"]));
             NewEvent.CreatedAt = DateTime.Now;

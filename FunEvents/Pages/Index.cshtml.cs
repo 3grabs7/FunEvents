@@ -129,6 +129,10 @@ namespace FunEvents.Pages
             }
             OrganizationToBeValidated.IsVerified = true;
             _context.Attach(OrganizationToBeValidated).State = EntityState.Modified;
+            var currentUser = await GetAppuser(_userManager.GetUserId(User));
+
+            // adding verified organization to users list of organizations
+            currentUser.ManagerInOrganizations.Add(OrganizationToBeValidated);
             await _context.SaveChangesAsync();
 
             return RedirectToPage("/Index");

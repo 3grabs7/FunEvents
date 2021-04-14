@@ -51,10 +51,16 @@
                                     <a class="nav-link text-success" asp-area="" asp-page="/Events/EditEvent">Organize Events</a>
                                 </li>
                             }
-                            @if (User.IsInRole("Admin") || User.IsInRole("OrganizationManager"))
+                            @if (User.IsInRole("Admin"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-danger" asp-area="" asp-page="/AccountManagement/RolesManager">Manage Users</a>
+                                    <a class="nav-link text-danger" asp-area="" asp-page="/AccountManagement/AdminRolesManager">Manage Users</a>
+                                </li>
+                            }
+                            @if (User.IsInRole("OrganizationManager"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-danger" asp-area="" asp-page="/AccountManagement/OrganizationRolesManager">Manage Users</a>
                                 </li>
                             }
                         }
