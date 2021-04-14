@@ -1,7 +1,7 @@
 ﻿@page
 @model FunEvents.Pages.AccountManagement.RolesManagerModel
 @{
-    string[] AdminRoleManager = new string[] { "Admin", "OrganizerManager" };
+    string[] AdminRoleManager = new string[] { "Admin", "OrganizationManager" };
 }
 
 @if (User.IsInRole("Admin"))
@@ -24,9 +24,9 @@
                                     @if (Model.IsInSpecificRole(user.Id, role).Result)
                                     {
                                         <form method="post" asp-route-id="@user.Id" asp-route-role="@role" asp-page-handler="Remove">
-                                            <button class="btn btn-block btn-danger @(role == "OrganizerManager" ? "disabled" : "")"
+                                            <button class="btn btn-block btn-danger @(role == "OrganizationManager" ? "disabled" : "")"
                                                     type="submit">
-                                                @(role == "OrganizerManager" ? "Has organization" : $"Remove as { role}")
+                                                @(role == "OrganizationManager" ? "Has organization" : $"Remove as { role}")
                                             </button>
                                         </form>
                                     }
@@ -47,8 +47,8 @@
         }
     </ul>
 }
-else if (User.IsInRole("OrganizerManager"))
+else if (User.IsInRole("OrganizationManager"))
 {
-    <partial name="_OrganizerRolesManager" />
+    <partial name="_OrganizationRolesManager" />
 }
 

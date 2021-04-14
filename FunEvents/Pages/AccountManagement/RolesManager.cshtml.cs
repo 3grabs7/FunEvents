@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace FunEvents.Pages.AccountManagement
 {
-    [Authorize(Roles = "Admin, OrganizerManager")]
+    [Authorize(Roles = "Admin, OrganizationManager")]
     public class RolesManagerModel : PageModel
     {
         private readonly ApplicationDbContext _context;
@@ -43,7 +43,7 @@ namespace FunEvents.Pages.AccountManagement
         {
             AppUser user = await SelectedUser(id);
 
-            if (role == "OrganizerManager")
+            if (role == "OrganizationManager")
             {
                 if (user.ManagerInOrganizations?.Count > 0)
                 {
@@ -59,14 +59,14 @@ namespace FunEvents.Pages.AccountManagement
                     }
                 }
 
-                await _userManager.AddToRoleAsync(user, "OrganizerManager");
-                Organizer organizer = new Organizer()
+                await _userManager.AddToRoleAsync(user, "OrganizationManager");
+                Organization organizer = new Organization()
                 {
                     Name = "Unverified",
                     IsVerified = false,
-                    OrganizerManagers = new List<AppUser>() { }
+                    OrganizationManagers = new List<AppUser>() { }
                 };
-                await _context.Organizers.AddAsync(organizer);
+                await _context.Organizations.AddAsync(organizer);
                 user.ManagerInOrganizations.Add(organizer);
                 await _context.SaveChangesAsync();
 

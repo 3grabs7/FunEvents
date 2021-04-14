@@ -18,7 +18,7 @@ namespace FunEvents.Models
         [Display(Name = "Created")]
         public DateTime CreatedAt { get; set; }
         public int SpotsAvailable { get; set; }
-        public Organizer Organizer { get; set; }
+        public Organization Organization { get; set; }
 
         [InverseProperty("JoinedEvents")]
         public ICollection<AppUser> Attendees { get; set; }

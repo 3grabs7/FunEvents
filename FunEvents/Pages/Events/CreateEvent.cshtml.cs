@@ -31,14 +31,14 @@ namespace FunEvents.Pages.Events
         [BindProperty]
         public Event NewEvent { get; set; }
         [BindProperty]
-        public Organizer Organizer { get; set; }
-        public ICollection<Organizer> OrganizersWhereUserIsManager { get; set; }
+        public Organization Organizer { get; set; }
+        public ICollection<Organization> OrganizationsWhereUserIsManager { get; set; }
 
         public async Task OnGetAsync()
         {
             var user = await GetAppUser(_userManager.GetUserId(User));
-            OrganizersWhereUserIsManager = await _context.Organizers
-                .Where(o => o.OrganizerManagers.Contains(user))
+            OrganizationsWhereUserIsManager = await _context.Organizations
+                .Where(o => o.OrganizationManagers.Contains(user))
                 .ToListAsync();
         }
 
@@ -48,7 +48,7 @@ namespace FunEvents.Pages.Events
             {
                 return Page();
             }
-            NewEvent.Organizer = await _context.Organizers
+            NewEvent.Organization = await _context.Organizations
                 .FindAsync(Convert.ToInt32(Request.Form["organizer"]));
             NewEvent.CreatedAt = DateTime.Now;
             await _context.Events.AddAsync(NewEvent);

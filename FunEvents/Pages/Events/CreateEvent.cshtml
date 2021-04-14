@@ -9,11 +9,11 @@
         <hr />
         <form method="post">
             <div class="form-group">
-                <label asp-for="@Model.NewEvent.Organizer" class="col-sm-10 col-form-label col-form-label-lg" style="font-weight: bold;"></label>
+                <label asp-for="@Model.NewEvent.Organization" class="col-sm-10 col-form-label col-form-label-lg" style="font-weight: bold;"></label>
                 <select name="organizer">
-                    @foreach (var organizer in Model.OrganizersWhereUserIsManager)
+                    @foreach (var organization in Model.OrganizationsWhereUserIsManager)
                     {
-                        <option value="@organizer.Id">@organizer.Name</option>
+                        <option value="@organization.Id">@organization.Name</option>
                     }
                 </select>
             </div>

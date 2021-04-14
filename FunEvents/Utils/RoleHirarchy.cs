@@ -9,7 +9,7 @@ namespace FunEvents
     {
         public static IList<string> Roles { get; set; } = new List<string>()
         {
-            "Jack", "Admin", "Organizer", "Manager", "Assistant", "Attendee"
+            "Jack", "Admin", "Organization", "Manager", "Assistant", "Attendee"
         };
 
         public static IList<Dictionary<string, List<int>>> RolesInheritance { get; set; } = new List<Dictionary<string, List<int>>>()

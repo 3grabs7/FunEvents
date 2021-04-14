@@ -19,11 +19,11 @@ namespace FunEvents.Pages.Organizers
             _context = context;
         }
 
-        public IList<Organizer> Organizer { get;set; }
+        public IList<Organization> Organizer { get;set; }
 
         public async Task OnGetAsync()
         {
-            Organizer = await _context.Organizers.ToListAsync();
+            Organizer = await _context.Organizations.ToListAsync();
         }
     }
 }

@@ -1,14 +1,14 @@
 ﻿@model FunEvents.Pages.AccountManagement.RolesManagerModel
 @{
-    string[] managersRoleManager = new string[] { "OrganizerManager", "OrganizerAssistant" };
+    string[] managersRoleManager = new string[] { "OrganizationManager", "OrganizationAssistant" };
 }
 
-<h1>User Manager - Organizer version</h1>
+<h1>User Manager - Organization version</h1>
 <h4>Assign roles to users</h4>
 <ul class="list-group">
     @foreach (var user in Model.Users)
     {
-        <li class="list-group-item @(Model.IsInSpecificRole(user.Id, "OrganizerManager").Result ? "active" : "")">
+        <li class="list-group-item @(Model.IsInSpecificRole(user.Id, "OrganizationManager").Result ? "active" : "")">
             <div class="row">
                 <div class="col text-left">
                     @user.UserName @(Model.IsInSpecificRole(user.Id, "Admin").Result ? "(Admin👸)" : "")

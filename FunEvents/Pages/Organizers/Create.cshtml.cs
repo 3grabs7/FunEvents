@@ -25,7 +25,7 @@ namespace FunEvents.Pages.Organizers
         }
 
         [BindProperty]
-        public Organizer Organizer { get; set; }
+        public Organization Organizer { get; set; }
 
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()
@@ -35,7 +35,7 @@ namespace FunEvents.Pages.Organizers
                 return Page();
             }
 
-            _context.Organizers.Add(Organizer);
+            _context.Organizations.Add(Organizer);
             await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");
