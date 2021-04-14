@@ -20,7 +20,7 @@
                     <div class="col">
                         @if (Model.IsManagerFor(organization.Id, user.Id).Result)
                         {
-                            <form method="post" asp-route-id="@user.Id" asp-route-role="OrganizationManager" asp-route-organizationId="@organization.Id" asp-route-organization="" asp-page-handler="Remove">
+                            <form method="post" asp-route-id="@user.Id" asp-route-role="OrganizationManager" asp-route-organizationId="@organization.Id" asp-page-handler="Remove">
                                 <button class="btn btn-block btn-danger"
                                         type="submit">
                                     @($"Remove as Manager")
@@ -39,7 +39,7 @@
                     <div class="col">
                         @if (Model.IsAssistantFor(organization.Id, user.Id).Result)
                         {
-                            <form method="post" asp-route-id="@user.Id" asp-route-role="OrganizationAssistant" asp-route-organizationId="@organization.Id" asp-route-organization="" asp-page-handler="Remove">
+                            <form method="post" asp-route-id="@user.Id" asp-route-role="OrganizationAssistant" asp-route-organizationId="@organization.Id" asp-page-handler="Remove">
                                 <button class="btn btn-block btn-danger"
                                         type="submit">
                                     @($"Remove as Assistant")
