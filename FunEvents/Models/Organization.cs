@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FunEvents.Models
 {
-    public class Organizer
+    public class Organization
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -16,9 +16,9 @@ namespace FunEvents.Models
         public bool IsVerified { get; set; }
 
         [InverseProperty("ManagerInOrganizations")]
-        public ICollection<AppUser> OrganizerManagers { get; set; }
+        public ICollection<AppUser> OrganizationManagers { get; set; }
 
         [InverseProperty("AssistantInOrganizations")]
-        public ICollection<AppUser> OrganizerAssistants { get; set; }
+        public ICollection<AppUser> OrganizationAssistants { get; set; }
     }
 }

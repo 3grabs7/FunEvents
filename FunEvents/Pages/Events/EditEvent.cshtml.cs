@@ -13,7 +13,7 @@ using Microsoft.Extensions.Logging;
 
 namespace FunEvents.Pages.Events
 {
-    [Authorize(Roles = "Admin, OrganizerManager, OrganizerAssistant")]
+    [Authorize(Roles = "Admin, OrganizationManager, OrganizationAssistant")]
     public class EditEventModel : PageModel
     {
         private readonly ApplicationDbContext _context;
@@ -30,7 +30,7 @@ namespace FunEvents.Pages.Events
         }
 
         [BindProperty]
-        public IList<Organizer> Organizers { get; set; }
+        public IList<Organization> Organizations { get; set; }
         [BindProperty]
         public IList<Event> Events { get; set; }
         [BindProperty]
@@ -49,13 +49,13 @@ namespace FunEvents.Pages.Events
             string userId = _userManager.GetUserId(User);
 
             EventsWhereUserIsManager = await _context.Events
-                .Include(e => e.Organizer)
-                .Where(e => e.Organizer.OrganizerManagers.Any(m => m.Id == userId))
+                .Include(e => e.Organization)
+                .Where(e => e.Organization.OrganizationManagers.Any(m => m.Id == userId))
                 .ToListAsync();
 
             EventsWhereUserIsAssistant = await _context.Events
-                .Include(e => e.Organizer)
-                .Where(e => e.Organizer.OrganizerAssistants.Any(a => a.Id == userId))
+                .Include(e => e.Organization)
+                .Where(e => e.Organization.OrganizationAssistants.Any(a => a.Id == userId))
                 .ToListAsync();
 
         }

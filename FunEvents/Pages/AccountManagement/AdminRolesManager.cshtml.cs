@@ -13,14 +13,14 @@ using System.Threading.Tasks;
 
 namespace FunEvents.Pages.AccountManagement
 {
-    [Authorize(Roles = "Admin, OrganizerManager")]
-    public class RolesManagerModel : PageModel
+    [Authorize(Roles = "Admin")]
+    public class AdminRolesManagerModel : PageModel
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<AppUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
 
-        public RolesManagerModel(ApplicationDbContext context,
+        public AdminRolesManagerModel(ApplicationDbContext context,
             UserManager<AppUser> userManager,
             RoleManager<IdentityRole> roleManager)
         {
@@ -41,47 +41,47 @@ namespace FunEvents.Pages.AccountManagement
 
         public async Task<IActionResult> OnPostAddAsync(string id, string role)
         {
-            AppUser user = await SelectedUser(id);
+            AppUser selectedUser = await SelectedUser(id);
 
-            if (role == "OrganizerManager")
+            if (role == "OrganizationManager")
             {
-                if (user.ManagerInOrganizations?.Count > 0)
+                if (selectedUser.ManagerInOrganizations?.Count > 0)
                 {
                     // make sure that user is not already manager for an unverified organization
-                    bool hasUnverifiedOrganization = user.ManagerInOrganizations
+                    bool hasUnverifiedOrganization = selectedUser.ManagerInOrganizations
                         .Any(o => !o.IsVerified);
                     if (hasUnverifiedOrganization)
                     {
                         // once tested, make sure this is checked before loading list
                         // and button for adding user as organizationmanager is disabled
                         Console.WriteLine("ALREADY PENDING VALIDATION");
-                        return RedirectToPage("/AccountManagement/RolesManager");
+                        return RedirectToPage("/AccountManagement/AdminRolesManager");
                     }
                 }
 
-                await _userManager.AddToRoleAsync(user, "OrganizerManager");
-                Organizer organizer = new Organizer()
+                await _userManager.AddToRoleAsync(selectedUser, "OrganizationManager");
+                Organization organization = new Organization()
                 {
                     Name = "Unverified",
                     IsVerified = false,
-                    OrganizerManagers = new List<AppUser>() { }
+                    OrganizationManagers = new List<AppUser>() { }
                 };
-                await _context.Organizers.AddAsync(organizer);
-                user.ManagerInOrganizations.Add(organizer);
+                await _context.Organizations.AddAsync(organization);
+                selectedUser.ManagerInOrganizations.Add(organization);
                 await _context.SaveChangesAsync();
 
-                return RedirectToPage("/AccountManagement/RolesManager");
+                return RedirectToPage("/AccountManagement/AdminRolesManager");
             }
 
-            await _userManager.AddToRoleAsync(user, role);
+            await _userManager.AddToRoleAsync(selectedUser, role);
             await _context.SaveChangesAsync();
 
-            if (_userManager.GetUserId(User) == user.Id)
+            if (_userManager.GetUserId(User) == selectedUser.Id)
             {
-                await _userManager.UpdateSecurityStampAsync(user);
+                await _userManager.UpdateSecurityStampAsync(selectedUser);
             }
 
-            return RedirectToPage("/AccountManagement/RolesManager");
+            return RedirectToPage("/AccountManagement/AdminRolesManager");
         }
 
         public async Task<IActionResult> OnPostRemoveAsync(string id, string role)

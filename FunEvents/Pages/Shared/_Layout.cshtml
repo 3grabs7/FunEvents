@@ -6,8 +6,8 @@
     bool isOrganizer = false;
     @if (User.Identity.IsAuthenticated)
     {
-        isOrganizer = _userManager.IsInRoleAsync(_context.Users.Where(u => u.Id == _userManager.GetUserId(User)).First(), "OrganizerManager").Result
-            || _userManager.IsInRoleAsync(_context.Users.Where(u => u.Id == _userManager.GetUserId(User)).First(), "OrganizerAssistant").Result;
+        isOrganizer = _userManager.IsInRoleAsync(_context.Users.Where(u => u.Id == _userManager.GetUserId(User)).First(), "OrganizationManager").Result
+            || _userManager.IsInRoleAsync(_context.Users.Where(u => u.Id == _userManager.GetUserId(User)).First(), "OrganizationAssistant").Result;
     }
 }
 
@@ -51,10 +51,16 @@
                                     <a class="nav-link text-success" asp-area="" asp-page="/Events/EditEvent">Organize Events</a>
                                 </li>
                             }
-                            @if (User.IsInRole("Admin") || User.IsInRole("OrganizerManager"))
+                            @if (User.IsInRole("Admin"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-danger" asp-area="" asp-page="/AccountManagement/RolesManager">Manage Users</a>
+                                    <a class="nav-link text-danger" asp-area="" asp-page="/AccountManagement/AdminRolesManager">Manage Users</a>
+                                </li>
+                            }
+                            @if (User.IsInRole("OrganizationManager"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-danger" asp-area="" asp-page="/AccountManagement/OrganizationRolesManager">Manage Users</a>
                                 </li>
                             }
                         }

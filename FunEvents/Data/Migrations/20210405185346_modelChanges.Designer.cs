@@ -294,11 +294,11 @@ namespace FunEvents.Data.Migrations
 
             modelBuilder.Entity("FunEvents.Models.Event", b =>
                 {
-                    b.HasOne("FunEvents.Models.AppUser", "Organizer")
+                    b.HasOne("FunEvents.Models.AppUser", "Organization")
                         .WithMany("HostedEvents")
                         .HasForeignKey("OrganizerId");
 
-                    b.Navigation("Organizer");
+                    b.Navigation("Organization");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

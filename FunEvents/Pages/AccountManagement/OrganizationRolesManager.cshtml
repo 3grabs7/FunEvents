@@ -1,0 +1,64 @@
+﻿@page
+@model FunEvents.Pages.AccountManagement.OrganizationRolesManagerModel
+
+<h1>User Manager - Organization version</h1>
+<h4>Assign roles to users for your organizations</h4>
+<hr />
+
+@foreach (var organization in Model.UserOrganizations)
+{
+    <h2>@organization.Name</h2>
+<ul class="list-group">
+    @foreach (var user in Model.Users)
+    {
+        <li class="list-group-item @(Model.IsInSpecificRole(user.Id, "OrganizationManager").Result ? "active" : "")">
+            <div class="row">
+                <div class="col text-left">
+                    @user.UserName @(Model.IsInSpecificRole(user.Id, "Admin").Result ? "(Admin👸)" : "")
+                </div>
+                <div class="col-4 text-right">
+                    <div class="col">
+                        @if (Model.IsManagerFor(organization.Id, user.Id).Result)
+                        {
+                            <form method="post" asp-route-id="@user.Id" asp-route-role="OrganizationManager" asp-route-organizationId="@organization.Id" asp-page-handler="Remove">
+                                <button class="btn btn-block btn-danger"
+                                        type="submit">
+                                    @($"Remove as Manager")
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <form method="post" asp-route-id="@user.Id" asp-route-role="OrganizationManager" asp-route-organizationId="@organization.Id" asp-page-handler="Add">
+                                <button class="btn btn-block btn-success" type="submit">
+                                    @($"Make Manager")
+                                </button>
+                            </form>
+                        }
+                    </div>
+                    <div class="col">
+                        @if (Model.IsAssistantFor(organization.Id, user.Id).Result)
+                        {
+                            <form method="post" asp-route-id="@user.Id" asp-route-role="OrganizationAssistant" asp-route-organizationId="@organization.Id" asp-page-handler="Remove">
+                                <button class="btn btn-block btn-danger"
+                                        type="submit">
+                                    @($"Remove as Assistant")
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <form method="post" asp-route-id="@user.Id" asp-route-role="OrganizationAssistant" asp-route-organizationId="@organization.Id" asp-page-handler="Add">
+                                <button class="btn btn-block btn-success" type="submit">
+                                    @($"Make Assistant")
+                                </button>
+                            </form>
+                        }
+                    </div>
+                </div>
+            </div>
+        </li>
+    }
+</ul>
+}
+        

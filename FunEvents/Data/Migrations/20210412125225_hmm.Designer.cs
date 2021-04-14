@@ -206,7 +206,7 @@ namespace FunEvents.Data.Migrations
                     b.ToTable("Events");
                 });
 
-            modelBuilder.Entity("FunEvents.Models.Organizer", b =>
+            modelBuilder.Entity("FunEvents.Models.Organization", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -385,7 +385,7 @@ namespace FunEvents.Data.Migrations
 
             modelBuilder.Entity("AppUserOrganizer", b =>
                 {
-                    b.HasOne("FunEvents.Models.Organizer", null)
+                    b.HasOne("FunEvents.Models.Organization", null)
                         .WithMany()
                         .HasForeignKey("AssistantInOrganizationsId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -400,7 +400,7 @@ namespace FunEvents.Data.Migrations
 
             modelBuilder.Entity("AppUserOrganizer1", b =>
                 {
-                    b.HasOne("FunEvents.Models.Organizer", null)
+                    b.HasOne("FunEvents.Models.Organization", null)
                         .WithMany()
                         .HasForeignKey("ManagerInOrganizationsId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -428,11 +428,11 @@ namespace FunEvents.Data.Migrations
                         .WithMany("EventChangesPendingManagerValidation")
                         .HasForeignKey("EventId");
 
-                    b.HasOne("FunEvents.Models.AppUser", "Organizer")
+                    b.HasOne("FunEvents.Models.AppUser", "Organization")
                         .WithMany("HostedEvents")
                         .HasForeignKey("OrganizerId");
 
-                    b.Navigation("Organizer");
+                    b.Navigation("Organization");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

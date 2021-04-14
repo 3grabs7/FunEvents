@@ -21,7 +21,7 @@ namespace FunEvents.Pages.Organizers
         }
 
         [BindProperty]
-        public Organizer Organizer { get; set; }
+        public Organization Organizer { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -30,7 +30,7 @@ namespace FunEvents.Pages.Organizers
                 return NotFound();
             }
 
-            Organizer = await _context.Organizers.FirstOrDefaultAsync(m => m.Id == id);
+            Organizer = await _context.Organizations.FirstOrDefaultAsync(m => m.Id == id);
 
             if (Organizer == null)
             {
@@ -71,7 +71,7 @@ namespace FunEvents.Pages.Organizers
 
         private bool OrganizerExists(int id)
         {
-            return _context.Organizers.Any(e => e.Id == id);
+            return _context.Organizations.Any(e => e.Id == id);
         }
     }
 }

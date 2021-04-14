@@ -24,7 +24,7 @@ namespace FunEvents.Data
 
         public DbSet<Event> Events { get; set; }
         public DbSet<Analytics> Analytics { get; set; }
-        public DbSet<Organizer> Organizers { get; set; }
+        public DbSet<Organization> Organizations { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -48,7 +48,7 @@ namespace FunEvents.Data
 
             var adminResult = await userManager.CreateAsync(adminUser, "Password5%");
 
-            AppUser organizerManager = new AppUser()
+            AppUser organizationManager = new AppUser()
             {
                 Email = "organizer@organizer.com",
                 UserName = "ORGANIZER",
@@ -56,9 +56,9 @@ namespace FunEvents.Data
                 LastName = "Björk"
             };
 
-            var organizerResult = await userManager.CreateAsync(organizerManager, "Password6%");
+            var organizationResult = await userManager.CreateAsync(organizationManager, "Password6%");
 
-            AppUser organizerManager2 = new AppUser()
+            AppUser organizationManager2 = new AppUser()
             {
                 Email = "manager@manager.com",
                 UserName = "MANAGER",
@@ -66,9 +66,9 @@ namespace FunEvents.Data
                 LastName = "Boss"
             };
 
-            var managerResult = await userManager.CreateAsync(organizerManager2, "Password7%");
+            var managerResult = await userManager.CreateAsync(organizationManager2, "Password7%");
 
-            AppUser organizerAssistant = new AppUser()
+            AppUser organizationAssistant = new AppUser()
             {
                 Email = "assistant@assistant.com",
                 UserName = "ASSISTANT",
@@ -76,9 +76,9 @@ namespace FunEvents.Data
                 LastName = "Larsson"
             };
 
-            var assistantResult = await userManager.CreateAsync(organizerAssistant, "Password5%");
+            var assistantResult = await userManager.CreateAsync(organizationAssistant, "Password5%");
 
-            AppUser userToBeVerifiedAsOrganizer = new AppUser()
+            AppUser userToBeVerifiedAsOrganization = new AppUser()
             {
                 Email = "almost@there.com",
                 UserName = "PIGGY",
@@ -86,10 +86,10 @@ namespace FunEvents.Data
                 LastName = "Test"
             };
 
-            await userManager.CreateAsync(userToBeVerifiedAsOrganizer, "Password5%");
+            await userManager.CreateAsync(userToBeVerifiedAsOrganization, "Password5%");
 
             // Seed roles
-            string[] roles = new string[] { "Admin", "OrganizerManager", "OrganizerAssistant" };
+            string[] roles = new string[] { "Admin", "OrganizationManager", "OrganizationAssistant" };
             foreach (string role in roles)
             {
                 if (!this.Roles.Any(r => r.Name == role))
@@ -100,9 +100,9 @@ namespace FunEvents.Data
             }
 
             var rolesResult = await userManager.AddToRoleAsync(adminUser, "Admin");
-            await userManager.AddToRoleAsync(organizerManager, "OrganizerManager");
-            await userManager.AddToRoleAsync(organizerManager2, "OrganizerManager");
-            await userManager.AddToRoleAsync(organizerAssistant, "OrganizerAssistant");
+            await userManager.AddToRoleAsync(organizationManager, "OrganizationManager");
+            await userManager.AddToRoleAsync(organizationManager2, "OrganizationManager");
+            await userManager.AddToRoleAsync(organizationAssistant, "OrganizationAssistant");
 
             if (!rolesResult.Succeeded)
             {

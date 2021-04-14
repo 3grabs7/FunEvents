@@ -25,7 +25,7 @@ namespace FunEvents.Pages
         private const int EVENTS_PER_TOP_VIEW = 3;
 
         [BindProperty]
-        public Organizer OrganizerToBeValidated { get; set; }
+        public Organization OrganizationToBeValidated { get; set; }
 
         public IndexModel(ILogger<IndexModel> logger,
             ApplicationDbContext context,
@@ -101,7 +101,7 @@ namespace FunEvents.Pages
         {
             // If user is anonymous or lack "OrganizerManager role, return immediately
             if (!User.Identity.IsAuthenticated) return false;
-            if (!User.IsInRole("OrganizerManager")) return false;
+            if (!User.IsInRole("OrganizationManager")) return false;
 
             var user = await GetAppuser(_userManager.GetUserId(User));
             var managerForUnverifiedOrganizer = user.ManagerInOrganizations
@@ -109,27 +109,33 @@ namespace FunEvents.Pages
             if (managerForUnverifiedOrganizer)
             {
                 // If unverified organizer is found, set our binded property before returning
-                OrganizerToBeValidated = await GetUnverifiedOrganizer();
+                OrganizationToBeValidated = await GetUnverifiedOrganization();
                 return true;
             }
             return false;
         }
 
-        public async Task<Organizer> GetUnverifiedOrganizer()
+        public async Task<Organization> GetUnverifiedOrganization()
         {
             var user = await GetAppuser(_userManager.GetUserId(User));
             return user.ManagerInOrganizations
                 .First(o => !o.IsVerified);
         }
 
-        public async Task<IActionResult> OnPostVerifyOrganizerAsync()
+        public async Task<IActionResult> OnPostVerifyOrganizationAsync()
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
-            OrganizerToBeValidated.IsVerified = true;
-            _context.Attach(OrganizerToBeValidated).State = EntityState.Modified;
+            OrganizationToBeValidated.IsVerified = true;
+            _context.Attach(OrganizationToBeValidated).State = EntityState.Modified;
+
+            var currentUser = await GetAppuser(_userManager.GetUserId(User));
+
+            // making current user manager of the created organization
+            currentUser.ManagerInOrganizations.Add(OrganizationToBeValidated);
+
             await _context.SaveChangesAsync();
 
             return RedirectToPage("/Index");
