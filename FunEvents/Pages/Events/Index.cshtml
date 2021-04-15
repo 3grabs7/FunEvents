@@ -82,7 +82,8 @@
     }
 </div>
 <div>
-    <ul class="pagination">
+    <br /><br />
+    <ul class="pagination pagination-lg justify-content-center">
         @for (int i = 1; i <= Model.TotalPages; i++)
         {
             <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
