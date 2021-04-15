@@ -10,6 +10,7 @@ using FunEvents.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System.Reflection;
 
 namespace FunEvents.Pages.Events
 {
@@ -30,15 +31,11 @@ namespace FunEvents.Pages.Events
         }
 
         [BindProperty]
-        public IList<Organization> Organizations { get; set; }
-        [BindProperty]
-        public IList<Event> Events { get; set; }
-        [BindProperty]
         public Event Event { get; set; }
         public IList<Event> EventsWhereUserIsManager { get; set; }
         public IList<Event> EventsWhereUserIsAssistant { get; set; }
+        public IEnumerable<IGrouping<Organization, ShadowEvent>> EventsPendingEditRequest { get; set; }
 
-        public bool HasEventBeenSelectedForEdit { get; set; }
         public bool EditSucceeded { get; set; }
         public bool EditFailed { get; set; }
 
@@ -52,12 +49,12 @@ namespace FunEvents.Pages.Events
             Event = await _context.Events
                 .Include(e => e.EventChangesPendingManagerValidation)
                 .FirstOrDefaultAsync(e => e.Id == selectedEvent);
-            HasEventBeenSelectedForEdit = selectedEvent == null ? false : true;
 
             string userId = _userManager.GetUserId(User);
 
             EventsWhereUserIsManager = await _context.Events
                 .Include(e => e.Organization)
+                .Include(e => e.EventChangesPendingManagerValidation)
                 .Where(e => e.Organization.OrganizationManagers.Any(m => m.Id == userId))
                 .ToListAsync();
 
@@ -66,6 +63,10 @@ namespace FunEvents.Pages.Events
                 .Where(e => e.Organization.OrganizationAssistants.Any(a => a.Id == userId))
                 .ToListAsync();
 
+            EventsPendingEditRequest = EventsWhereUserIsManager
+                .SelectMany(e => e.EventChangesPendingManagerValidation)
+                .GroupBy(g => g.PendingEditEvent.Organization)
+                .AsEnumerable();
         }
 
         public async Task<IActionResult> OnPostEditAsync()
@@ -85,19 +86,17 @@ namespace FunEvents.Pages.Events
 
         public async Task<IActionResult> OnPostRequestEditAsync()
         {
-            var exceptions = new string[] {
-                "Id", "EventChangesPendingManagerValidation", "Attendees", "CreatedAt"
-            };
             // pendingEditEventId in model -> compare with Event.Id (skip _context)
-            var shadowEvent = new ShadowEvent() { 
+            var shadowEvent = new ShadowEvent()
+            {
                 PendingEditEvent = _context.Events.Find(Event.Id),
                 Editor = _context.Users.Find(_userManager.GetUserId(User))
-        };
-            var reflections = Event.GetType().GetProperties();
+            };
+
+            var reflections = new EditableEvent().GetType().GetProperties();
             foreach (var reflection in reflections)
             {
-                if (exceptions.Contains(reflection.Name)) continue;
-                if (!HasPropertyStateChanged()) continue;
+                if (reflection.Name == "Id") continue;
                 reflection.SetValue(shadowEvent, reflection.GetValue(Event));
             }
 
@@ -107,27 +106,22 @@ namespace FunEvents.Pages.Events
                 await _context.SaveChangesAsync();
                 return RedirectToPage("/Events/EditEvent", new { EditSucceeded = true });
             }
-            catch (Exception e)
+            catch
             {
-                throw new Exception(e.Message);
-                // return RedirectToPage("/Events/EditEvent", new { EditFailed = true });
+                return RedirectToPage("/Events/EditEvent", new { EditFailed = true });
             }
         }
 
-        public bool HasPropertyStateChanged()
-        {
-            return true;
-        }
+
 
         public async Task<IActionResult> OnPostCancelAsync(int? id)
         {
-            var eventToDelete = await _context.Events.FindAsync(id);
-
-            if (eventToDelete == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
+            var eventToDelete = await _context.Events.FindAsync(id);
             try
             {
                 _context.Events.Remove(eventToDelete);
@@ -137,7 +131,6 @@ namespace FunEvents.Pages.Events
             catch (DbUpdateException ex)
             {
                 _logger.LogError(ex, "ERROR! Could not cancel event.");
-
                 return RedirectToPage("./Index");
             }
         }

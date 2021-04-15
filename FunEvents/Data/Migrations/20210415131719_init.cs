@@ -90,35 +90,20 @@ namespace FunEvents.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    OrganizationId = table.Column<int>(type: "int", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PageVisits = table.Column<int>(type: "int", nullable: false),
+                    UniquePageVisits = table.Column<int>(type: "int", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Place = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    SpotsAvailable = table.Column<int>(type: "int", nullable: false),
-                    OrganizationId = table.Column<int>(type: "int", nullable: true),
-                    PageVisits = table.Column<int>(type: "int", nullable: false),
-                    UniquePageVisits = table.Column<int>(type: "int", nullable: false),
-                    Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EditorId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    EventId = table.Column<int>(type: "int", nullable: true)
+                    SpotsAvailable = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Events", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Events_AspNetUsers_EditorId",
-                        column: x => x.EditorId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Events_Events_EventId",
-                        column: x => x.EventId,
-                        principalTable: "Events",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Events_Organizations_OrganizationId",
                         column: x => x.OrganizationId,
@@ -171,6 +156,38 @@ namespace FunEvents.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "ShadowEvents",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    EditorId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    PendingEditEventId = table.Column<int>(type: "int", nullable: true),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Place = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    SpotsAvailable = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ShadowEvents", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ShadowEvents_AspNetUsers_EditorId",
+                        column: x => x.EditorId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ShadowEvents_Events_PendingEditEventId",
+                        column: x => x.PendingEditEventId,
+                        principalTable: "Events",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Analytics_EventId",
                 table: "Analytics",
@@ -192,19 +209,19 @@ namespace FunEvents.Data.Migrations
                 column: "OrganizationManagersId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Events_EditorId",
-                table: "Events",
-                column: "EditorId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Events_EventId",
-                table: "Events",
-                column: "EventId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Events_OrganizationId",
                 table: "Events",
                 column: "OrganizationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ShadowEvents_EditorId",
+                table: "ShadowEvents",
+                column: "EditorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ShadowEvents_PendingEditEventId",
+                table: "ShadowEvents",
+                column: "PendingEditEventId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -220,6 +237,9 @@ namespace FunEvents.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "AppUserOrganization1");
+
+            migrationBuilder.DropTable(
+                name: "ShadowEvents");
 
             migrationBuilder.DropTable(
                 name: "Events");
