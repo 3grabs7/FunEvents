@@ -2,11 +2,20 @@
 @model FunEvents.Pages.Events.OrganizationPageModel
 @{
 }
-<p>@Model.Organization.Name</p>
-<p>@Model.Organization.Email</p>
-<p>@Model.Organization.PhoneNumber</p>
+
+<div class="jumbotron jumbotron-fluid">
+    <div class="container">
+        <h1 class="display-4">@Model.Organization.Name</h1>
+        <hr />
+        <p class="lead">Contact</p>
+        <p>Email: @Model.Organization.Email</p>
+        <p>Phone Number: @Model.Organization.PhoneNumber</p>
+    </div>
+</div>
+
+<h2>Events</h2>
 <table class="table">
-    <thead>
+    <thead class="thead-dark">
         <tr>
             <th>Title</th>
             <th>Place</th>
