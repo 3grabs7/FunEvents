@@ -5,8 +5,13 @@
 
 <div class="row h-100 justify-content-center align-items-center">
     <div class="col-10 col-md-8 col-lg-6">
-        <h1>Create New Event</h1>
-        <hr />
+        <div class="jumbotron jumbotron-fluid">
+            <div class="container">
+                <h1 class="display-4">Create New Event</h1>
+                <p class="lead">Create an event for your organization!</p>
+                <hr />
+            </div>
+        </div>
         <form method="post">
             <div class="form-group">
                 <label asp-for="@Model.NewEvent.Organization" class="col-sm-10 col-form-label col-form-label-lg" style="font-weight: bold;"></label>

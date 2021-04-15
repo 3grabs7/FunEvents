@@ -21,8 +21,14 @@
     </div>
 }
 
-<h1>@Model.AppUser.UserName</h1>
-<p>The events you've joined are displayed here!</p>
+<div class="jumbotron jumbotron-fluid">
+    <div class="container">
+        <h1 class="display-4">@Model.AppUser.UserName</h1>
+        <p class="lead">The events you've joined are displayed here!</p>
+        <hr />
+    </div>
+</div>
+
 <table class="table">
     <thead class="thead-dark">
         <tr>

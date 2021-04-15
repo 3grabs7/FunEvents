@@ -60,29 +60,9 @@ namespace FunEvents.Pages.AccountManagement
 
             if (role == "OrganizationManager")
             {
-                if (selectedUser.ManagerInOrganizations?.Count > 0)
-                {
-                    // make sure that user is not already manager for an unverified organization
-                    bool hasUnverifiedOrganization = selectedUser.ManagerInOrganizations
-                        .Any(o => !o.IsVerified);
-                    if (hasUnverifiedOrganization)
-                    {
-                        // once tested, make sure this is checked before loading list
-                        // and button for adding user as organizationmanager is disabled
-                        Console.WriteLine("ALREADY PENDING VALIDATION");
-                        return RedirectToPage("/AccountManagement/OrganizationRolesManager");
-                    }
-                }
+                Organization organization = await _context.Organizations.FindAsync(organizationId);
 
-                await _userManager.AddToRoleAsync(selectedUser, "OrganizationManager");
-                Organization organization = new Organization()
-                {
-                    Name = "Unverified",
-                    IsVerified = false,
-                    OrganizationManagers = new List<AppUser>() { }
-                };
-
-                await _context.Organizations.AddAsync(organization);
+                selectedUser.ManagerInOrganizations.Add(organization);
 
                 await _context.SaveChangesAsync();
 

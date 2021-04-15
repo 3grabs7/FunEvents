@@ -2,9 +2,13 @@
 @model FunEvents.Pages.AccountManagement.OrganizationRolesManagerModel
 @{ }
 
-<h1>User Manager - Organization version</h1>
-<h4>Assign roles to users for your organizations</h4>
-<hr />
+<div class="jumbotron jumbotron-fluid">
+    <div class="container">
+        <h1 class="display-4">Organization Manager</h1>
+        <hr />
+        <p class="lead">Assign roles to users for your organizations</p>
+    </div>
+</div>
 
 <div>
     <form method="post" asp-page-handler="Select">
@@ -16,7 +20,7 @@
             }
         </select>
         <br /><br />
-        <button class="btn btn-info" type="submit">GO</button>
+        <button class="btn btn-info" type="submit">Submit</button>
     </form>
 </div>
 <br /><br />

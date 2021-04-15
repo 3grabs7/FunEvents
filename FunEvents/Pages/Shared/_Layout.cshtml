@@ -36,7 +36,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - FunEvents</title>
+    <title>@ViewData["Title"] - Fun Events</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
@@ -71,19 +71,19 @@
                                     </li>
                                 }
                                 <li class="nav-item">
-                                    <a class="nav-link text-success" asp-area="" asp-page="/Events/EditEvent">Organize Events</a>
+                                    <a class="nav-link text-success" asp-area="" asp-page="/Events/EditEvent">Edit Events</a>
                                 </li>
                             }
                             @if (User.IsInRole("Admin"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-danger" asp-area="" asp-page="/AccountManagement/AdminRolesManager">Manage Users</a>
+                                    <a class="nav-link text-danger" asp-area="" asp-page="/AccountManagement/AdminRolesManager">User Manager</a>
                                 </li>
                             }
                             @if (User.IsInRole("OrganizationManager"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-danger" asp-area="" asp-page="/AccountManagement/OrganizationRolesManager">Manage Users</a>
+                                    <a class="nav-link text-danger" asp-area="" asp-page="/AccountManagement/OrganizationRolesManager">Organization Manager</a>
                                 </li>
                             }
                         }

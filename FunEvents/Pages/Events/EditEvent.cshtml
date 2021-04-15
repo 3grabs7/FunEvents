@@ -17,6 +17,21 @@
     </div>
 }
 
+@if (Model.EventsWhereUserIsManager.Count < 1 && Model.EventsWhereUserIsAssistant.Count < 1)
+{
+    <div class="alert alert-danger" role="alert">
+        There are no events for you to edit at the moment...
+    </div>
+}
+
+<div class="jumbotron jumbotron-fluid">
+    <div class="container">
+        <h1 class="display-4">Edit Events</h1>
+        <hr />
+        <p class="lead">Edit or request to edit events</p>
+    </div>
+</div>
+
 @if (Model.Event != default)
 {
     <div class="row h-100 justify-content-center align-items-center">
@@ -80,10 +95,10 @@
     <hr />
 }
 
-<div class="row h-100 justify-content-center">
+@if (Model.EventsWhereUserIsManager.Count > 0)
+{
     <div>
         <h1>Events where you are Manager</h1>
-        <p style="font-style:italic;">Edit or cancel events here</p>
         <hr />
         <table class="table">
             <thead class="thead-dark">
@@ -118,7 +133,7 @@
                 {
                     <tr>
                         <td style="width: 15%">
-                            <p>@Model.EventsWhereUserIsManager[i].Title</p>
+                            <a asp-page="/Events/Details" asp-route-id="@Model.EventsWhereUserIsManager[i].Id">@Model.EventsWhereUserIsManager[i].Title</a>
                         </td>
                         <td style="width: 25%">
                             <p>@Model.EventsWhereUserIsManager[i].Description</p>
@@ -133,7 +148,7 @@
                             <p>@Model.EventsWhereUserIsManager[i].Address</p>
                         </td>
                         <td style="width: 8%">
-                            <p>@Model.EventsWhereUserIsManager[i].Organization.Name</p>
+                            <a asp-page="/Events/OrganizationPage" asp-route-id="@Model.EventsWhereUserIsManager[i].Organization.Id">@Model.EventsWhereUserIsManager[i].Organization.Name</a>
                         </td>
                         <td style="width: 5%">
                             <p>@Model.EventsWhereUserIsManager[i].SpotsAvailable</p>
@@ -151,12 +166,12 @@
             </tbody>
         </table>
     </div>
-</div>
+}
 
-<div class="row h-100 justify-content-center">
+@if (Model.EventsWhereUserIsAssistant.Count > 0)
+{
     <div>
-        <h1>Events where you are assistant</h1>
-        <p style="font-style:italic;">Edit events and request the changes here!</p>
+        <h1>Events where you are Assistant</h1>
         <hr />
         <table class="table">
             <thead class="thead-dark">
@@ -224,8 +239,7 @@
             </tbody>
         </table>
     </div>
-</div>
-
+}
 
 <div>
     <h1>Shadows</h1>

@@ -96,7 +96,7 @@ namespace FunEvents.Pages.AccountManagement
 
             await _context.SaveChangesAsync();
 
-            return RedirectToPage("/AccountManagement/RolesManager");
+            return RedirectToPage("/AccountManagement/AdminRolesManager");
         }
 
         public async Task<AppUser> SelectedUser(string id) => await _context.Users

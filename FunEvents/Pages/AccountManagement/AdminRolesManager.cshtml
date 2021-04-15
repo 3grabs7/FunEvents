@@ -4,8 +4,14 @@
     string[] AdminRoleManager = new string[] { "Admin", "OrganizationManager" };
 }
 
-<h1>User Manager</h1>
-<h4>Assign Organizer Privileges To User</h4>
+<div class="jumbotron jumbotron-fluid">
+    <div class="container">
+        <h1 class="display-4">User Manager</h1>
+        <hr />
+        <p class="lead">Assign Privileges To Users</p>
+    </div>
+</div>
+
 <ul class="list-group">
     @foreach (var user in Model.Users)
     {

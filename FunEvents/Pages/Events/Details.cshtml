@@ -21,8 +21,14 @@
 
 <div class="container">
     <div class="card w-100">
-        <div class="card-header">
-            @Model.Event.Title
+        <div class="card-header alert-light">
+            <div class="jumbotron jumbotron-fluid">
+                <div class="container">
+                    <h1 class="display-4">@Model.Event.Title</h1>
+                    <hr />
+                </div>
+            </div>
+            <hr />
         </div>
         <div class="row">
             <div class="col-5">
@@ -100,7 +106,7 @@
                 </table>
             </div>
         </div>
-        <div class="card-footer">
+        <div class="card-footer alert-light">
             <p class="text-right">
                 Find more events from this Organizer
                 <a asp-page="/Events/OrganizationPage"

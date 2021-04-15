@@ -3,41 +3,58 @@
 @{
 }
 
-<h1>Events Osv</h1>
-<div class="row">
-    <p class="col-2 p-0 text-right">
-        <b>Order By:</b>
-    </p>
-    <div class="col-3 p-0">
-        <a asp-page="Index" class="sort-link col p-0" asp-route-sortby="Title">
-            @Html.DisplayNameFor(model => model.Events[0].Title)
-        </a>
-        <a asp-page="Index" class="sort-link col p-0" asp-route-sortby="CreatedAt">
-            @Html.DisplayNameFor(model => model.Events[0].CreatedAt)
-        </a>
-        <a asp-page="Index" class="sort-link col p-0" asp-route-sortby="Date">
-            @Html.DisplayNameFor(model => model.Events[0].Date)
-        </a>
-        <a asp-page="Index" class="sort-link col p-0" asp-route-sortby="Place">
-            @Html.DisplayNameFor(model => model.Events[0].Place)
-        </a>
-        <a asp-page="Index" class="sort-link col p-0" asp-route-sortby="SpotsAvailable">
-            @Html.DisplayNameFor(model => model.Events[0].SpotsAvailable)
-        </a>
+<div class="jumbotron jumbotron-fluid">
+    <div class="container text-center">
+        <h1 class="display-4">Events</h1>
+        <p class="lead">Find great events to join - just for you!</p>
+        <hr />
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb justify-content-center">
+                <li class="breadcrumb-item">
+                    <b>Order By:</b>
+                </li>
+                <li class="breadcrumb-item">
+                    <a asp-page="Index" class="sort-link col p-0" asp-route-sortby="Title">
+                        @Html.DisplayNameFor(model => model.Events[0].Title)
+                    </a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a asp-page="Index" class="sort-link col p-0" asp-route-sortby="CreatedAt">
+                        @Html.DisplayNameFor(model => model.Events[0].CreatedAt)
+                    </a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a asp-page="Index" class="sort-link col p-0" asp-route-sortby="Date">
+                        @Html.DisplayNameFor(model => model.Events[0].Date)
+                    </a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a asp-page="Index" class="sort-link col p-0" asp-route-sortby="Place">
+                        @Html.DisplayNameFor(model => model.Events[0].Place)
+                    </a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a asp-page="Index" class="sort-link col p-0" asp-route-sortby="SpotsAvailable">
+                        @Html.DisplayNameFor(model => model.Events[0].SpotsAvailable)
+                    </a>
+                </li>
+            </ol>
+        </nav>
+        <div>
+            <ul class="pagination pagination-lg justify-content-center">
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                        <a asp-page="./Index" asp-all-route-data="@(new Dictionary<string, string>
+               {{ "currentpage", i.ToString() }, { "sortby", Model.SortBy }})"
+                           class="page-link">@i</a>
+                    </li>
+                }
+            </ul>
+        </div>
     </div>
 </div>
-<div>
-    <ul class="pagination">
-        @for (int i = 1; i <= Model.TotalPages; i++)
-        {
-            <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
-                <a asp-page="./Index" asp-all-route-data="@(new Dictionary<string, string>
-               {{ "currentpage", i.ToString() }, { "sortby", Model.SortBy }})"
-                   class="page-link">@i</a>
-            </li>
-        }
-    </ul>
-</div>
+
 <div class="row">
     @for (int i = Model.Events.Count - 1; i >= 0; i--)
     {
