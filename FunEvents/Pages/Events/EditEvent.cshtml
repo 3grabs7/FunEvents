@@ -17,7 +17,7 @@
     </div>
 }
 
-@if (Model.HasEventBeenSelectedForEdit)
+@if (Model.Event != default)
 {
     <div class="row h-100 justify-content-center align-items-center">
         <div class="col-10 col-md-8 col-lg-6">
@@ -141,8 +141,8 @@
                             <a class="btn btn-success" asp-route-selectedEvent="@Model.EventsWhereUserIsManager[i].Id" asp-page="/Events/EditEvent">Edit</a>
                         </td>
                         <td style="width: 5%">
-                            <form method="post">
-                                <input type="submit" value="Cancel Event" class="btn btn-danger" asp-page-handler="Cancel" asp-route-id="@Model.EventsWhereUserIsManager[i].Id" />
+                            <form method="post" asp-page-handler="Cancel">
+                                <input type="submit" value="Cancel Event" class="btn btn-danger" asp-route-id="@Model.EventsWhereUserIsManager[i].Id" />
                             </form>
                         </td>
                     </tr>
@@ -223,4 +223,17 @@
             </tbody>
         </table>
     </div>
+</div>
+
+
+<div>
+    <h1>Shadows</h1>
+    @foreach (var organization in Model.EventsPendingEditRequest)
+    {
+        <h4>@organization.Key.Name</h4>
+        @foreach (var edit in organization)
+        {
+            <h5>@edit.Description</h5>
+        }
+    }
 </div>

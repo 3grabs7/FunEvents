@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FunEvents.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210415091401_shadows")]
-    partial class shadows
+    [Migration("20210415131719_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -176,10 +176,6 @@ namespace FunEvents.Data.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int?>("OrganizationId")
                         .HasColumnType("int");
 
@@ -203,8 +199,6 @@ namespace FunEvents.Data.Migrations
                     b.HasIndex("OrganizationId");
 
                     b.ToTable("Events");
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("Event");
                 });
 
             modelBuilder.Entity("FunEvents.Models.Organization", b =>
@@ -232,6 +226,46 @@ namespace FunEvents.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Organizations");
+                });
+
+            modelBuilder.Entity("FunEvents.Models.ShadowEvent", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EditorId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("PendingEditEventId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Place")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("SpotsAvailable")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EditorId");
+
+                    b.HasIndex("PendingEditEventId");
+
+                    b.ToTable("ShadowEvents");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -369,23 +403,6 @@ namespace FunEvents.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("FunEvents.Models.ShadowEvent", b =>
-                {
-                    b.HasBaseType("FunEvents.Models.Event");
-
-                    b.Property<string>("EditorId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int?>("PendingEditEventId")
-                        .HasColumnType("int");
-
-                    b.HasIndex("EditorId");
-
-                    b.HasIndex("PendingEditEventId");
-
-                    b.HasDiscriminator().HasValue("ShadowEvent");
-                });
-
             modelBuilder.Entity("AppUserEvent", b =>
                 {
                     b.HasOne("FunEvents.Models.AppUser", null)
@@ -449,6 +466,21 @@ namespace FunEvents.Data.Migrations
                     b.Navigation("Organization");
                 });
 
+            modelBuilder.Entity("FunEvents.Models.ShadowEvent", b =>
+                {
+                    b.HasOne("FunEvents.Models.AppUser", "Editor")
+                        .WithMany()
+                        .HasForeignKey("EditorId");
+
+                    b.HasOne("FunEvents.Models.Event", "PendingEditEvent")
+                        .WithMany("EventChangesPendingManagerValidation")
+                        .HasForeignKey("PendingEditEventId");
+
+                    b.Navigation("Editor");
+
+                    b.Navigation("PendingEditEvent");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -498,21 +530,6 @@ namespace FunEvents.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("FunEvents.Models.ShadowEvent", b =>
-                {
-                    b.HasOne("FunEvents.Models.AppUser", "Editor")
-                        .WithMany()
-                        .HasForeignKey("EditorId");
-
-                    b.HasOne("FunEvents.Models.Event", "PendingEditEvent")
-                        .WithMany("EventChangesPendingManagerValidation")
-                        .HasForeignKey("PendingEditEventId");
-
-                    b.Navigation("Editor");
-
-                    b.Navigation("PendingEditEvent");
                 });
 
             modelBuilder.Entity("FunEvents.Models.Event", b =>

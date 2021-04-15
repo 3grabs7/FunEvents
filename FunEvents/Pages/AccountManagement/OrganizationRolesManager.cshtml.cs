@@ -106,14 +106,14 @@ namespace FunEvents.Pages.AccountManagement
             return RedirectToPage("/AccountManagement/OrganizationRolesManager");
         }
 
-        public async Task<IActionResult> OnPostSelectAsync()
+        public IActionResult OnPostSelect()
         {
-            return RedirectToPage("/AccountManagement/OrganizationRolesManager", new { selectedOrganization = Convert.ToInt32(Request.Form["organization"])});
+            return RedirectToPage("/AccountManagement/OrganizationRolesManager", new { selectedOrganization = Convert.ToInt32(Request.Form["organization"]) });
         }
 
         public async Task<IActionResult> OnPostRemoveAsync(string id, string role, int organizationId)
         {
-            
+
 
             var user = await SelectedUser(id);
             var result = await _userManager.RemoveFromRoleAsync(user, role);
