@@ -29,6 +29,9 @@ namespace FunEvents.Models
 
     public class ShadowEvent : Event
     {
+        public AppUser Editor { get; set; }
+        public Event PendingEditEvent { get; set; }
+
     }
 
     public class Analytics

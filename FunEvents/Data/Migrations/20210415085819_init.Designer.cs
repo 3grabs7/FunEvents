@@ -4,14 +4,16 @@ using FunEvents.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FunEvents.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210415085819_init")]
+    partial class init
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -374,12 +376,12 @@ namespace FunEvents.Data.Migrations
                     b.Property<string>("EditorId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int?>("PendingEditEventId")
+                    b.Property<int?>("EventId")
                         .HasColumnType("int");
 
                     b.HasIndex("EditorId");
 
-                    b.HasIndex("PendingEditEventId");
+                    b.HasIndex("EventId");
 
                     b.HasDiscriminator().HasValue("ShadowEvent");
                 });
@@ -504,13 +506,13 @@ namespace FunEvents.Data.Migrations
                         .WithMany()
                         .HasForeignKey("EditorId");
 
-                    b.HasOne("FunEvents.Models.Event", "PendingEditEvent")
+                    b.HasOne("FunEvents.Models.Event", "Event")
                         .WithMany("EventChangesPendingManagerValidation")
-                        .HasForeignKey("PendingEditEventId");
+                        .HasForeignKey("EventId");
 
                     b.Navigation("Editor");
 
-                    b.Navigation("PendingEditEvent");
+                    b.Navigation("Event");
                 });
 
             modelBuilder.Entity("FunEvents.Models.Event", b =>
