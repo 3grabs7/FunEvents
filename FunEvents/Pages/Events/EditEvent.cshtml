@@ -6,7 +6,7 @@
 @if (Model.EditSucceeded)
 {
     <div class="alert alert-success" role="alert">
-        Event edited successfully! <a asp-page="/Events/EditEvent">Back To Events</a>
+        Event edited successfully!
     </div>
 }
 
@@ -62,14 +62,15 @@
                         <span asp-validation-for="@Model.Event.SpotsAvailable" id="basic-addon2"></span>
                     </div>
                 </div>
-                <div class="form-row align-items-end">
-                    <div class="form-group col-md-1">
-                        <input type="submit" value="@(Model.EventsWhereUserIsManager.Contains(Model.Event) ? "Edit" : "Request")"
-                               class="btn btn-success" />
-                    </div>
+                <div class="form-row align-items-md-end">
                     <div class="form-group col-md-2">
+                        <input type="submit" value="@(Model.EventsWhereUserIsManager.Contains(Model.Event) ? "Save" : "Request")"
+                               class="btn btn-success" />
+                    </div><br />
+                    <div class="form-group col-md-3">
                         <a asp-page="/Events/EditEvent" class="text-dark">Back to Events</a>
                     </div>
+                    <div class="col-md-7"></div>
                 </div>
             </form>
         </div>
