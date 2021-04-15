@@ -8,9 +8,21 @@
     {
         try
         {
-            isOrganizer = _userManager.IsInRoleAsync(_context.Users.Where(u => u.Id == _userManager.GetUserId(User)).First(), "OrganizationManager").Result
-                || _userManager.IsInRoleAsync(_context.Users.Where(u => u.Id == _userManager.GetUserId(User)).First(), "OrganizationAssistant").Result;
+            isOrganizer = _userManager.IsInRoleAsync(_context.Users.Where(u => u.Id == _userManager.GetUserId(User)).First(), "OrganizationManager").Result;
 
+        }
+        catch
+        {
+            Console.WriteLine("CLEAN YOUR COOKIES! bet you forgot!");
+        }
+    }
+
+    bool isAssistant = false;
+    @if (User.Identity.IsAuthenticated)
+    {
+        try
+        {
+            isAssistant = _userManager.IsInRoleAsync(_context.Users.Where(u => u.Id == _userManager.GetUserId(User)).First(), "OrganizationAssistant").Result;
         }
         catch
         {
@@ -50,11 +62,14 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-page="/Events/MyEvents">My Events</a>
                             </li>
-                            @if (isOrganizer)
+                            @if (isOrganizer || isAssistant)
                             {
-                                <li class="nav-item">
-                                    <a class="nav-link text-success" asp-area="" asp-page="/Events/CreateEvent">Create Event</a>
-                                </li>
+                                if (isOrganizer)
+                                {
+                                    <li class="nav-item">
+                                        <a class="nav-link text-success" asp-area="" asp-page="/Events/CreateEvent">Create Event</a>
+                                    </li>
+                                }
                                 <li class="nav-item">
                                     <a class="nav-link text-success" asp-area="" asp-page="/Events/EditEvent">Organize Events</a>
                                 </li>

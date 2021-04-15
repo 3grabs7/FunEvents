@@ -8,15 +8,18 @@
 
 <div>
     <form method="post" asp-page-handler="Select">
-        <select name="organization">
+        <select class="custom-select" name="organization">
+            <option selected>Choose Organization</option>
             @foreach (var selects in Model.OrganizationsWhereUserIsManager)
             {
                 <option value="@selects.Id">@selects.Name</option>
             }
         </select>
-        <button class="btn btn-info" type="submit">GOOOOO</button>
+        <br /><br />
+        <button class="btn btn-info" type="submit">GO</button>
     </form>
 </div>
+<br /><br />
 
 @if (Model.SelectedOrganization != null)
 {
