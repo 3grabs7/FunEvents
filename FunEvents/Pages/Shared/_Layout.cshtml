@@ -6,8 +6,16 @@
     bool isOrganizer = false;
     @if (User.Identity.IsAuthenticated)
     {
-        isOrganizer = _userManager.IsInRoleAsync(_context.Users.Where(u => u.Id == _userManager.GetUserId(User)).First(), "OrganizationManager").Result
-            || _userManager.IsInRoleAsync(_context.Users.Where(u => u.Id == _userManager.GetUserId(User)).First(), "OrganizationAssistant").Result;
+        try
+        {
+            isOrganizer = _userManager.IsInRoleAsync(_context.Users.Where(u => u.Id == _userManager.GetUserId(User)).First(), "OrganizationManager").Result
+                || _userManager.IsInRoleAsync(_context.Users.Where(u => u.Id == _userManager.GetUserId(User)).First(), "OrganizationAssistant").Result;
+
+        }
+        catch
+        {
+            Console.WriteLine("CLEAN YOUR COOKIES! bet you forgot!");
+        }
     }
 }
 

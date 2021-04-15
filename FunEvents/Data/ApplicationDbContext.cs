@@ -25,6 +25,7 @@ namespace FunEvents.Data
         public DbSet<Event> Events { get; set; }
         public DbSet<Analytics> Analytics { get; set; }
         public DbSet<Organization> Organizations { get; set; }
+        public DbSet<ShadowEvent> ShadowEvents { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

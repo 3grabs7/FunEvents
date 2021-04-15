@@ -100,6 +100,7 @@ namespace FunEvents.Data.Migrations
                     OrganizationId = table.Column<int>(type: "int", nullable: true),
                     PageVisits = table.Column<int>(type: "int", nullable: false),
                     UniquePageVisits = table.Column<int>(type: "int", nullable: false),
+                    Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     EventId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>

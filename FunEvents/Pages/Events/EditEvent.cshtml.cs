@@ -85,26 +85,28 @@ namespace FunEvents.Pages.Events
 
         public async Task<IActionResult> OnPostRequestEditAsync()
         {
-            var shadowEvent = new Event() { Id = 999999 };
+            var exceptions = new string[] {
+                "Id", "EventChangesPendingManagerValidation", "Attendees"
+            };
+            var shadowEvent = new ShadowEvent() { };
             var reflections = Event.GetType().GetProperties();
             foreach (var reflection in reflections)
             {
-                if (reflection.Name == "Id") continue;
-                shadowEvent.GetType()
-                    .GetProperty(reflection.Name)
-                    .SetValue(shadowEvent, reflection.GetValue(Event, null));
+                if (exceptions.Contains(reflection.Name)) continue;
+                reflection.SetValue(shadowEvent, reflection.GetValue(Event));
             }
 
             try
             {
+                await _context.ShadowEvents.ForEachAsync(se => Console.WriteLine(se.Description));
                 Event.EventChangesPendingManagerValidation.Add(shadowEvent);
                 await _context.SaveChangesAsync();
                 return RedirectToPage("/Events/EditEvent", new { EditSucceeded = true });
             }
             catch (Exception e)
             {
-                // throw new Exception(e.Message);
-                return RedirectToPage("/Events/EditEvent", new { EditFailed = true });
+                throw new Exception(e.Message);
+                // return RedirectToPage("/Events/EditEvent", new { EditFailed = true });
             }
         }
 

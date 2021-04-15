@@ -51,10 +51,10 @@ namespace FunEvents.Pages.Events
             }
 
             Count = await GetCount();
-            AppUser = await GetAppuser(_userManager.GetUserId(User));
+            AppUser = await GetAppUser(_userManager.GetUserId(User));
         }
 
-        public async Task<AppUser> GetAppuser(string userId) => await _context.Users
+        public async Task<AppUser> GetAppUser(string userId) => await _context.Users
             .Where(u => u.Id == userId)
             .Include(u => u.JoinedEvents)
             .FirstOrDefaultAsync();
@@ -93,6 +93,7 @@ namespace FunEvents.Pages.Events
 
         public string CondenseDescription(string input)
         {
+            if (input == null) return "No description, weird huh?";
             string[] splitInput = Regex.Split(input, @"[!?.]");
             return splitInput.Length == 1 ?
                 $"{splitInput[0]}." :

@@ -44,7 +44,7 @@
         <div class="col-4">
             <div class="card" style="width: 18rem; height: 18rem;">
                 <div class="card-body">
-                    <h5 class="card-title">@Model.Events[i].Title</h5>
+                    <h5 class="card-title">@(Model.Events[i]?.Title ?? "uNdeFinEd")</h5>
                     <p class="card-text">@Model.CondenseDescription(Model.Events[i].Description)</p>
                     @if (Model.Events[i].SpotsAvailable == 0)
                     {

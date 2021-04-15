@@ -30,19 +30,18 @@ namespace FunEvents.Pages.AccountManagement
 
         // list of the current users organizations
         public IList<Organization> UserOrganizations { get; set; }
+        public IList<Organization> OrganizationsWhereUserIsManager { get; set; }
 
         public async Task OnGet()
         {
             Roles = await _context.Roles.ToListAsync();
             Users = await _context.Users.ToListAsync();
 
-            var userId = _userManager.GetUserId(User);
+            var currentUser = await SelectedUser(_userManager.GetUserId(User));
 
-            var currentUser = await _context.Users
-                .Where(u => u.Id == userId)
-                .Include(u => u.ManagerInOrganizations)
-                .Include(u => u.AssistantInOrganizations)
-                .FirstOrDefaultAsync();
+            OrganizationsWhereUserIsManager = await _context.Organizations
+                .Where(o => o.OrganizationManagers.Contains(currentUser))
+                .ToListAsync();
 
             if (currentUser.ManagerInOrganizations?.Count != null)
             {
@@ -79,7 +78,7 @@ namespace FunEvents.Pages.AccountManagement
                 };
 
                 await _context.Organizations.AddAsync(organization);
-                
+
                 await _context.SaveChangesAsync();
 
                 return RedirectToPage("/AccountManagement/OrganizationRolesManager");
@@ -108,8 +107,8 @@ namespace FunEvents.Pages.AccountManagement
             var result = await _userManager.RemoveFromRoleAsync(user, role);
 
             Organization organization = await _context.Organizations.FindAsync(organizationId);
-            
-            if(role == "OrganizationManager")
+
+            if (role == "OrganizationManager")
             {
                 user.ManagerInOrganizations.Remove(organization);
             }
@@ -149,32 +148,14 @@ namespace FunEvents.Pages.AccountManagement
         public async Task<bool> IsManagerFor(int organizationId, string userId)
         {
             AppUser user = await SelectedUser(userId);
-
-            var organizationsWhereUserIsManager = user.ManagerInOrganizations.ToList();
-            foreach (var organization in organizationsWhereUserIsManager)
-            {
-                if (organization.Id == organizationId)
-                {
-                    return true;
-                }
-            }
-            return false;
+            return user.ManagerInOrganizations.Any(o => o.Id == organizationId);
         }
 
         // to check if user is manager for specific organization
         public async Task<bool> IsAssistantFor(int organizationId, string userId)
         {
             AppUser user = await SelectedUser(userId);
-
-            var organizationsWhereUserIsAssistant = user.AssistantInOrganizations.ToList();
-            foreach (var organization in organizationsWhereUserIsAssistant)
-            {
-                if (organization.Id == organizationId)
-                {
-                    return true;
-                }
-            }
-            return false;
+            return user.AssistantInOrganizations.Any(o => o.Id == organizationId);
         }
     }
 }

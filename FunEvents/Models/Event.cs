@@ -24,7 +24,11 @@ namespace FunEvents.Models
         public ICollection<AppUser> Attendees { get; set; }
         public int PageVisits { get; set; }
         public int UniquePageVisits { get; set; }
-        public ICollection<Event> EventChangesPendingManagerValidation { get; set; }
+        public ICollection<ShadowEvent> EventChangesPendingManagerValidation { get; set; }
+    }
+
+    public class ShadowEvent : Event
+    {
     }
 
     public class Analytics

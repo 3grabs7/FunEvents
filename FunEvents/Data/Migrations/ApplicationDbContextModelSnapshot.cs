@@ -174,8 +174,9 @@ namespace FunEvents.Data.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("EventId")
-                        .HasColumnType("int");
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("OrganizationId")
                         .HasColumnType("int");
@@ -197,11 +198,11 @@ namespace FunEvents.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EventId");
-
                     b.HasIndex("OrganizationId");
 
                     b.ToTable("Events");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("Event");
                 });
 
             modelBuilder.Entity("FunEvents.Models.Organization", b =>
@@ -366,6 +367,18 @@ namespace FunEvents.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("FunEvents.Models.ShadowEvent", b =>
+                {
+                    b.HasBaseType("FunEvents.Models.Event");
+
+                    b.Property<int?>("EventId")
+                        .HasColumnType("int");
+
+                    b.HasIndex("EventId");
+
+                    b.HasDiscriminator().HasValue("ShadowEvent");
+                });
+
             modelBuilder.Entity("AppUserEvent", b =>
                 {
                     b.HasOne("FunEvents.Models.AppUser", null)
@@ -422,10 +435,6 @@ namespace FunEvents.Data.Migrations
 
             modelBuilder.Entity("FunEvents.Models.Event", b =>
                 {
-                    b.HasOne("FunEvents.Models.Event", null)
-                        .WithMany("EventChangesPendingManagerValidation")
-                        .HasForeignKey("EventId");
-
                     b.HasOne("FunEvents.Models.Organization", "Organization")
                         .WithMany()
                         .HasForeignKey("OrganizationId");
@@ -482,6 +491,13 @@ namespace FunEvents.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("FunEvents.Models.ShadowEvent", b =>
+                {
+                    b.HasOne("FunEvents.Models.Event", null)
+                        .WithMany("EventChangesPendingManagerValidation")
+                        .HasForeignKey("EventId");
                 });
 
             modelBuilder.Entity("FunEvents.Models.Event", b =>

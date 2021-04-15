@@ -32,6 +32,7 @@ namespace FunEvents.Pages.Events
             _accessor = accessor;
         }
 
+        [BindProperty]
         public Event Event { get; set; }
         public AppUser AppUser { get; set; }
         public bool SucceededToJoinEvent { get; set; }
@@ -53,7 +54,8 @@ namespace FunEvents.Pages.Events
             SucceededToJoinEvent = succeededToJoinEvent ?? false;
             FailedToJoinEvent = failedToJoinEvent ?? false;
 
-            Event = await _context.Events.FindAsync(id);
+            Event = await _context.Events.Include(e => e.Organization)
+                .FirstOrDefaultAsync(e => e.Id == id);
             Attendees = GetAttendeeInfo();
             AppUser = await GetAppuser(_userManager.GetUserId(User));
 
