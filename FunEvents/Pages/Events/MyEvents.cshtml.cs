@@ -36,6 +36,8 @@ namespace FunEvents.Pages.Events
         public int? LastRemovedEvent { get; set; }
         public bool RemovingEventFailed { get; set; }
         public bool RemovingEventSucceeded { get; set; }
+        [BindProperty]
+        public IList<Event> JoinedEvents { get; set; }
 
         public async Task OnGetAsync(
             bool? removingEventFailed,
@@ -53,7 +55,13 @@ namespace FunEvents.Pages.Events
 
             AppUser = await GetAppUser(_userManager.GetUserId(User));
 
+            JoinedEvents = await _context.Events
+                .Include(e => e.Organization)
+                .Where(e => e.Attendees.Contains(AppUser))
+                .ToListAsync();
+
             Events = await _context.Events
+                .Include(e => e.Organization)
                 .Where(e => e.Attendees
                 .Contains(AppUser))
                 .ToListAsync();
