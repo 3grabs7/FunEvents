@@ -86,20 +86,24 @@ namespace FunEvents.Pages.Events
         public async Task<IActionResult> OnPostRequestEditAsync()
         {
             var exceptions = new string[] {
-                "Id", "EventChangesPendingManagerValidation", "Attendees"
+                "Id", "EventChangesPendingManagerValidation", "Attendees", "CreatedAt"
             };
-            var shadowEvent = new ShadowEvent() { };
+            // pendingEditEventId in model -> compare with Event.Id (skip _context)
+            var shadowEvent = new ShadowEvent() { 
+                PendingEditEvent = _context.Events.Find(Event.Id),
+                Editor = _context.Users.Find(_userManager.GetUserId(User))
+        };
             var reflections = Event.GetType().GetProperties();
             foreach (var reflection in reflections)
             {
                 if (exceptions.Contains(reflection.Name)) continue;
+                if (!HasPropertyStateChanged()) continue;
                 reflection.SetValue(shadowEvent, reflection.GetValue(Event));
             }
 
             try
             {
-                await _context.ShadowEvents.ForEachAsync(se => Console.WriteLine(se.Description));
-                Event.EventChangesPendingManagerValidation.Add(shadowEvent);
+                await _context.ShadowEvents.AddAsync(shadowEvent);
                 await _context.SaveChangesAsync();
                 return RedirectToPage("/Events/EditEvent", new { EditSucceeded = true });
             }
@@ -108,6 +112,11 @@ namespace FunEvents.Pages.Events
                 throw new Exception(e.Message);
                 // return RedirectToPage("/Events/EditEvent", new { EditFailed = true });
             }
+        }
+
+        public bool HasPropertyStateChanged()
+        {
+            return true;
         }
 
         public async Task<IActionResult> OnPostCancelAsync(int? id)

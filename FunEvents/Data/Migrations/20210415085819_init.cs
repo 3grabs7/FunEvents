@@ -101,11 +101,18 @@ namespace FunEvents.Data.Migrations
                     PageVisits = table.Column<int>(type: "int", nullable: false),
                     UniquePageVisits = table.Column<int>(type: "int", nullable: false),
                     Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EditorId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     EventId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Events", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Events_AspNetUsers_EditorId",
+                        column: x => x.EditorId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Events_Events_EventId",
                         column: x => x.EventId,
@@ -183,6 +190,11 @@ namespace FunEvents.Data.Migrations
                 name: "IX_AppUserOrganization1_OrganizationManagersId",
                 table: "AppUserOrganization1",
                 column: "OrganizationManagersId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Events_EditorId",
+                table: "Events",
+                column: "EditorId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Events_EventId",
