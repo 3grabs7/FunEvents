@@ -31,9 +31,13 @@ namespace FunEvents.Pages.AccountManagement
         // list of the current users organizations
         public IList<Organization> UserOrganizations { get; set; }
         public IList<Organization> OrganizationsWhereUserIsManager { get; set; }
+        [BindProperty(SupportsGet = true)]
+        public Organization SelectedOrganization { get; set; }
 
-        public async Task OnGet()
+        public async Task OnGet(int? selectedOrganization)
         {
+            SelectedOrganization = await _context.Organizations.FindAsync(selectedOrganization) ?? null;
+
             Roles = await _context.Roles.ToListAsync();
             Users = await _context.Users.ToListAsync();
 
@@ -47,6 +51,7 @@ namespace FunEvents.Pages.AccountManagement
             {
                 UserOrganizations = currentUser.ManagerInOrganizations.ToList();
             }
+
         }
 
         public async Task<IActionResult> OnPostAddAsync(string id, string role, int organizationId)
@@ -101,8 +106,15 @@ namespace FunEvents.Pages.AccountManagement
             return RedirectToPage("/AccountManagement/OrganizationRolesManager");
         }
 
+        public async Task<IActionResult> OnPostSelectAsync()
+        {
+            return RedirectToPage("/AccountManagement/OrganizationRolesManager", new { selectedOrganization = Convert.ToInt32(Request.Form["organization"])});
+        }
+
         public async Task<IActionResult> OnPostRemoveAsync(string id, string role, int organizationId)
         {
+            
+
             var user = await SelectedUser(id);
             var result = await _userManager.RemoveFromRoleAsync(user, role);
 
@@ -126,7 +138,6 @@ namespace FunEvents.Pages.AccountManagement
 
             return RedirectToPage("/AccountManagement/OrganizationRolesManager");
         }
-
 
         public async Task<AppUser> SelectedUser(string id) => await _context.Users
             .Where(u => u.Id == id)
