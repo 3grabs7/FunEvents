@@ -1,4 +1,4 @@
-﻿@page "{currentpage=1}/{sortby=Id}"
+﻿@page "{currentpage=1}/{sortby=Id}/{searchString?}"
 @model FunEvents.Pages.Events.IndexModel
 @{
 }
@@ -6,7 +6,14 @@
 <div class="jumbotron jumbotron-fluid">
     <div class="container text-center">
         <h1 class="display-4">Events</h1>
-        <p class="lead">Find great events to join - just for you!</p>
+        <p class="lead">Find amazing events to join - just for you!</p>
+        <hr />
+        <nav class="navbar navbar-light bg-transparent justify-content-center">
+            <form method="post" class="form-inline">
+                <input asp-for="@Model.SearchString" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-info my-2 my-sm-0" type="submit">Search</button>
+            </form>
+        </nav>
         <hr />
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb justify-content-center">
