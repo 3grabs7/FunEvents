@@ -241,27 +241,6 @@ namespace FunEvents.Data
             rojVa.Organization = await Organizations.Where(o => o.Name == "Come Together").FirstOrDefaultAsync();
 
             await SaveChangesAsync();
-
-            // add managers to organizations
-            //organizationManager.ManagerInOrganizations.Add(await Organizations.Where(o => o.Name == "Event Makerz").FirstOrDefaultAsync());
-            //organizationManager.ManagerInOrganizations.Add(await Organizations.Where(o => o.Name == "Latjo Lajban").FirstOrDefaultAsync());
-            //organizationManager2.ManagerInOrganizations.Add(await Organizations.Where(o => o.Name == "Come Together").FirstOrDefaultAsync());
-            //organizationAssistant.AssistantInOrganizations.Add(await Organizations.Where(o => o.Name == "Event Makerz").FirstOrDefaultAsync());
-
-            //var eventMakers = await Organizations.Where(o => o.Name == "Event Makers").FirstOrDefaultAsync();
-            //eventMakers.OrganizationManagers.Add(organizationManager2);
-            //eventMakers.IsVerified = true;
-
-            //var latjoLajban = await Organizations.Where(o => o.Name == "Latjo Lajban").FirstOrDefaultAsync();
-            //latjoLajban.OrganizationManagers.Add(organizationManager);
-            //latjoLajban.IsVerified = true;
-
-            //var comeTogether = await Organizations.Where(o => o.Name == "Come Together").FirstOrDefaultAsync();
-            //comeTogether.OrganizationManagers.Add(organizationManager);
-            //comeTogether.OrganizationAssistants.Add(organizationAssistant);
-            //comeTogether.IsVerified = true;
-
-            await SaveChangesAsync();
         }
     }
 }
