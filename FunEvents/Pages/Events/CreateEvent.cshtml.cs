@@ -56,7 +56,7 @@ namespace FunEvents.Pages.Events
 
             await _context.SaveChangesAsync();
 
-            return RedirectToPage("./Index");
+            return RedirectToPage("./EditEvent");
         }
 
         public async Task<AppUser> GetAppUser(string userId) => await _context.Users

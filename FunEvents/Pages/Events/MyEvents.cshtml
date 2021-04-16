@@ -15,8 +15,10 @@
 {
     <div class="alert alert-success" role="alert">
         Event removed, it's cozier at home anyway.
-        <form asp-page-handler="Undo" asp-route-id="@Model.LastRemovedEvent" method="post">
-            <button type="submit">Undo</button>
+        <form method="post">
+            <input type="submit" value="Undo"
+                   asp-page-handler="Revert"
+                   asp-route-id="@Model.LastRemovedEvent" />
         </form>
     </div>
 }
@@ -65,15 +67,15 @@
                 <td style="width: 20%">
                     @if (item.Organization != null)
                     {
-                    <a asp-page="/Events/OrganizationPage" asp-route-id="@item.Organization.Id">
-                        @item.Organization.Name
+                        <a asp-page="/Events/OrganizationPage" asp-route-id="@item.Organization.Id">
+                            @item.Organization.Name
                         </a>
                     }
                     else
                     {
-                    <p>---</p>
+                        <p>---</p>
                     }
-</td>
+                </td>
                 <td style="width: 15%">
                     <form method="post">
                         <input type="submit" class="btn btn-danger" value="Remove" asp-route-id="@item.Id" />
@@ -83,76 +85,3 @@
         }
     </tbody>
 </table>
-
-@*<div class="row h-100 justify-content-center">
-    <div>
-        <h1>Events where you are Manager</h1>
-        <p style="font-style:italic;">Edit or cancel events here</p>
-        <hr />
-        <table class="table">
-            <thead class="thead-dark">
-                <tr>
-                    <th scope="col">
-                        Title
-                    </th>
-                    <th scope="col">
-                        Description
-                    </th>
-                    <th scope="col">
-                        Date
-                    </th>
-                    <th scope="col">
-                        Place
-                    </th>
-                    <th scope="col">
-                        Adress
-                    </th>
-                    <th scope="col">
-                        Organizer
-                    </th>
-                    <th scope="col">
-                        Spots Available
-                    </th>
-                    <th scope="col"></th>
-                    <th scope="col"></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model.AppUser.JoinedEvents)
-                {
-                    <tr>
-                        <td style="width: 15%">
-                            <p>@item.Title</p>
-                        </td>
-                        <td style="width: 25%">
-                            <p>@item.Description</p>
-                        </td>
-                        <td style="width: 20%">
-                            <p>@item.Date</p>
-                        </td>
-                        <td style="width: 9%">
-                            <p>@item.Place</p>
-                        </td>
-                        <td style="width: 10%">
-                            <p>@item.Address</p>
-                        </td>
-                        <td style="width: 8%">
-                            <p>@item.Organization.Name</p>
-                        </td>
-                        <td style="width: 5%">
-                            <p>@item.SpotsAvailable</p>
-                        </td>
-                        <td style="width: 3%">
-                            <a class="btn btn-success" asp-route-selectedEvent="@item.Id" asp-page="/Events/EditEvent">Edit</a>
-                        </td>
-                        <td style="width: 5%">
-                            <form method="post">
-                                <input type="submit" value="Cancel Event" class="btn btn-danger" asp-page-handler="Cancel" asp-route-id="@item.Id" />
-                            </form>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-</div>*@

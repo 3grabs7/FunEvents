@@ -26,7 +26,6 @@ namespace FunEvents.Pages.AccountManagement
         }
 
         public IList<AppUser> Users { get; set; }
-        public IList<IdentityRole> Roles { get; set; }
 
         // list of the current users organizations
         public IList<Organization> UserOrganizations { get; set; }
@@ -38,7 +37,6 @@ namespace FunEvents.Pages.AccountManagement
         {
             SelectedOrganization = await _context.Organizations.FindAsync(selectedOrganization) ?? null;
 
-            Roles = await _context.Roles.ToListAsync();
             Users = await _context.Users.ToListAsync();
 
             var currentUser = await SelectedUser(_userManager.GetUserId(User));
@@ -88,13 +86,12 @@ namespace FunEvents.Pages.AccountManagement
 
         public IActionResult OnPostSelect()
         {
-            return RedirectToPage("/AccountManagement/OrganizationRolesManager", new { selectedOrganization = Convert.ToInt32(Request.Form["organization"]) });
+            return RedirectToPage("/AccountManagement/OrganizationRolesManager",
+                new { selectedOrganization = Convert.ToInt32(Request.Form["organization"]) });
         }
 
         public async Task<IActionResult> OnPostRemoveAsync(string id, string role, int organizationId)
         {
-
-
             var user = await SelectedUser(id);
             var result = await _userManager.RemoveFromRoleAsync(user, role);
 
@@ -142,7 +139,7 @@ namespace FunEvents.Pages.AccountManagement
             return user.ManagerInOrganizations.Any(o => o.Id == organizationId);
         }
 
-        // to check if user is manager for specific organization
+        // to check if user is Assistant for specific organization
         public async Task<bool> IsAssistantFor(int organizationId, string userId)
         {
             AppUser user = await SelectedUser(userId);

@@ -9,7 +9,7 @@
 {
     <!--
         Check if current user is manager in a unverified Organization
-        If not, prompt user to edit details to complete verification.
+        If so, prompt user to edit details to complete verification.
     -->
     @if (Model.IsOrganizerPendingVerification().Result)
     {
@@ -17,106 +17,105 @@
     }
     else
     {
-
-    <div class="jumbotron jumbotron-fluid">
-        <div class="container text-center">
-            <h1 class="display-4">Welcome</h1>
-            <hr />
-            <p class="lead">This is the place where you can find crazy events happening near you!</p>
-            <div>
-                @if (User.Identity.IsAuthenticated)
-                {
-                    <div>
-                        <a class="btn btn-primary" asp-page="Events/Index">Find A New Event</a>
-                    </div>
-                }
-                else
-                {
-                    <div>
-                        <a class="btn btn-primary" asp-area="Identity" asp-page="Account/Register">Register</a>
-                        <a class="btn btn-primary" asp-area="Identity" asp-page="Account/Login">Log In</a>
-                    </div>
-                }
+        <div class="jumbotron jumbotron-fluid">
+            <div class="container text-center">
+                <h1 class="display-4">Welcome</h1>
+                <hr />
+                <p class="lead">This is the place where you can find crazy events happening near you!</p>
+                <div>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <div>
+                            <a class="btn btn-primary" asp-page="Events/Index">Find A New Event</a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div>
+                            <a class="btn btn-primary" asp-area="Identity" asp-page="Account/Register">Register</a>
+                            <a class="btn btn-primary" asp-area="Identity" asp-page="Account/Login">Log In</a>
+                        </div>
+                    }
+                </div>
             </div>
         </div>
-    </div>
-    <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-        <ol class="carousel-indicators">
-            <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
-            <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-            <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
-        </ol>
-        <div class="carousel-inner">
-            <div class="carousel-item active">
-                <div class="container topevents align-baseline">
-                    <h1>Popular events</h1>
-                    <div class="row justify-content-around text-center">
-                        @foreach (var item in Model.LoadPopularEvents().Result)
-                        {
-                            <div class="col-sm-3">
-                                <img class="rounded-circle border border-secondary"
-                                     src="~/img/timmy.png" alt="Generic placeholder image"
-                                     width="140" height="140">
-                                <h2>@item.Title</h2>
-                                <p>@(item.Description.Length > 40 ? $"{item.Description[..40]}..." : item.Description)</p>
-                                <a class="btn btn-primary" role="button"
-                                   asp-page="/Events/Details" asp-route-id="@item.Id">Read more »</a>
-                            </div>
-                        }
+        <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+            <ol class="carousel-indicators">
+                <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+                <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+                <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+            </ol>
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <div class="container topevents align-baseline">
+                        <h1>Popular events</h1>
+                        <div class="row justify-content-around text-center">
+                            @foreach (var item in Model.LoadPopularEvents().Result)
+                            {
+                                <div class="col-sm-3">
+                                    <img class="rounded-circle border border-secondary"
+                                         src="~/img/timmy.png" alt="Generic placeholder image"
+                                         width="140" height="140">
+                                    <h2>@item.Title</h2>
+                                    <p>@(item.Description.Length > 40 ? $"{item.Description[..40]}..." : item.Description)</p>
+                                    <a class="btn btn-primary" role="button"
+                                       asp-page="/Events/Details" asp-route-id="@item.Id">Read more »</a>
+                                </div>
+                            }
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="carousel-item">
-                <div class="container topevents align-baseline">
-                    <h1>Almost fully booked</h1>
-                    <div class="row justify-content-around text-center">
-                        @foreach (var item in Model.LoadAlmostFullyBookedEvents().Result)
-                        {
-                            <div class="col-sm-3">
-                                <img class="rounded-circle border border-secondary"
-                                     src="~/img/timmy.png" alt="Generic placeholder image"
-                                     width="140" height="140">
-                                <h2>@item.Title</h2>
-                                <p>@(item.Description.Length > 40 ? $"{item.Description[..40]}..." : item.Description)</p>
-                                <a class="btn btn-primary" role="button"
-                                   asp-page="/Events/Details" asp-route-id="@item.Id">Read more »</a>
-                            </div>
-                        }
+                <div class="carousel-item">
+                    <div class="container topevents align-baseline">
+                        <h1>Almost fully booked</h1>
+                        <div class="row justify-content-around text-center">
+                            @foreach (var item in Model.LoadAlmostFullyBookedEvents().Result)
+                            {
+                                <div class="col-sm-3">
+                                    <img class="rounded-circle border border-secondary"
+                                         src="~/img/timmy.png" alt="Generic placeholder image"
+                                         width="140" height="140">
+                                    <h2>@item.Title</h2>
+                                    <p>@(item.Description.Length > 40 ? $"{item.Description[..40]}..." : item.Description)</p>
+                                    <a class="btn btn-primary" role="button"
+                                       asp-page="/Events/Details" asp-route-id="@item.Id">Read more »</a>
+                                </div>
+                            }
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="carousel-item">
-                <div class="container topevents align-baseline">
-                    <h1>Newly listed events</h1>
-                    <div class="row justify-content-around text-center">
-                        @foreach (var item in Model.LoadNewEvents().Result)
-                        {
-                            <div class="col-sm-3">
-                                <img class="rounded-circle border border-secondary"
-                                     src="~/img/timmy.png" alt="Generic placeholder image"
-                                     width="140" height="140">
-                                <h2>@item.Title</h2>
-                                <p>@(item.Description.Length > 40 ? $"{item.Description[..40]}..." : item.Description)</p>
-                                <a class="btn btn-primary" role="button"
-                                   asp-page="/Events/Details" asp-route-id="@item.Id">Read more »</a>
-                            </div>
-                        }
+                <div class="carousel-item">
+                    <div class="container topevents align-baseline">
+                        <h1>Newly listed events</h1>
+                        <div class="row justify-content-around text-center">
+                            @foreach (var item in Model.LoadNewEvents().Result)
+                            {
+                                <div class="col-sm-3">
+                                    <img class="rounded-circle border border-secondary"
+                                         src="~/img/timmy.png" alt="Generic placeholder image"
+                                         width="140" height="140">
+                                    <h2>@item.Title</h2>
+                                    <p>@(item.Description.Length > 40 ? $"{item.Description[..40]}..." : item.Description)</p>
+                                    <a class="btn btn-primary" role="button"
+                                       asp-page="/Events/Details" asp-route-id="@item.Id">Read more »</a>
+                                </div>
+                            }
+                        </div>
                     </div>
-                </div>
 
+                </div>
             </div>
+            <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true" style="color:black;"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true" style="color:black;"></span>
+                <span class="sr-only">Next</span>
+            </a>
         </div>
-        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true" style="color:black;"></span>
-            <span class="sr-only">Previous</span>
-        </a>
-        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true" style="color:black;"></span>
-            <span class="sr-only">Next</span>
-        </a>
-    </div>
     }
-    }
+}
 
 
 

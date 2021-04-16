@@ -86,7 +86,6 @@ namespace FunEvents.Pages.Events
 
         public async Task<IActionResult> OnPostRequestEditAsync()
         {
-            // pendingEditEventId in model -> compare with Event.Id (skip _context)
             var shadowEvent = new ShadowEvent()
             {
                 PendingEditEvent = _context.Events.Find(Event.Id),
@@ -111,8 +110,6 @@ namespace FunEvents.Pages.Events
                 return RedirectToPage("/Events/EditEvent", new { EditFailed = true });
             }
         }
-
-
 
         public async Task<IActionResult> OnPostCancelAsync(int? id)
         {

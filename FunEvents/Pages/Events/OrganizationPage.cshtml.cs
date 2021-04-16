@@ -30,8 +30,6 @@ namespace FunEvents.Pages.Events
         {
             if (id == null)
             {
-                // Post alert about organizer not having a page set up yet
-                // (Events are seeded without organizers)
                 return RedirectToPage("/Errors/NotFound");
             }
 

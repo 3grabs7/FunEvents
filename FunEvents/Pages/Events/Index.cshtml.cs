@@ -37,7 +37,6 @@ namespace FunEvents.Pages.Events
         public int PageSize { get; set; } = 9;
         public int TotalPages => (int)Math.Ceiling(decimal.Divide(Count, PageSize));
         public IList<Event> Events { get; set; }
-        public AppUser AppUser { get; set; }
 
         public async Task OnGetAsync()
         {
@@ -51,7 +50,6 @@ namespace FunEvents.Pages.Events
             }
 
             Count = await GetCount();
-            AppUser = await GetAppUser(_userManager.GetUserId(User));
         }
 
         public async Task<AppUser> GetAppUser(string userId) => await _context.Users
@@ -76,8 +74,8 @@ namespace FunEvents.Pages.Events
                 .Take(pageSize)
                 .ToListAsync();
 
-            if (sortResultsBy != "Title" ||
-                sortResultsBy != "Place")
+            if (sortResultsBy == "Date" ||
+                sortResultsBy == "SpotsAvailable")
             {
                 data.Reverse();
             }

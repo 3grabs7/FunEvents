@@ -31,11 +31,8 @@ namespace FunEvents.Pages.AccountManagement
 
         public IList<AppUser> Users { get; set; }
 
-        public IList<IdentityRole> Roles { get; set; }
-
         public async Task OnGetAsync()
         {
-            Roles = await _context.Roles.ToListAsync();
             Users = await _context.Users.ToListAsync();
         }
 

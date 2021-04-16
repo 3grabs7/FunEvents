@@ -30,7 +30,6 @@ namespace FunEvents.Pages.Events
 
         [BindProperty]
         public AppUser AppUser { get; set; }
-        public List<Event> Events { get; set; }
 
         [BindProperty]
         public int? LastRemovedEvent { get; set; }
@@ -60,22 +59,13 @@ namespace FunEvents.Pages.Events
                 .Where(e => e.Attendees.Contains(AppUser))
                 .ToListAsync();
 
-            Events = await _context.Events
-                .Include(e => e.Organization)
-                .Where(e => e.Attendees
-                .Contains(AppUser))
-                .ToListAsync();
         }
 
         public async Task<IActionResult> OnPostAsync(int? id)
         {
             try
             {
-                string userId = _userManager.GetUserId(User);
-                AppUser = await _context.Users
-                    .Where(u => u.Id == userId)
-                    .Include(u => u.JoinedEvents)
-                    .FirstOrDefaultAsync();
+                AppUser = await GetAppUser(_userManager.GetUserId(User));
 
                 Event eventToRemove = await _context.Events
                     .Where(e => e.Id == id)
@@ -91,10 +81,10 @@ namespace FunEvents.Pages.Events
                 return RedirectToPage("/Events/MyEvents", new { RemovingEventFailed = true });
             }
 
-            return RedirectToPage("/Events/MyEvents", new { RemovingEventSucceeded = true, EventToUndoId = id });
+            return RedirectToPage("/Events/MyEvents", new { RemovingEventSucceeded = true, LastRemovedEvent = id });
         }
 
-        public async Task<IActionResult> OnPostUndo(int? id)
+        public async Task<IActionResult> OnPostRevertAsync(int? id)
         {
             if (id == null)
             {
@@ -109,7 +99,7 @@ namespace FunEvents.Pages.Events
 
             await _context.SaveChangesAsync();
 
-            return Page();
+            return RedirectToPage("/Events/MyEvents");
         }
 
         public async Task<AppUser> GetAppUser(string userId) => await _context.Users
