@@ -9,8 +9,10 @@
         <p class="lead">Find amazing events to join - just for you!</p>
         <hr />
         <nav class="navbar navbar-light bg-transparent justify-content-center">
-            <form method="post" class="form-inline">
-                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+            <form method="post" asp-page-handler="Search">
+                <input class="form-control mr-sm-2" type="search"
+                       placeholder="Search" aria-label="Search"
+                       name="search">
                 <button class="btn btn-info my-2 my-sm-0" type="submit">Search</button>
             </form>
         </nav>

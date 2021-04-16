@@ -33,6 +33,8 @@ namespace FunEvents.Pages.Events
         [BindProperty(SupportsGet = true)]
         public string SortBy { get; set; }
 
+        [BindProperty(SupportsGet = true)]
+        public string SearchString { get; set; }
         public int Count { get; set; }
         public int PageSize { get; set; } = 9;
         public int TotalPages => (int)Math.Ceiling(decimal.Divide(Count, PageSize));
@@ -40,7 +42,7 @@ namespace FunEvents.Pages.Events
 
         public async Task OnGetAsync()
         {
-            if (String.IsNullOrWhiteSpace(SortBy))
+            if (String.IsNullOrEmpty(SortBy))
             {
                 Events = await GetPaginatedResult(CurrentPage, PageSize);
             }
@@ -48,8 +50,20 @@ namespace FunEvents.Pages.Events
             {
                 Events = await GetPaginatedResult(CurrentPage, PageSize, SortBy);
             }
+            if (!String.IsNullOrWhiteSpace(SearchString))
+            {
+                Events = Events.Where(e => e.Title.Contains(SearchString, StringComparison.InvariantCultureIgnoreCase))
+                    .ToList();
+                Count = Events.Count;
+                return;
+            }
 
             Count = await GetCount();
+        }
+
+        public IActionResult OnPostSearch()
+        {
+            return RedirectToPage("", new { SearchString = Request.Form["search"] });
         }
 
         public async Task<AppUser> GetAppUser(string userId) => await _context.Users
